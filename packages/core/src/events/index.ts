@@ -11,7 +11,7 @@ import {
   // GroupTraits,
 } from './interfaces'
 import { pickBy } from '../utils/pick'
-// import { validateEvent } from '../validation/assertions'
+import { validateEvent } from '../validation/assertions'
 import type { RemoveIndexSignature } from '../utils/ts-helpers'
 
 interface EventFactorySettings {
@@ -170,7 +170,7 @@ export class EventFactory {
       messageId: this.createMessageId(),
     }
 
-    // validateEvent(evt)
+    validateEvent(evt)
     return evt
   }
 }

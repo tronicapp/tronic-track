@@ -1,13 +1,11 @@
-// import { backoff } from '@tronic/analytics-core'
-import type { Context } from '../../app/context'
-import { tryCreateFormattedUrl } from '../../lib/create-url'
-import { extractPromiseParts } from '../../lib/extract-promise-parts'
+import { backoff } from '@tronic/analytics-core'
+import type { Context } from '../app/context'
+import { tryCreateFormattedUrl } from '../lib/create-url'
+import { extractPromiseParts } from '../lib/extract-promise-parts'
 import { ContextBatch } from './context-batch'
-import { NodeEmitter } from '../../app/emitter'
-import { b64encode } from '../../lib/base-64-encode'
-import { HTTPClient, HTTPClientRequest } from '../../lib/http-client'
-
-const backoff = () => {}
+import { NodeEmitter } from '../app/emitter'
+import { b64encode } from '../lib/base-64-encode'
+import { HTTPClient, HTTPClientRequest } from '../lib/http-client'
 
 function sleep(timeoutInMs: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, timeoutInMs))

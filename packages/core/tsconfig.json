@@ -6,6 +6,6 @@
     "target": "ES5",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "lib": ["es2020"]
+    "lib": ["es2020", "dom"]
   }
 }

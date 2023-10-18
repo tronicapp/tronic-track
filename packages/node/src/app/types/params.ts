@@ -5,7 +5,7 @@ import type {
   EventProperties,
   Integrations,
   Timestamp,
-} from '@segment/analytics-core'
+} from '@tronic/analytics-core'
 
 export type { GroupTraits, UserTraits }
 

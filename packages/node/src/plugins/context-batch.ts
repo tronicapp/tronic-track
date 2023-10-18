@@ -1,6 +1,6 @@
-import { uuid } from '../../lib/uuid'
-import type { Context } from '../../app/context'
-import { SegmentEvent } from '../../app/types'
+import { uuid } from '../lib/uuid'
+import type { Context } from '../app/context'
+import { SegmentEvent } from '../app/types'
 
 const MAX_EVENT_SIZE_IN_KB = 32
 const MAX_BATCH_SIZE_IN_KB = 480 //  (500 KB is the limit, leaving some padding)

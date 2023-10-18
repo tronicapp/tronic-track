@@ -41,11 +41,7 @@ export function createNodePlugin(publisher: Publisher): SegmentNodePlugin {
     version: '1.0.0',
     isLoaded: () => true,
     load: () => Promise.resolve(),
-    alias: action,
-    group: action,
     identify: action,
-    page: action,
-    screen: action,
     track: action,
   }
 }
