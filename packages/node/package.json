@@ -1,12 +1,12 @@
 {
-  "name": "@tronic/analytics-node",
+  "name": "@tronic/receiver-node",
   "version": "0.0.1",
   "main": "./dist/cjs/index.js",
   "license": "MIT",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
   "scripts": {
-    ".": "yarn run -T turbo run --filter=@tronic/analytics-node",
+    ".": "yarn run -T turbo run --filter=@tronic/receiver-node",
     "test": "yarn jest",
     "lint": "yarn concurrently 'yarn:eslint .' 'yarn:tsc --noEmit'",
     "build": "rm -rf dist && yarn concurrently 'yarn:build:*'",
@@ -23,7 +23,7 @@
   "packageManager": "yarn@3.4.1",
   "dependencies": {
     "@lukeed/uuid": "^2.0.1",
-    "@tronic/analytics-core": "workspace:^",
+    "@tronic/receiver-core": "workspace:^",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {

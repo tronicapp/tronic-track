@@ -1,1 +1,1 @@
-@tronic/analytics-core
+@tronic/receiver-core

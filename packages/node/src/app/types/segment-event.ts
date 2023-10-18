@@ -1,4 +1,4 @@
-import type { CoreEvent } from '@tronic/analytics-core'
+import type { CoreEvent } from '@tronic/receiver-core'
 
 type SegmentEventType = 'track' | 'identify'
 

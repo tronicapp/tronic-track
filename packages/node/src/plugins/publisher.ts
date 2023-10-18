@@ -1,4 +1,4 @@
-import { backoff } from '@tronic/analytics-core'
+import { backoff } from '@tronic/receiver-core'
 import type { Context } from '../app/context'
 import { tryCreateFormattedUrl } from '../lib/create-url'
 import { extractPromiseParts } from '../lib/extract-promise-parts'

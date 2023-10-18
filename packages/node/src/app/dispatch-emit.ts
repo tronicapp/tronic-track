@@ -1,4 +1,4 @@
-import { dispatch } from '@tronic/analytics-core'
+import { dispatch } from '@tronic/receiver-core'
 import type { NodeEmitter } from './emitter'
 import { Context } from './context'
 import { NodeEventQueue } from './event-queue'

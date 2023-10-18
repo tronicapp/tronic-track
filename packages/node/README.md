@@ -1,1 +1,1 @@
-@tronic/analytics-node
+@tronic/receiver-node

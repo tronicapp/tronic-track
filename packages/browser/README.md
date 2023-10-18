@@ -1,1 +1,1 @@
-@tronic/analytics-browser
+@tronic/receiver-browser

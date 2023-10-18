@@ -1,4 +1,4 @@
-import type { CorePlugin } from '@tronic/analytics-core'
+import type { CorePlugin } from '@tronic/receiver-core'
 import type { Analytics } from '../analytics-node'
 import type { Context } from '../context'
 

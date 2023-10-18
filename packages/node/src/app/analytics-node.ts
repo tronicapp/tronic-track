@@ -1,4 +1,4 @@
-import { CoreAnalytics, bindAll, pTimeout } from '@tronic/analytics-core'
+import { CoreAnalytics, bindAll, pTimeout } from '@tronic/receiver-core'
 import { AnalyticsSettings, validateSettings } from './settings'
 import { version } from '../generated/version'
 import { createConfiguredNodePlugin } from '../plugins'

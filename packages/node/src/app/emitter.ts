@@ -1,4 +1,4 @@
-import { CoreEmitterContract, Emitter } from '@tronic/analytics-core'
+import { CoreEmitterContract, Emitter } from '@tronic/receiver-core'
 import { Context } from './context'
 import type { AnalyticsSettings } from './settings'
 import { SegmentEvent } from './types'

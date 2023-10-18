@@ -1,4 +1,4 @@
-import { CoreEventQueue, PriorityQueue } from '@tronic/analytics-core'
+import { CoreEventQueue, PriorityQueue } from '@tronic/receiver-core'
 import type { Plugin } from './types'
 import type { Context } from './context'
 

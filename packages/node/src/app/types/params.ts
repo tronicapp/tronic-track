@@ -5,7 +5,7 @@ import type {
   EventProperties,
   Integrations,
   Timestamp,
-} from '@tronic/analytics-core'
+} from '@tronic/receiver-core'
 
 export type { GroupTraits, UserTraits }
 

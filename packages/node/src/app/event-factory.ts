@@ -1,4 +1,4 @@
-import { EventFactory } from '@tronic/analytics-core'
+import { EventFactory } from '@tronic/receiver-core'
 import { createMessageId } from '../lib/get-message-id'
 import { SegmentEvent } from './types'
 

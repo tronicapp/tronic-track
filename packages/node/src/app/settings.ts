@@ -1,4 +1,4 @@
-import { ValidationError } from '@tronic/analytics-core'
+import { ValidationError } from '@tronic/receiver-core'
 import { HTTPClient, HTTPFetchFn } from '../lib/http-client'
 
 export interface AnalyticsSettings {
