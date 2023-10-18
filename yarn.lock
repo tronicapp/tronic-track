@@ -595,27 +595,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tronic/analytics-browser@workspace:packages/browser":
+"@tronic/receiver-browser@workspace:packages/browser":
   version: 0.0.0-use.local
-  resolution: "@tronic/analytics-browser@workspace:packages/browser"
+  resolution: "@tronic/receiver-browser@workspace:packages/browser"
   languageName: unknown
   linkType: soft
 
-"@tronic/analytics-core@workspace:^, @tronic/analytics-core@workspace:packages/core":
+"@tronic/receiver-core@workspace:^, @tronic/receiver-core@workspace:packages/core":
   version: 0.0.0-use.local
-  resolution: "@tronic/analytics-core@workspace:packages/core"
+  resolution: "@tronic/receiver-core@workspace:packages/core"
   dependencies:
     "@lukeed/uuid": ^2.0.1
     dset: ^3.1.2
   languageName: unknown
   linkType: soft
 
-"@tronic/analytics-node@workspace:packages/node":
+"@tronic/receiver-node@workspace:packages/node":
   version: 0.0.0-use.local
-  resolution: "@tronic/analytics-node@workspace:packages/node"
+  resolution: "@tronic/receiver-node@workspace:packages/node"
   dependencies:
     "@lukeed/uuid": ^2.0.1
-    "@tronic/analytics-core": "workspace:^"
+    "@tronic/receiver-core": "workspace:^"
     "@types/node": ^20.8.6
     node-fetch: ^3.3.2
   languageName: unknown

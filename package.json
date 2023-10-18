@@ -15,9 +15,9 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "core": "yarn workspace @tronic/analytics-core",
-    "browser": "yarn workspace @tronic/analytics-browser",
-    "xnode": "yarn workspace @tronic/analytics-node",
+    "core": "yarn workspace @tronic/receiver-core",
+    "browser": "yarn workspace @tronic/receiver-browser",
+    "xnode": "yarn workspace @tronic/receiver-node",
     "clean": "bash scripts/clean.sh"
   },
   "devDependencies": {
