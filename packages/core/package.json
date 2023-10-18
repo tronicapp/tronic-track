@@ -1,0 +1,22 @@
+{
+  "name": "@tronic/analytics-core",
+  "version": "0.0.1",
+  "main": "./dist/cjs/index.js",
+  "license": "MIT",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "sideEffects": false,
+  "scripts": {
+    "build": "yarn concurrently 'yarn:build:*'",
+    "build:esm": "yarn tsc -p tsconfig.build.json",
+    "build:cjs": "yarn tsc -p tsconfig.build.json --outDir ./dist/cjs --module commonjs",
+    "watch": "yarn build:esm --watch",
+    "tsc": "yarn run -T tsc",
+    "concurrently": "yarn run -T concurrently"
+  },
+  "packageManager": "yarn@3.4.1",
+  "dependencies": {
+    "@lukeed/uuid": "^2.0.1",
+    "dset": "^3.1.2"
+  }
+}

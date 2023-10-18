@@ -1,0 +1,16 @@
+{
+  "name": "@tronic/analytics-browser",
+  "version": "0.0.1",
+  "main": "./dist/cjs/index.js",
+  "license": "MIT",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "browser": {
+    "./dist/cjs/node": "./dist/cjs/node/node.browser.js",
+    "./dist/cjs/node.js": "./dist/cjs/node/node.browser.js",
+    "./dist/pkg/node": "./dist/pkg/node/node.browser.js",
+    "./dist/pkg/node.js": "./dist/pkg/node/node.browser.js"
+  },
+  "sideEffects": false,
+  "packageManager": "yarn@3.4.1"
+}
