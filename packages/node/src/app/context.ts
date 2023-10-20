@@ -6,6 +6,6 @@ import { SegmentEvent } from './types'
 // While this is not a type, it is a definition
 export class Context extends CoreContext<SegmentEvent> {
   static override system() {
-    return new this({ type: 'track', event: 'system' })
+    return new this({ channelId: '000', type: 'track', event: 'system' })
   }
 }

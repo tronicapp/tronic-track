@@ -22,57 +22,25 @@ type IdentityOptions =
   | { userId: string; anonymousId?: string }
   | { userId?: string; anonymousId: string }
 
-export type AliasParams = {
-  /* The new user id you want to associate with the user. */
-  userId: string
-  /* The previous id that the user was recognized by (this can be either a userId or an anonymousId). */
-  previousId: string
-  context?: ExtraContext
-  timestamp?: Timestamp
-  integrations?: Integrations
-}
-
-export type GroupParams = {
-  groupId: string
-  /**
-   * Traits are pieces of information you know about a group.
-   * This interface represents reserved traits that Segment has standardized.
-   * @link https://segment.com/docs/connections/spec/group/#traits
-   */
-  traits?: GroupTraits
-  context?: ExtraContext
-  timestamp?: Timestamp
-  integrations?: Integrations
-} & IdentityOptions
-
 export type IdentifyParams = {
   /**
    * Traits are pieces of information you know about a group.
    * This interface represents reserved traits that Segment has standardized.
    * @link https://segment.com/docs/connections/spec/group/#traits
    */
+  channelId: string;
   traits?: UserTraits
   context?: ExtraContext
   timestamp?: Timestamp
   integrations?: Integrations
 } & IdentityOptions
 
-export type PageParams = {
-  /*  The category of the page. Useful for cases like ecommerce where many pages might live under a single category. */
-  category?: string
-  /* The name of the page.*/
-  name?: string
-  /* A dictionary of properties of the page. */
-  properties?: EventProperties
-  timestamp?: Timestamp
-  context?: ExtraContext
-  integrations?: Integrations
-} & IdentityOptions
-
 export type TrackParams = {
+  userId: string
+  channelId: string
   event: string
   properties?: EventProperties
   context?: ExtraContext
   timestamp?: Timestamp
-  integrations?: Integrations
-} & IdentityOptions
+  // integrations?: Integrations
+}// & IdentityOptions

@@ -29,41 +29,47 @@ export class EventFactory {
   }
 
   track(
+    channelId: string,
+    userId: string,
     event: string,
     properties?: EventProperties,
-    options?: CoreOptions,
-    globalIntegrations?: Integrations
+    // options?: CoreOptions,
+    // globalIntegrations?: Integrations
   ) {
     return this.normalize({
       ...this.baseEvent(),
-      event,
       type: 'track',
+      channelId,
+      userId,
+      event,
       properties: properties ?? {}, // TODO: why is this not a shallow copy like everywhere else?
-      options: { ...options },
-      integrations: { ...globalIntegrations },
+      // options: { ...options },
+      // integrations: { ...globalIntegrations },
     })
   }
 
   identify(
+    channelId: string,
     userId: ID,
     traits?: UserTraits,
-    options?: CoreOptions,
-    globalIntegrations?: Integrations
+    // options?: CoreOptions,
+    // globalIntegrations?: Integrations
   ): CoreEvent {
     return this.normalize({
       ...this.baseEvent(),
       type: 'identify',
+      channelId,
       userId,
       traits: traits ?? {},
-      options: { ...options },
-      integrations: globalIntegrations,
+      // options: { ...options },
+      // integrations: globalIntegrations,
     })
   }
 
   private baseEvent(): Partial<CoreEvent> {
     const base: Partial<CoreEvent> = {
-      integrations: {},
-      options: {},
+      // integrations: {},
+      // options: {},
     }
 
     if (!this.user) return base
@@ -124,6 +130,7 @@ export class EventFactory {
   }
 
   public normalize(event: CoreEvent): CoreEvent {
+    /*
     const integrationBooleans = Object.keys(event.integrations ?? {}).reduce(
       (integrationNames, name) => {
         return {
@@ -156,18 +163,20 @@ export class EventFactory {
       : []
 
     const { options, ...rest } = event
+     */
 
     const body = {
-      timestamp: new Date(),
-      ...rest,
-      integrations: allIntegrations,
-      context,
-      ...overrides,
+      ...event,
+     timestamp: new Date().toISOString(),
+      // ...rest,
+      // integrations: allIntegrations,
+      // context,
+      // ...overrides,
     }
 
     const evt: CoreEvent = {
       ...body,
-      messageId: this.createMessageId(),
+      // messageId: this.createMessageId(),
     }
 
     validateEvent(evt)

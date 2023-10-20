@@ -270,7 +270,7 @@ export abstract class CoreEventQueue<
     }
 
     const { before, enrichment } = this.availableExtensions(
-      ctx.event.integrations ?? {}
+      /* ctx.event.integrations ?? */ {}
     )
 
     for (const beforeWare of before) {
@@ -294,7 +294,7 @@ export abstract class CoreEventQueue<
     // Enrichment and before plugins can re-arrange the deny list dynamically
     // so we need to pluck them at the end
     const { destinations, after } = this.availableExtensions(
-      ctx.event.integrations ?? {}
+      /* ctx.event.integrations ?? */ {}
     )
 
     await new Promise((resolve, reject) => {

@@ -65,10 +65,10 @@ export class Publisher {
     this._maxRetries = maxRetries
     this._maxEventsInBatch = Math.max(maxEventsInBatch, 1)
     this._flushInterval = flushInterval
-    this._auth = b64encode(`${writeKey}:`)
+    this._auth = writeKey; // b64encode(`${writeKey}:`)
     this._url = tryCreateFormattedUrl(
-      host ?? 'https://api.segment.io',
-      path ?? '/v1/batch'
+      host ?? 'http://localhost:3000',
+      path ?? '/external'
     )
     this._httpRequestTimeout = httpRequestTimeout ?? 10000
     this._disable = Boolean(disable)
@@ -198,15 +198,21 @@ export class Publisher {
           return batch.resolveEvents()
         }
 
+        const event = {...events[0]};
+
+        const data: any = {...event};
+        delete data['type'];
+        delete data['_metadata'];
+
         const request: HTTPClientRequest = {
-          url: this._url,
+          url: this._url + `/${event.type}`,
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Basic ${this._auth}`,
+            'x-api-key': `${this._auth}`,
             'User-Agent': 'analytics-node-next/latest',
           },
-          data: { batch: events, sentAt: new Date() },
+          data, // { batch: events, sentAt: new Date() },
           httpRequestTimeout: this._httpRequestTimeout,
         }
 

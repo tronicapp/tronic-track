@@ -1,0 +1,14 @@
+{
+  "name": "node",
+  "packageManager": "yarn@3.4.1",
+  "scripts": {
+    "build": "rm -rf dist && yarn concurrently 'yarn:build:*'",
+    "build:cjs": "yarn tsc -p tsconfig.build.json --outDir ./dist/cjs --module commonjs",
+    "build:esm": "yarn tsc -p tsconfig.build.json",
+    "concurrently": "yarn run -T concurrently",
+    "tsc": "yarn run -T tsc"
+  },
+  "dependencies": {
+    "@tronic/receiver-node": "workspace:^"
+  }
+}

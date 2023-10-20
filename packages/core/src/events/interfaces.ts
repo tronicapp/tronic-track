@@ -201,10 +201,11 @@ export interface CoreEvent {
 
   traits?: Traits // Traits is only defined in 'identify' and 'group', even if it can be passed in other calls.
 
-  integrations?: Integrations
+  // integrations?: Integrations
   context?: CoreExtraContext
-  options?: CoreOptions
+  // options?: CoreOptions
 
+  channelId: string
   userId?: ID
   anonymousId?: ID
   groupId?: ID

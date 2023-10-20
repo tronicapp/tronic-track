@@ -116,6 +116,7 @@ export class Analytics extends NodeEmitter implements CoreAnalytics {
    */
   identify(
     {
+      channelId,
       userId,
       anonymousId,
       traits = {},
@@ -125,13 +126,13 @@ export class Analytics extends NodeEmitter implements CoreAnalytics {
     }: IdentifyParams,
     callback?: Callback
   ): void {
-    const segmentEvent = this._eventFactory.identify(userId, traits, {
+    const segmentEvent = this._eventFactory.identify(channelId, userId, traits, /* {
       context,
       anonymousId,
       userId,
       timestamp,
       integrations,
-    })
+      }*/)
     this._dispatch(segmentEvent, callback)
   }
 
@@ -141,23 +142,24 @@ export class Analytics extends NodeEmitter implements CoreAnalytics {
    */
   track(
     {
+      channelId,
       userId,
-      anonymousId,
+      // anonymousId,
       event,
       properties,
-      context,
-      timestamp,
-      integrations,
+      // context,
+      // timestamp,
+      // integrations,
     }: TrackParams,
     callback?: Callback
   ): void {
-    const segmentEvent = this._eventFactory.track(event, properties, {
+    const segmentEvent = this._eventFactory.track(channelId, userId, event, properties, /* {
       context,
       userId,
-      anonymousId,
+      // anonymousId,
       timestamp,
-      integrations,
-    })
+      // integrations,
+      }*/)
 
     this._dispatch(segmentEvent, callback)
   }

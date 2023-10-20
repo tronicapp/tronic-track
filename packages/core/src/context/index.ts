@@ -83,6 +83,7 @@ export abstract class CoreContext<
 
   updateEvent(path: string, val: unknown): Event {
     // Don't allow integrations that are set to false to be overwritten with integration settings.
+    /*
     if (path.split('.')[0] === 'integrations') {
       const integrationName = path.split('.')[1]
 
@@ -90,7 +91,7 @@ export abstract class CoreContext<
         return this.event
       }
     }
-
+      */
     dset(this.event, path, val)
     return this.event
   }
