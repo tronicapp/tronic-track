@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "ES5",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "lib": ["es2020", "DOM", "DOM.Iterable"],
+    "baseUrl": "./src",
+    "keyofStringsOnly": true,
+    "ignoreDeprecations": "5.0"
+  },
+  "exclude": ["node_modules", "dist"]
+}
