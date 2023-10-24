@@ -185,7 +185,7 @@ export class LegacyDestination implements DestinationPlugin {
   shouldBuffer(ctx: Context): boolean {
     return (
       // page events can't be buffered because of destinations that automatically add page views
-      ctx.event.type !== 'page' &&
+      /* ctx.event.type !== 'page' && */
       (isOffline() || this._ready === false || this._initialized === false)
     )
   }
@@ -209,7 +209,7 @@ export class LegacyDestination implements DestinationPlugin {
       const planEvent = plan[ev]
       if (!isPlanEventEnabled(plan, planEvent)) {
         ctx.updateEvent('integrations', {
-          ...ctx.event.integrations,
+          // ...ctx.event.integrations,
           All: false,
           'Segment.io': true,
         })
@@ -223,7 +223,7 @@ export class LegacyDestination implements DestinationPlugin {
         return ctx
       } else {
         ctx.updateEvent('integrations', {
-          ...ctx.event.integrations,
+          // ...ctx.event.integrations,
           ...planEvent?.integrations,
         })
       }

@@ -13,11 +13,11 @@ function disabledActionDestinations(
     return {}
   }
 
-  const disabledIntegrations = plan.integrations
+  const disabledIntegrations: string[] = /* plan.integrations
     ? Object.keys(plan.integrations).filter(
         (i) => plan.integrations![i] === false
       )
-    : []
+      : */ []
 
   // This accounts for cases like Fullstory, where the settings.integrations
   // contains a "Fullstory" object but settings.remotePlugins contains "Fullstory (Actions)"
@@ -56,7 +56,7 @@ export function schemaFilter(
       const planEvent = plan[ev]
       if (!isPlanEventEnabled(plan, planEvent)) {
         ctx.updateEvent('integrations', {
-          ...ctx.event.integrations,
+          // ...ctx.event.integrations,
           All: false,
           'Segment.io': true,
         })
@@ -65,7 +65,7 @@ export function schemaFilter(
         const disabledActions = disabledActionDestinations(planEvent, settings)
 
         ctx.updateEvent('integrations', {
-          ...ctx.event.integrations,
+          // ...ctx.event.integrations,
           ...planEvent?.integrations,
           ...disabledActions,
         })
@@ -81,10 +81,7 @@ export function schemaFilter(
     isLoaded: () => true,
     load: () => Promise.resolve(),
     type: 'before',
-    page: filter,
-    alias: filter,
     track: filter,
     identify: filter,
-    group: filter,
   }
 }

@@ -54,10 +54,6 @@ export function analyticsNode(settings: AnalyticsNodeSettings): Plugin {
 
     track: send,
     identify: send,
-    page: send,
-    alias: send,
-    group: send,
-    screen: send,
   }
 
   return plugin

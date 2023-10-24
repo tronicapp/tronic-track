@@ -10,7 +10,7 @@ import { Stats } from '../stats'
 
 export class Context extends CoreContext<SegmentEvent> {
   static override system() {
-    return new this({ type: 'track', event: 'system' })
+    return new this({ type: 'track', event: 'system', channelId: '' })
   }
   constructor(event: SegmentEvent, id?: string) {
     super(event, id, new Stats())

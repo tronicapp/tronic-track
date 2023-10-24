@@ -102,9 +102,11 @@ export function segmentio(
       delete json.traits
     }
 
+    /*
     if (ctx.event.type === 'alias') {
       json = onAlias(analytics, json)
     }
+     */
 
     return client
       .dispatch(
@@ -131,10 +133,6 @@ export function segmentio(
     load: (): Promise<void> => Promise.resolve(),
     track: send,
     identify: send,
-    page: send,
-    alias: send,
-    group: send,
-    screen: send,
   }
 
   // Buffer may already have items if they were previously stored in localStorage.

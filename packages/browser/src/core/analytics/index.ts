@@ -114,11 +114,11 @@ export interface InitOptions {
    * Disables or sets constraints on processing of query string parameters
    */
   useQueryString?:
-    | boolean
-    | {
-        aid?: RegExp
-        uid?: RegExp
-      }
+  | boolean
+  | {
+    aid?: RegExp
+    uid?: RegExp
+  }
   /**
    * Array of high entropy Client Hints to request. These may be rejected by the user agent - only required hints should be requested.
    */
@@ -137,8 +137,7 @@ function _stub(this: never) {
 
 export class Analytics
   extends Emitter
-  implements AnalyticsCore, AnalyticsClassic
-{
+  implements AnalyticsCore, AnalyticsClassic {
   protected settings: AnalyticsSettings
   private _user: User
   private _group: Group
@@ -256,35 +255,16 @@ export class Analytics
     const [name, data, opts, cb] = resolveArguments(...args)
 
     const segmentEvent = this.eventFactory.track(
+      'channelId',
       name,
       data as EventProperties,
-      opts,
-      this.integrations,
+      // opts,
+      // this.integrations,
       pageCtx
     )
 
     return this._dispatch(segmentEvent, cb).then((ctx) => {
-      this.emit('track', name, ctx.event.properties, ctx.event.options)
-      return ctx
-    })
-  }
-
-  async page(...args: PageParams): Promise<DispatchedEvent> {
-    const pageCtx = popPageContext(args)
-    const [category, page, properties, options, callback] =
-      resolvePageArguments(...args)
-
-    const segmentEvent = this.eventFactory.page(
-      category,
-      page,
-      properties,
-      options,
-      this.integrations,
-      pageCtx
-    )
-
-    return this._dispatch(segmentEvent, callback).then((ctx) => {
-      this.emit('page', category, page, ctx.event.properties, ctx.event.options)
+      this.emit('track', name, ctx.event.properties) // , ctx.event.options)
       return ctx
     })
   }
@@ -297,10 +277,11 @@ export class Analytics
 
     this._user.identify(id, _traits)
     const segmentEvent = this.eventFactory.identify(
+      'channelId',
       this._user.id(),
       this._user.traits(),
-      options,
-      this.integrations,
+      // options,
+      // this.integrations,
       pageCtx
     )
 
@@ -309,110 +290,41 @@ export class Analytics
         'identify',
         ctx.event.userId,
         ctx.event.traits,
-        ctx.event.options
+        // ctx.event.options
       )
       return ctx
     })
   }
 
-  group(): Group
-  group(...args: GroupParams): Promise<DispatchedEvent>
-  group(...args: GroupParams): Promise<DispatchedEvent> | Group {
-    const pageCtx = popPageContext(args)
-    if (args.length === 0) {
-      return this._group
-    }
+  /*
+async trackClick(...args: LinkArgs): Promise<Analytics> {
+  const autotrack = await import(
+  //// webpackChunkName: "auto-track" //// '../auto-track'
+  )
+  return autotrack.link.call(this, ...args)
+}
 
-    const [id, _traits, options, callback] = resolveUserArguments(this._group)(
-      ...args
-    )
+async trackLink(...args: LinkArgs): Promise<Analytics> {
+  const autotrack = await import(
+  //// webpackChunkName: "auto-track" //// '../auto-track'
+  )
+  return autotrack.link.call(this, ...args)
+}
 
-    this._group.identify(id, _traits)
-    const groupId = this._group.id()
-    const groupTraits = this._group.traits()
+async trackSubmit(...args: FormArgs): Promise<Analytics> {
+  const autotrack = await import(
+  //// webpackChunkName: "auto-track" //// '../auto-track'
+  )
+  return autotrack.form.call(this, ...args)
+}
 
-    const segmentEvent = this.eventFactory.group(
-      groupId,
-      groupTraits,
-      options,
-      this.integrations,
-      pageCtx
-    )
-
-    return this._dispatch(segmentEvent, callback).then((ctx) => {
-      this.emit('group', ctx.event.groupId, ctx.event.traits, ctx.event.options)
-      return ctx
-    })
-  }
-
-  async alias(...args: AliasParams): Promise<DispatchedEvent> {
-    const pageCtx = popPageContext(args)
-    const [to, from, options, callback] = resolveAliasArguments(...args)
-    const segmentEvent = this.eventFactory.alias(
-      to,
-      from,
-      options,
-      this.integrations,
-      pageCtx
-    )
-    return this._dispatch(segmentEvent, callback).then((ctx) => {
-      this.emit('alias', to, from, ctx.event.options)
-      return ctx
-    })
-  }
-
-  async screen(...args: PageParams): Promise<DispatchedEvent> {
-    const pageCtx = popPageContext(args)
-    const [category, page, properties, options, callback] =
-      resolvePageArguments(...args)
-
-    const segmentEvent = this.eventFactory.screen(
-      category,
-      page,
-      properties,
-      options,
-      this.integrations,
-      pageCtx
-    )
-    return this._dispatch(segmentEvent, callback).then((ctx) => {
-      this.emit(
-        'screen',
-        category,
-        page,
-        ctx.event.properties,
-        ctx.event.options
-      )
-      return ctx
-    })
-  }
-
-  async trackClick(...args: LinkArgs): Promise<Analytics> {
-    const autotrack = await import(
-      /* webpackChunkName: "auto-track" */ '../auto-track'
-    )
-    return autotrack.link.call(this, ...args)
-  }
-
-  async trackLink(...args: LinkArgs): Promise<Analytics> {
-    const autotrack = await import(
-      /* webpackChunkName: "auto-track" */ '../auto-track'
-    )
-    return autotrack.link.call(this, ...args)
-  }
-
-  async trackSubmit(...args: FormArgs): Promise<Analytics> {
-    const autotrack = await import(
-      /* webpackChunkName: "auto-track" */ '../auto-track'
-    )
-    return autotrack.form.call(this, ...args)
-  }
-
-  async trackForm(...args: FormArgs): Promise<Analytics> {
-    const autotrack = await import(
-      /* webpackChunkName: "auto-track" */ '../auto-track'
-    )
-    return autotrack.form.call(this, ...args)
-  }
+async trackForm(...args: FormArgs): Promise<Analytics> {
+  const autotrack = await import(
+  //// webpackChunkName: "auto-track" //// '../auto-track'
+  )
+  return autotrack.form.call(this, ...args)
+}
+*/
 
   async register(...plugins: Plugin[]): Promise<Context> {
     const ctx = Context.system()
@@ -483,13 +395,14 @@ export class Analytics
       )
 
       const integrations: Record<string, boolean> = {}
+        /*
       this.queue.plugins.forEach((plugin) => {
         if (plugin.type === 'destination') {
           return (integrations[plugin.name] = true)
         }
       })
-
-      const plugin = sourceMiddlewarePlugin(fn, integrations)
+         */
+      const plugin = sourceMiddlewarePlugin(fn) //, integrations)
       await this.register(plugin)
     })
 
@@ -582,12 +495,6 @@ export class Analytics
   }
 
   init = this.initialize.bind(this)
-
-  async pageview(url: string): Promise<Analytics> {
-    console.warn(deprecationWarning)
-    await this.page({ path: url })
-    return this
-  }
 
   get plugins() {
     console.warn(deprecationWarning)

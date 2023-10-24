@@ -14,6 +14,7 @@ export const addPageContext = (
 ): void => {
   const evtCtx = event.context! // Context should be set earlier in the flow
   let pageContextFromEventProps: Pick<EventProperties, string> | undefined
+  /*
   if (event.type === 'page') {
     pageContextFromEventProps =
       event.properties && pick(event.properties, Object.keys(pageCtx))
@@ -24,7 +25,7 @@ export const addPageContext = (
       ...(event.name ? { name: event.name } : {}),
     }
   }
-
+   */
   evtCtx.page = {
     ...pageCtx,
     ...pageContextFromEventProps,

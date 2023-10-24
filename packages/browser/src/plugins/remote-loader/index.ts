@@ -68,7 +68,8 @@ export class ActionDestination implements DestinationPlugin {
   }
 
   private _createMethod(
-    methodName: 'track' | 'page' | 'identify' | 'alias' | 'group' | 'screen'
+    // methodName: 'track' | 'page' | 'identify' | 'alias' | 'group' | 'screen'
+    methodName: 'track' | 'identify'
   ) {
     return async (ctx: Context): Promise<Context> => {
       if (!this.action[methodName]) return ctx
@@ -85,11 +86,11 @@ export class ActionDestination implements DestinationPlugin {
     }
   }
 
-  alias = this._createMethod('alias')
-  group = this._createMethod('group')
+  // alias = this._createMethod('alias')
+  // group = this._createMethod('group')
   identify = this._createMethod('identify')
-  page = this._createMethod('page')
-  screen = this._createMethod('screen')
+  // page = this._createMethod('page')
+  // screen = this._createMethod('screen')
   track = this._createMethod('track')
 
   /* --- PASSTHROUGH METHODS --- */

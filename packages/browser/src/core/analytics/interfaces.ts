@@ -64,7 +64,7 @@ export interface AnalyticsClassic extends AnalyticsClassicStubs {
   readonly failedInitializations: string[]
 
   /** @deprecated */
-  pageview(url: string): Promise<Analytics>
+  // pageview(url: string): Promise<Analytics>
 
   /**  @deprecated*/
   readonly plugins: any
@@ -78,12 +78,7 @@ export interface AnalyticsClassic extends AnalyticsClassicStubs {
  */
 export interface AnalyticsCore extends CoreAnalytics {
   track(...args: EventParams): Promise<DispatchedEvent>
-  page(...args: PageParams): Promise<DispatchedEvent>
   identify(...args: IdentifyParams): Promise<DispatchedEvent>
-  group(): Group
-  group(...args: GroupParams): Promise<DispatchedEvent>
-  alias(...args: AliasParams): Promise<DispatchedEvent>
-  screen(...args: PageParams): Promise<DispatchedEvent>
   register(...plugins: Plugin[]): Promise<Context>
   deregister(...plugins: string[]): Promise<Context>
   user(): User
@@ -94,7 +89,7 @@ export interface AnalyticsCore extends CoreAnalytics {
  * Interface implemented by AnalyticsBrowser (buffered version of analytics) (commonly accessible through AnalyticsBrowser.load())
  */
 export type AnalyticsBrowserCore = Omit<AnalyticsCore, 'group' | 'user'> & {
-  group(): Promise<Group>
-  group(...args: GroupParams): Promise<DispatchedEvent>
+  // group(): Promise<Group>
+  // group(...args: GroupParams): Promise<DispatchedEvent>
   user(): Promise<User>
 }

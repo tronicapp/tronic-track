@@ -2401,6 +2401,7 @@ __metadata:
     "@types/jsdom": ^16.2.14
     "@types/mime": ^2.0.3
     "@types/node": ^16
+    "@types/node-fetch": ^2.6.7
     "@types/serve-handler": ^6.1.0
     "@types/spark-md5": ^3.0.2
     aws-sdk: ^2.814.0
@@ -2684,6 +2685,16 @@ __metadata:
   version: 5.1.2
   resolution: "@types/minimatch@npm:5.1.2"
   checksum: 0391a282860c7cb6fe262c12b99564732401bdaa5e395bee9ca323c312c1a0f45efbf34dce974682036e857db59a5c9b1da522f3d6055aeead7097264c8705a8
+  languageName: node
+  linkType: hard
+
+"@types/node-fetch@npm:^2.6.7":
+  version: 2.6.7
+  resolution: "@types/node-fetch@npm:2.6.7"
+  dependencies:
+    "@types/node": "*"
+    form-data: ^4.0.0
+  checksum: 543a540186941e81ca4dda283b5f7bce1d7a93af3ee2c8161fc48d078789e9ce976332ce70f22644293414f680e3f9627d3ef8f59105cf2ea901d5e4acf58d3f
   languageName: node
   linkType: hard
 

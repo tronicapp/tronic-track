@@ -15,7 +15,8 @@ export type RoutingRule = Rule & {
 
 export const tsubMiddleware =
   (rules: RoutingRule[]): DestinationMiddlewareFunction =>
-  ({ payload, integration, next }): void => {
+    ({ payload, next }): void => {
+      const integration = '';
     const store = new tsub.Store(rules)
     const rulesToApply = store.getRulesByDestinationName(integration)
 

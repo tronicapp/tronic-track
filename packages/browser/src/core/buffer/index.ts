@@ -16,23 +16,23 @@ import {
  * The names of any AnalyticsBrowser methods that also exist on Analytics
  */
 export type PreInitMethodName =
-  | 'screen'
+//  | 'screen'
   | 'register'
   | 'deregister'
   | 'user'
-  | 'trackSubmit'
-  | 'trackClick'
-  | 'trackLink'
-  | 'trackForm'
-  | 'pageview'
+//  | 'trackSubmit'
+//  | 'trackClick'
+//  | 'trackLink'
+//  | 'trackForm'
+//  | 'pageview'
   | 'identify'
   | 'reset'
-  | 'group'
+//  | 'group'
   | 'track'
   | 'ready'
-  | 'alias'
+//  | 'alias'
   | 'debug'
-  | 'page'
+//  | 'page'
   | 'once'
   | 'off'
   | 'on'
@@ -182,10 +182,10 @@ export class PreInitMethodCallBuffer {
     calls.forEach((call) => {
       const eventsExpectingPageContext: PreInitMethodName[] = [
         'track',
-        'screen',
-        'alias',
-        'group',
-        'page',
+        // 'screen',
+        // 'alias',
+        // 'group',
+        // 'page',
         'identify',
       ]
       if (
@@ -311,18 +311,18 @@ export class AnalyticsBuffered
     return this._promise.finally(...args)
   }
 
-  trackSubmit = this._createMethod('trackSubmit')
-  trackClick = this._createMethod('trackClick')
-  trackLink = this._createMethod('trackLink')
-  pageView = this._createMethod('pageview')
+  // trackSubmit = this._createMethod('trackSubmit')
+  // trackClick = this._createMethod('trackClick')
+  // trackLink = this._createMethod('trackLink')
+  // pageView = this._createMethod('pageview')
   identify = this._createMethod('identify')
   reset = this._createMethod('reset')
-  group = this._createMethod('group') as AnalyticsBrowserCore['group']
+  // group = this._createMethod('group') as AnalyticsBrowserCore['group']
   track = this._createMethod('track')
   ready = this._createMethod('ready')
-  alias = this._createMethod('alias')
+  // alias = this._createMethod('alias')
   debug = this._createChainableMethod('debug')
-  page = this._createMethod('page')
+  // page = this._createMethod('page')
   once = this._createChainableMethod('once')
   off = this._createChainableMethod('off')
   on = this._createChainableMethod('on')
@@ -330,7 +330,7 @@ export class AnalyticsBuffered
   setAnonymousId = this._createMethod('setAnonymousId')
   addDestinationMiddleware = this._createMethod('addDestinationMiddleware')
 
-  screen = this._createMethod('screen')
+  // screen = this._createMethod('screen')
   register = this._createMethod('register')
   deregister = this._createMethod('deregister')
   user = this._createMethod('user')

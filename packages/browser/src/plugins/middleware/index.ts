@@ -6,13 +6,13 @@ import { SegmentFacade, toFacade } from '../../lib/to-facade'
 export interface MiddlewareParams {
   payload: SegmentFacade
 
-  integrations?: SegmentEvent['integrations']
+  // integrations?: SegmentEvent['integrations']
   next: (payload: MiddlewareParams['payload'] | null) => void
 }
 
 export interface DestinationMiddlewareParams {
   payload: SegmentFacade
-  integration: string
+  // integration: string
   next: (payload: MiddlewareParams['payload'] | null) => void
 }
 
@@ -46,7 +46,7 @@ export async function applyDestinationMiddleware(
         clone: true,
         traverse: false,
       }),
-      integration: destination,
+      // integration: destination,
       next(evt) {
         nextCalled = true
 
@@ -62,10 +62,12 @@ export async function applyDestinationMiddleware(
 
     if (!nextCalled && returnedEvent !== null) {
       returnedEvent = returnedEvent as SegmentEvent
+        /*
       returnedEvent.integrations = {
         ...event.integrations,
         [destination]: false,
       }
+         */
     }
 
     return returnedEvent
@@ -84,7 +86,7 @@ export async function applyDestinationMiddleware(
 
 export function sourceMiddlewarePlugin(
   fn: MiddlewareFunction,
-  integrations: SegmentEvent['integrations']
+  // integrations: SegmentEvent['integrations']
 ): Plugin {
   async function apply(ctx: Context): Promise<Context> {
     let nextCalled = false
@@ -94,7 +96,7 @@ export function sourceMiddlewarePlugin(
         clone: true,
         traverse: false,
       }),
-      integrations: integrations ?? {},
+      // integrations: integrations ?? {},
       next(evt) {
         nextCalled = true
         if (evt) {
@@ -123,9 +125,6 @@ export function sourceMiddlewarePlugin(
     load: (ctx): Promise<Context> => Promise.resolve(ctx),
 
     track: apply,
-    page: apply,
     identify: apply,
-    alias: apply,
-    group: apply,
   }
 }

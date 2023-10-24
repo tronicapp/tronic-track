@@ -353,9 +353,11 @@ async function loadAnalytics(
   analytics.initialized = true
   analytics.emit('initialize', settings, options)
 
+    /*
   if (options.initialPageview) {
     analytics.page().catch(console.error)
   }
+     */
 
   await flushFinalBuffer(analytics, preInitBuffer)
 

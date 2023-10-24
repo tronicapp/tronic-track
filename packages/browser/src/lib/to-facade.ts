@@ -25,6 +25,7 @@ export function toFacade(evt: SegmentEvent, options?: Options): SegmentFacade {
     fcd = new Identify(evt, options)
   }
 
+  /*
   if (evt.type === 'page') {
     fcd = new Page(evt, options)
   }
@@ -40,6 +41,7 @@ export function toFacade(evt: SegmentEvent, options?: Options): SegmentFacade {
   if (evt.type === 'screen') {
     fcd = new Screen(evt, options)
   }
+   */
 
   Object.defineProperty(fcd, 'obj', {
     value: evt,
