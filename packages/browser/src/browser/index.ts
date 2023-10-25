@@ -16,7 +16,7 @@ import {
   RemotePlugin,
 } from '../plugins/remote-loader'
 import type { RoutingRule } from '../plugins/routing-middleware'
-import { segmentio, SegmentioSettings } from '../plugins/segmentio'
+import { tronic, TronicSettings } from '../plugins/tronic'
 import { validation } from '../plugins/validation'
 import {
   AnalyticsBuffered,
@@ -258,15 +258,17 @@ async function registerPlugins(
     toRegister.push(schemaFilter)
   }
 
-  const shouldIgnoreSegmentio =
-    (opts.integrations?.All === false && !opts.integrations['Segment.io']) ||
-    (opts.integrations && opts.integrations['Segment.io'] === false)
+  const shouldIgnoreTronic = false
+    /*
+    (opts.integrations?.All === false && !opts.integrations['Tronic']) ||
+    (opts.integrations && opts.integrations['Tronic'] === false)
+     */
 
-  if (!shouldIgnoreSegmentio) {
+  if (!shouldIgnoreTronic) {
     toRegister.push(
-      await segmentio(
+      await tronic(
         analytics,
-        mergedSettings['Segment.io'] as SegmentioSettings,
+        mergedSettings['Tronic'] as TronicSettings,
         legacySettings.integrations
       )
     )
@@ -307,9 +309,14 @@ async function loadAnalytics(
   // this is an ugly side-effect, but it's for the benefits of the plugins that get their cdn via getCDN()
   if (settings.cdnURL) setGlobalCDNUrl(settings.cdnURL)
 
-  let legacySettings =
+  let legacySettings = {
+    integrations: {
+      'a': {},
+    },
+  } as LegacySettings/*
     settings.cdnSettings ??
     (await loadLegacySettings(settings.writeKey, settings.cdnURL))
+                           */
 
   if (options.updateCDNSettings) {
     legacySettings = options.updateCDNSettings(legacySettings)

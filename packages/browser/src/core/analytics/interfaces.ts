@@ -3,10 +3,7 @@ import type { Plugin } from '../plugin'
 import type {
   EventParams,
   DispatchedEvent,
-  PageParams,
   IdentifyParams,
-  AliasParams,
-  GroupParams,
 } from '../arguments-resolver'
 import type { Context } from '../context'
 import type { SegmentEvent } from '../events'
@@ -89,7 +86,5 @@ export interface AnalyticsCore extends CoreAnalytics {
  * Interface implemented by AnalyticsBrowser (buffered version of analytics) (commonly accessible through AnalyticsBrowser.load())
  */
 export type AnalyticsBrowserCore = Omit<AnalyticsCore, 'group' | 'user'> & {
-  // group(): Promise<Group>
-  // group(...args: GroupParams): Promise<DispatchedEvent>
   user(): Promise<User>
 }

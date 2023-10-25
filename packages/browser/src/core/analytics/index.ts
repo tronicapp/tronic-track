@@ -1,12 +1,7 @@
 import {
-  AliasParams,
   DispatchedEvent,
   EventParams,
-  GroupParams,
-  PageParams,
-  resolveAliasArguments,
   resolveArguments,
-  resolvePageArguments,
   resolveUserArguments,
   IdentifyParams,
 } from '../arguments-resolver'

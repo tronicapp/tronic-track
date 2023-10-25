@@ -11,7 +11,7 @@ import batch, { BatchingDispatchConfig } from './batched-dispatcher'
 import standard, { StandardDispatcherConfig } from './fetch-dispatcher'
 import { normalize } from './normalize'
 import { scheduleFlush } from './schedule-flush'
-import { SEGMENT_API_HOST } from '../../core/constants'
+import { TRONIC_API_HOST } from '../../core/constants'
 
 type DeliveryStrategy =
   | {
@@ -23,7 +23,7 @@ type DeliveryStrategy =
       config?: BatchingDispatchConfig
     }
 
-export type SegmentioSettings = {
+export type TronicSettings = {
   apiKey: string
   apiHost?: string
   protocol?: 'http' | 'https'
@@ -50,9 +50,9 @@ function onAlias(analytics: Analytics, json: JSON): JSON {
   return json
 }
 
-export function segmentio(
+export function tronic(
   analytics: Analytics,
-  settings?: SegmentioSettings,
+  settings?: TronicSettings,
   integrations?: LegacySettings['integrations']
 ): Plugin {
   // Attach `pagehide` before buffer is created so that inflight events are added
@@ -68,14 +68,14 @@ export function segmentio(
     ? new PriorityQueue<Context>(analytics.queue.queue.maxAttempts, [])
     : new PersistedPriorityQueue(
         analytics.queue.queue.maxAttempts,
-        `${writeKey}:dest-Segment.io`
+        `${writeKey}:dest-tronic`
       )
 
   const inflightEvents = new Set<Context>()
   const flushing = false
 
-  const apiHost = settings?.apiHost ?? SEGMENT_API_HOST
-  const protocol = settings?.protocol ?? 'https'
+  const apiHost = settings?.apiHost ?? TRONIC_API_HOST
+  const protocol = 'http' // settings?.protocol ?? 'https'
   const remote = `${protocol}://${apiHost}`
 
   const deliveryStrategy = settings?.deliveryStrategy
@@ -88,17 +88,18 @@ export function segmentio(
     if (isOffline()) {
       buffer.push(ctx)
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      scheduleFlush(flushing, buffer, segmentio, scheduleFlush)
+      scheduleFlush(flushing, buffer, tronic, scheduleFlush)
       return ctx
     }
 
     inflightEvents.add(ctx)
 
-    const path = ctx.event.type.charAt(0)
+    const path = 'external/' + ctx.event.type; // ctx.event.type.charAt(0)
 
     let json = toFacade(ctx.event).json()
 
     if (ctx.event.type === 'track') {
+      delete json.type
       delete json.traits
     }
 
@@ -117,7 +118,7 @@ export function segmentio(
       .catch(() => {
         buffer.pushWithBackoff(ctx)
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        scheduleFlush(flushing, buffer, segmentio, scheduleFlush)
+        scheduleFlush(flushing, buffer, tronic, scheduleFlush)
         return ctx
       })
       .finally(() => {
@@ -125,8 +126,8 @@ export function segmentio(
       })
   }
 
-  const segmentio: Plugin = {
-    name: 'Segment.io',
+  const tronic: Plugin = {
+    name: 'Tronic',
     type: 'after',
     version: '0.1.0',
     isLoaded: (): boolean => true,
@@ -138,8 +139,8 @@ export function segmentio(
   // Buffer may already have items if they were previously stored in localStorage.
   // Start flushing them immediately.
   if (buffer.todo) {
-    scheduleFlush(flushing, buffer, segmentio, scheduleFlush)
+    scheduleFlush(flushing, buffer, tronic, scheduleFlush)
   }
 
-  return segmentio
+  return tronic
 }

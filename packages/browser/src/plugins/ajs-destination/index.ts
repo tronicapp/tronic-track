@@ -1,5 +1,5 @@
 import { Integrations, JSONObject } from '../../core/events'
-import { Alias, Facade, Group, Identify, Page, Track } from '@segment/facade'
+import { Facade, Identify, Track } from '@segment/facade'
 import { Analytics, InitOptions } from '../../core/analytics'
 import { LegacySettings } from '../../browser'
 import { isOffline, isOnline } from '../../core/connection'
@@ -278,26 +278,8 @@ export class LegacyDestination implements DestinationPlugin {
     return this.send(ctx, Track as ClassType<Track>, 'track')
   }
 
-  async page(ctx: Context): Promise<Context> {
-    if (this.integration?._assumesPageview && !this._initialized) {
-      this.integration.initialize()
-    }
-
-    return this.onInitialize!.then(() => {
-      return this.send(ctx, Page as ClassType<Page>, 'page')
-    })
-  }
-
   async identify(ctx: Context): Promise<Context> {
     return this.send(ctx, Identify as ClassType<Identify>, 'identify')
-  }
-
-  async alias(ctx: Context): Promise<Context> {
-    return this.send(ctx, Alias as ClassType<Alias>, 'alias')
-  }
-
-  async group(ctx: Context): Promise<Context> {
-    return this.send(ctx, Group as ClassType<Group>, 'group')
   }
 
   private scheduleFlush(): void {

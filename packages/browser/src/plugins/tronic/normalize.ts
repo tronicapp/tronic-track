@@ -1,12 +1,12 @@
 import { Analytics } from '../../core/analytics'
 import { LegacySettings } from '../../browser'
 import { SegmentFacade } from '../../lib/to-facade'
-import { SegmentioSettings } from './index'
+import { TronicSettings } from './index'
 
 export function normalize(
   analytics: Analytics,
   json: ReturnType<SegmentFacade['json']>,
-  settings?: SegmentioSettings,
+  settings?: TronicSettings,
   integrations?: LegacySettings['integrations']
 ): object {
   const user = analytics.user()

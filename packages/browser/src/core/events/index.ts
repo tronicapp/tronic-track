@@ -2,8 +2,8 @@ import { v4 as uuid } from '@lukeed/uuid'
 import { dset } from 'dset'
 import { ID, User } from '../user'
 import {
-  Options,
-  Integrations,
+  // Options,
+  // Integrations,
   EventProperties,
   Traits,
   SegmentEvent,
@@ -148,7 +148,7 @@ export class EventFactory {
       context,
       // integrations: allIntegrations,
       ...overrides,
-      messageId: 'ajs-next-' + md5.hash(JSON.stringify(event) + uuid()),
+      // messageId: 'ajs-next-' + md5.hash(JSON.stringify(event) + uuid()),
     }
     addPageContext(newEvent, pageCtx)
 
