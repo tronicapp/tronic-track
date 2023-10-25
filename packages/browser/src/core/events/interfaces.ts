@@ -21,7 +21,7 @@ export type { GroupTraits, UserTraits, Traits }
 
 export type EventProperties = Record<string, any>
 
-export interface SegmentEvent extends CoreEvent {}
+export interface TronicEvent extends CoreEvent {}
 
 export type {
   Integrations,

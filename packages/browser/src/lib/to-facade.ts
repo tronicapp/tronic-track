@@ -1,20 +1,16 @@
 import {
-  Alias,
   Facade,
-  Group,
   Identify,
   Options,
-  Page,
-  Screen,
   Track,
 } from '@segment/facade'
-import { SegmentEvent } from '../core/events'
+import { TronicEvent } from '../core/events'
 
-export type SegmentFacade = Facade<SegmentEvent> & {
-  obj: SegmentEvent
+export type SegmentFacade = Facade<TronicEvent> & {
+  obj: TronicEvent
 }
 
-export function toFacade(evt: SegmentEvent, options?: Options): SegmentFacade {
+export function toFacade(evt: TronicEvent, options?: Options): SegmentFacade {
   let fcd = new Facade(evt, options)
 
   if (evt.type === 'track') {

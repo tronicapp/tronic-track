@@ -15,7 +15,7 @@ import {
   Integrations,
   Plan,
   EventProperties,
-  SegmentEvent,
+  TronicEvent,
 } from '../events'
 import type { Plugin } from '../plugin'
 import { EventQueue } from '../queue/event-queue'
@@ -369,7 +369,7 @@ async trackForm(...args: FormArgs): Promise<Analytics> {
   }
 
   private async _dispatch(
-    event: SegmentEvent,
+    event: TronicEvent,
     callback?: Callback
   ): Promise<DispatchedEvent> {
     const ctx = new Context(event)
@@ -466,7 +466,7 @@ async trackForm(...args: FormArgs): Promise<Analytics> {
     return this
   }
 
-  normalize(msg: SegmentEvent): SegmentEvent {
+  normalize(msg: TronicEvent): TronicEvent {
     console.warn(deprecationWarning)
     return this.eventFactory.normalize(msg)
   }

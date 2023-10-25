@@ -1,4 +1,4 @@
-import { SegmentEvent } from '../../core/events'
+import { TronicEvent } from '../../core/events'
 import { fetch } from '../../lib/fetch'
 import { onPageChange } from '../../lib/on-page-change'
 
@@ -58,11 +58,11 @@ export default function batch(
       return
     }
 
-    const writeKey = (batch[0] as SegmentEvent)?.writeKey
+    const writeKey = (batch[0] as TronicEvent)?.writeKey
 
     // Remove sentAt from every event as batching only needs a single timestamp
     const updatedBatch = batch.map((event) => {
-      const { sentAt, ...newEvent } = event as SegmentEvent
+      const { sentAt, ...newEvent } = event as TronicEvent
       return newEvent
     })
 

@@ -10,9 +10,8 @@ import {
   JSONObject,
   Options,
   EventProperties,
-  SegmentEvent,
+  TronicEvent,
   Traits,
-  GroupTraits,
   UserTraits,
 } from '../events'
 import { ID, User } from '../user'
@@ -21,12 +20,17 @@ import { ID, User } from '../user'
  * Helper for the track method
  */
 export function resolveArguments(
-  eventName: string | SegmentEvent,
+  channelId: string,
+  eventName: string | TronicEvent,
   properties?: EventProperties | Callback,
   options?: Options | Callback,
   callback?: Callback
 ): [string, EventProperties | Callback, Options, Callback | undefined] {
-  const args = [eventName, properties, options, callback]
+  const args = [channelId, eventName, properties, options, callback]
+
+  if (!channelId || !isString(channelId)) {
+    throw new Error('ChannelId missing')
+  }
 
   const name = isPlainObject(eventName) ? eventName.event : eventName
   if (!name || !isString(name)) {

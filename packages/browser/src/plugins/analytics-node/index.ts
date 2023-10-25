@@ -1,6 +1,6 @@
 import { Plugin } from '../../core/plugin'
 import { Context } from '../../core/context'
-import { SegmentEvent } from '../../core/events'
+import { TronicEvent } from '../../core/events'
 import fetch from 'node-fetch'
 import { version } from '../../generated/version'
 
@@ -14,9 +14,9 @@ interface AnalyticsNodeSettings {
 const btoa = (val: string): string => Buffer.from(val).toString('base64')
 
 export async function post(
-  event: SegmentEvent,
+  event: TronicEvent,
   writeKey: string
-): Promise<SegmentEvent> {
+): Promise<TronicEvent> {
   const res = await fetch(`https://api.segment.io/v1/${event.type}`, {
     method: 'POST',
     headers: {

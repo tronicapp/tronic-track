@@ -1,12 +1,12 @@
 import { Context, ContextCancelation } from '../../core/context'
-import { SegmentEvent } from '../../core/events'
+import { TronicEvent } from '../../core/events'
 import { Plugin } from '../../core/plugin'
 import { SegmentFacade, toFacade } from '../../lib/to-facade'
 
 export interface MiddlewareParams {
   payload: SegmentFacade
 
-  // integrations?: SegmentEvent['integrations']
+  // integrations?: TronicEvent['integrations']
   next: (payload: MiddlewareParams['payload'] | null) => void
 }
 
@@ -26,20 +26,20 @@ export type DestinationMiddlewareFunction = (
 
 export async function applyDestinationMiddleware(
   destination: string,
-  evt: SegmentEvent,
+  evt: TronicEvent,
   middleware: DestinationMiddlewareFunction[]
-): Promise<SegmentEvent | null> {
+): Promise<TronicEvent | null> {
   // Clone the event so mutations are localized to a single destination.
   let modifiedEvent = toFacade(evt, {
     clone: true,
     traverse: false,
-  }).rawEvent() as SegmentEvent
+  }).rawEvent() as TronicEvent
   async function applyMiddleware(
-    event: SegmentEvent,
+    event: TronicEvent,
     fn: DestinationMiddlewareFunction
-  ): Promise<SegmentEvent | null> {
+  ): Promise<TronicEvent | null> {
     let nextCalled = false
-    let returnedEvent: SegmentEvent | null = null
+    let returnedEvent: TronicEvent | null = null
 
     await fn({
       payload: toFacade(event, {
@@ -61,7 +61,7 @@ export async function applyDestinationMiddleware(
     })
 
     if (!nextCalled && returnedEvent !== null) {
-      returnedEvent = returnedEvent as SegmentEvent
+      returnedEvent = returnedEvent as TronicEvent
         /*
       returnedEvent.integrations = {
         ...event.integrations,
@@ -86,7 +86,7 @@ export async function applyDestinationMiddleware(
 
 export function sourceMiddlewarePlugin(
   fn: MiddlewareFunction,
-  // integrations: SegmentEvent['integrations']
+  // integrations: TronicEvent['integrations']
 ): Plugin {
   async function apply(ctx: Context): Promise<Context> {
     let nextCalled = false

@@ -6,7 +6,7 @@ import type {
   IdentifyParams,
 } from '../arguments-resolver'
 import type { Context } from '../context'
-import type { SegmentEvent } from '../events'
+import type { TronicEvent } from '../events'
 import type { Group, User } from '../user'
 import type { LegacyIntegration } from '../../plugins/ajs-destination/types'
 import { CoreAnalytics } from '@tronic/receiver-core'
@@ -55,7 +55,7 @@ export interface AnalyticsClassic extends AnalyticsClassicStubs {
   noConflict(): Analytics
 
   /** @deprecated */
-  normalize(msg: SegmentEvent): SegmentEvent
+  normalize(msg: TronicEvent): TronicEvent
 
   /** @deprecated */
   readonly failedInitializations: string[]

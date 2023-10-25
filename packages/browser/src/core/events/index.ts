@@ -6,7 +6,7 @@ import {
   // Integrations,
   EventProperties,
   Traits,
-  SegmentEvent,
+  TronicEvent,
 } from './interfaces'
 import md5 from 'spark-md5'
 import { addPageContext, PageContext } from '../page'
@@ -23,7 +23,7 @@ export class EventFactory {
     // options?: Options,
     // globalIntegrations?: Integrations,
     pageCtx?: PageContext
-  ): SegmentEvent {
+  ): TronicEvent {
     return this.normalize(
       {
         ...this.baseEvent(),
@@ -45,7 +45,7 @@ export class EventFactory {
     // options?: Options,
     // globalIntegrations?: Integrations,
     pageCtx?: PageContext
-  ): SegmentEvent {
+  ): TronicEvent {
     return this.normalize(
       {
         channelId,
@@ -60,8 +60,8 @@ export class EventFactory {
     )
   }
 
-  private baseEvent(): Partial<SegmentEvent> {
-    const base: Partial<SegmentEvent> = {
+  private baseEvent(): Partial<TronicEvent> {
+    const base: Partial<TronicEvent> = {
       // integrations: {},
       // options: {},
     }
@@ -83,7 +83,7 @@ export class EventFactory {
    * Builds the context part of an event based on "foreign" keys that
    * are provided in the `Options` parameter for an Event
    */
-  private context(event: SegmentEvent): [object, object] {
+  private context(event: TronicEvent): [object, object] {
     const optionsKeys = ['integrations', 'anonymousId', 'timestamp', 'userId']
 
     const options: Record<string, any> = /* event.options ?? */ {}
@@ -109,7 +109,7 @@ export class EventFactory {
     return [context, overrides]
   }
 
-  public normalize(event: SegmentEvent, pageCtx?: PageContext): SegmentEvent {
+  public normalize(event: TronicEvent, pageCtx?: PageContext): TronicEvent {
     /*
     // set anonymousId globally if we encounter an override
     //segment.com/docs/connections/sources/catalog/libraries/website/javascript/identity/#override-the-anonymous-id-using-the-options-object
@@ -142,7 +142,7 @@ export class EventFactory {
     const [context, overrides] = this.context(event)
     const { /* options, */ ...rest } = event
 
-    const newEvent: SegmentEvent = {
+    const newEvent: TronicEvent = {
       timestamp: new Date(),
       ...rest,
       context,
