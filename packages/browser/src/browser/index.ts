@@ -76,8 +76,6 @@ export interface LegacySettings {
 
   plan?: Plan
 
-  legacyVideoPluginsEnabled?: boolean
-
   remotePlugins?: RemotePlugin[]
 
   /**
@@ -135,13 +133,6 @@ function hasLegacyDestinations(settings: LegacySettings): boolean {
   )
 }
 
-function hasTsubMiddleware(settings: LegacySettings): boolean {
-  return (
-    getProcessEnv().NODE_ENV !== 'test' &&
-    (settings.middlewareSettings?.routingRules?.length ?? 0) > 0
-  )
-}
-
 /**
  * With AJS classic, we allow users to call setAnonymousId before the library initialization.
  * This is important because some of the destinations will use the anonymousId during the initialization,
@@ -192,57 +183,13 @@ async function registerPlugins(
       typeof pluginLike.pluginName === 'string'
   ) as PluginFactory[]
 
-  const tsubMiddleware = hasTsubMiddleware(legacySettings)
-    ? await import(
-        /* webpackChunkName: "tsub-middleware" */ '../plugins/routing-middleware'
-      ).then((mod) => {
-        return mod.tsubMiddleware(
-          legacySettings.middlewareSettings!.routingRules
-        )
-      })
-    : undefined
-
-  const legacyDestinations =
-    hasLegacyDestinations(legacySettings) || legacyIntegrationSources.length > 0
-      ? await import(
-          /* webpackChunkName: "ajs-destination" */ '../plugins/ajs-destination'
-        ).then((mod) => {
-          return mod.ajsDestinations(
-            writeKey,
-            legacySettings,
-            analytics.integrations,
-            opts,
-            tsubMiddleware,
-            legacyIntegrationSources
-          )
-        })
-      : []
-
-        /*
-  if (legacySettings.legacyVideoPluginsEnabled) {
-    await import(
-    //// webpackChunkName: "legacyVideos" //// '../plugins/legacy-video-plugins'
-    ).then((mod) => {
-      return mod.loadLegacyVideoPlugins(analytics)
-    })
-}
-  */
-
-  const schemaFilter = opts.plan?.track
-    ? await import(
-        /* webpackChunkName: "schemaFilter" */ '../plugins/schema-filter'
-      ).then((mod) => {
-        return mod.schemaFilter(opts.plan?.track, legacySettings)
-      })
-    : undefined
-
   const mergedSettings = mergedOptions(legacySettings, options)
   const remotePlugins = await remoteLoader(
     legacySettings,
     analytics.integrations,
     mergedSettings,
     options.obfuscate,
-    tsubMiddleware,
+    undefined,
     pluginSources
   ).catch(() => [])
 
@@ -250,29 +197,13 @@ async function registerPlugins(
     validation,
     envEnrichment,
     ...plugins,
-    ...legacyDestinations,
     ...remotePlugins,
+    await tronic(
+      analytics,
+      mergedSettings['Tronic'] as TronicSettings,
+      legacySettings.integrations
+    ),
   ]
-
-  if (schemaFilter) {
-    toRegister.push(schemaFilter)
-  }
-
-  const shouldIgnoreTronic = false
-    /*
-    (opts.integrations?.All === false && !opts.integrations['Tronic']) ||
-    (opts.integrations && opts.integrations['Tronic'] === false)
-     */
-
-  if (!shouldIgnoreTronic) {
-    toRegister.push(
-      await tronic(
-        analytics,
-        mergedSettings['Tronic'] as TronicSettings,
-        legacySettings.integrations
-      )
-    )
-  }
 
   const ctx = await analytics.register(...toRegister)
 
@@ -310,9 +241,6 @@ async function loadAnalytics(
   if (settings.cdnURL) setGlobalCDNUrl(settings.cdnURL)
 
   let legacySettings = {
-    integrations: {
-      'a': {},
-    },
   } as LegacySettings/*
     settings.cdnSettings ??
     (await loadLegacySettings(settings.writeKey, settings.cdnURL))
@@ -360,11 +288,11 @@ async function loadAnalytics(
   analytics.initialized = true
   analytics.emit('initialize', settings, options)
 
-    /*
-  if (options.initialPageview) {
-    analytics.page().catch(console.error)
-  }
-     */
+  /*
+if (options.initialPageview) {
+  analytics.page().catch(console.error)
+}
+   */
 
   await flushFinalBuffer(analytics, preInitBuffer)
 

@@ -125,11 +125,6 @@ export interface InitOptions {
   globalAnalyticsKey?: string
 }
 
-/* analytics-classic stubs */
-function _stub(this: never) {
-  console.warn(deprecationWarning)
-}
-
 export class Analytics
   extends Emitter
   implements AnalyticsCore, AnalyticsClassic {
@@ -291,35 +286,33 @@ export class Analytics
     })
   }
 
-  /*
-async trackClick(...args: LinkArgs): Promise<Analytics> {
-  const autotrack = await import(
-  //// webpackChunkName: "auto-track" //// '../auto-track'
-  )
-  return autotrack.link.call(this, ...args)
-}
+  async trackClick(...args: LinkArgs): Promise<Analytics> {
+    const autotrack = await import(
+      /* webpackChunkName: "auto-track" */ '../auto-track'
+    )
+    return autotrack.link.call(this, ...args)
+  }
 
-async trackLink(...args: LinkArgs): Promise<Analytics> {
-  const autotrack = await import(
-  //// webpackChunkName: "auto-track" //// '../auto-track'
-  )
-  return autotrack.link.call(this, ...args)
-}
+  async trackLink(...args: LinkArgs): Promise<Analytics> {
+    const autotrack = await import(
+      /* webpackChunkName: "auto-track" */ '../auto-track'
+    )
+    return autotrack.link.call(this, ...args)
+  }
 
-async trackSubmit(...args: FormArgs): Promise<Analytics> {
-  const autotrack = await import(
-  //// webpackChunkName: "auto-track" //// '../auto-track'
-  )
-  return autotrack.form.call(this, ...args)
-}
+  async trackSubmit(...args: FormArgs): Promise<Analytics> {
+    const autotrack = await import(
+      /* webpackChunkName: "auto-track" */ '../auto-track'
+    )
+    return autotrack.form.call(this, ...args)
+  }
 
-async trackForm(...args: FormArgs): Promise<Analytics> {
-  const autotrack = await import(
-  //// webpackChunkName: "auto-track" //// '../auto-track'
-  )
-  return autotrack.form.call(this, ...args)
-}
-*/
+  async trackForm(...args: FormArgs): Promise<Analytics> {
+    const autotrack = await import(
+      /* webpackChunkName: "auto-track" */ '../auto-track'
+    )
+    return autotrack.form.call(this, ...args)
+  }
 
   async register(...plugins: Plugin[]): Promise<Context> {
     const ctx = Context.system()
@@ -390,13 +383,13 @@ async trackForm(...args: FormArgs): Promise<Analytics> {
       )
 
       const integrations: Record<string, boolean> = {}
-        /*
-      this.queue.plugins.forEach((plugin) => {
-        if (plugin.type === 'destination') {
-          return (integrations[plugin.name] = true)
-        }
-      })
-         */
+      /*
+    this.queue.plugins.forEach((plugin) => {
+      if (plugin.type === 'destination') {
+        return (integrations[plugin.name] = true)
+      }
+    })
+       */
       const plugin = sourceMiddlewarePlugin(fn) //, integrations)
       await this.register(plugin)
     })
@@ -434,19 +427,6 @@ async trackForm(...args: FormArgs): Promise<Analytics> {
     return queryString(this, query)
   }
 
-  /**
-   * @deprecated This function does not register a destination plugin.
-   *
-   * Instantiates a legacy Analytics.js destination.
-   *
-   * This function does not register the destination as an Analytics.JS plugin,
-   * all the it does it to invoke the factory function back.
-   */
-  use(legacyPluginFactory: (analytics: Analytics) => void): Analytics {
-    legacyPluginFactory(this)
-    return this
-  }
-
   async ready(
     callback: Function = (res: Promise<unknown>[]): Promise<unknown>[] => res
   ): Promise<unknown> {
@@ -458,88 +438,9 @@ async trackForm(...args: FormArgs): Promise<Analytics> {
     })
   }
 
-  // analytics-classic api
-
-  noConflict(): Analytics {
-    console.warn(deprecationWarning)
-    setGlobalAnalytics(_analytics ?? this)
-    return this
-  }
-
-  normalize(msg: TronicEvent): TronicEvent {
-    console.warn(deprecationWarning)
-    return this.eventFactory.normalize(msg)
-  }
-
-  get failedInitializations(): string[] {
-    console.warn(deprecationWarning)
-    return this.queue.failedInitializations
-  }
-
   get VERSION(): string {
     return version
   }
-
-  /* @deprecated - noop */
-  async initialize(
-    _settings?: AnalyticsSettings,
-    _options?: InitOptions
-  ): Promise<Analytics> {
-    console.warn(deprecationWarning)
-    return Promise.resolve(this)
-  }
-
-  init = this.initialize.bind(this)
-
-  get plugins() {
-    console.warn(deprecationWarning)
-    // @ts-expect-error
-    return this._plugins ?? {}
-  }
-
-  get Integrations() {
-    console.warn(deprecationWarning)
-    const integrations = this.queue.plugins
-      .filter((plugin) => plugin.type === 'destination')
-      .reduce((acc, plugin) => {
-        const name = `${plugin.name
-          .toLowerCase()
-          .replace('.', '')
-          .split(' ')
-          .join('-')}Integration`
-
-        // @ts-expect-error
-        const integration = window[name] as
-          | (LegacyIntegration & { Integration?: LegacyIntegration })
-          | undefined
-
-        if (!integration) {
-          return acc
-        }
-
-        const nested = integration.Integration // hack - Google Analytics function resides in the "Integration" field
-        if (nested) {
-          acc[plugin.name] = nested
-          return acc
-        }
-
-        acc[plugin.name] = integration as LegacyIntegration
-        return acc
-      }, {} as Record<string, LegacyIntegration>)
-
-    return integrations
-  }
-
-  log = _stub
-  addIntegrationMiddleware = _stub
-  listeners = _stub
-  addEventListener = _stub
-  removeAllListeners = _stub
-  removeListener = _stub
-  removeEventListener = _stub
-  hasListeners = _stub
-  add = _stub
-  addIntegration = _stub
 
   // snippet function
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -199,10 +199,6 @@ class EnvironmentEnrichmentPlugin implements Plugin {
 
   track = this.enrich
   identify = this.enrich
-  page = this.enrich
-  group = this.enrich
-  alias = this.enrich
-  screen = this.enrich
 }
 
 export const envEnrichment = new EnvironmentEnrichmentPlugin()
