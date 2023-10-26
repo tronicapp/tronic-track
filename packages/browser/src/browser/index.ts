@@ -1,10 +1,8 @@
-import { getProcessEnv } from '../lib/get-process-env'
 import { getCDN, setGlobalCDNUrl } from '../lib/parse-cdn'
 
 import { fetch } from '../lib/fetch'
 import { Analytics, AnalyticsSettings, InitOptions } from '../core/analytics'
 import { Context } from '../core/context'
-import { Plan } from '../core/events'
 import { Plugin } from '../core/plugin'
 import { MetricsOptions } from '../core/stats/remote-metrics'
 import { mergedOptions } from '../lib/merged-options'
@@ -74,8 +72,6 @@ export interface LegacySettings {
   enabledMiddleware?: Record<string, boolean>
   metrics?: MetricsOptions
 
-  plan?: Plan
-
   remotePlugins?: RemotePlugin[]
 
   /**
@@ -99,7 +95,7 @@ export interface AnalyticsBrowserSettings extends AnalyticsSettings {
    */
   cdnSettings?: LegacySettings & Record<string, unknown>
   /**
-   * If provided, will override the default Segment CDN (https://cdn.segment.com) for this application.
+   * If provided, will override the default CDN.
    */
   cdnURL?: string
 }
@@ -123,14 +119,6 @@ export function loadLegacySettings(
       console.error(err.message)
       throw err
     })
-}
-
-function hasLegacyDestinations(settings: LegacySettings): boolean {
-  return (
-    getProcessEnv().NODE_ENV !== 'test' &&
-    // just one integration means segmentio
-    Object.keys(settings.integrations).length > 1
-  )
 }
 
 /**
