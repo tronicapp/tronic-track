@@ -18,6 +18,7 @@ export class EventFactory {
 
   track(
     channelId: string,
+    userId: string,
     event: string,
     properties?: EventProperties,
     // options?: Options,
@@ -28,6 +29,7 @@ export class EventFactory {
       {
         ...this.baseEvent(),
         channelId,
+        userId,
         event,
         type: 'track' as const,
         properties,
@@ -66,6 +68,7 @@ export class EventFactory {
       // options: {},
     }
 
+      /*
     const user = this.user
 
     if (user.id()) {
@@ -75,6 +78,7 @@ export class EventFactory {
     if (user.anonymousId()) {
       base.anonymousId = user.anonymousId()
     }
+      */
 
     return base
   }

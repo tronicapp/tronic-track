@@ -21,15 +21,20 @@ import { ID, User } from '../user'
  */
 export function resolveArguments(
   channelId: string,
+  userId: string,
   eventName: string | TronicEvent,
   properties?: EventProperties | Callback,
   options?: Options | Callback,
   callback?: Callback
-): [string, EventProperties | Callback, Options, Callback | undefined] {
-  const args = [channelId, eventName, properties, options, callback]
+): [string, string, string, EventProperties | Callback, Options, Callback | undefined] {
+  const args = [channelId, userId, eventName, properties, options, callback]
 
   if (!channelId || !isString(channelId)) {
     throw new Error('ChannelId missing')
+  }
+
+  if (!userId || !isString(userId)) {
+    throw new Error('UserId missing')
   }
 
   const name = isPlainObject(eventName) ? eventName.event : eventName
@@ -53,7 +58,7 @@ export function resolveArguments(
   }
 
   const cb = args.find(isFunction) as Callback | undefined
-  return [name, data, opts, cb]
+  return [channelId, userId, name, data, opts, cb]
 }
 
 /**
@@ -64,6 +69,7 @@ export const resolveUserArguments = <T extends Traits, U extends User>(
 ): ResolveUser<T> => {
   return (...args): ReturnType<ResolveUser<T>> => {
     const values: {
+      // channelId?: string
       id?: ID
       traits?: T | null
       options?: Options
@@ -75,6 +81,7 @@ export const resolveUserArguments = <T extends Traits, U extends User>(
       'options',
       'traits',
       'id',
+      // 'channelId',
     ]
 
     // Read each argument and eval the possible values here
@@ -108,6 +115,7 @@ export const resolveUserArguments = <T extends Traits, U extends User>(
     }
 
     return [
+      // values.channelId,
       values.id ?? user.id(),
       (values.traits ?? {}) as T,
       values.options ?? {},
@@ -117,6 +125,7 @@ export const resolveUserArguments = <T extends Traits, U extends User>(
 }
 
 type ResolveUser<T extends Traits> = (
+  // channelId: string,
   id?: ID | object,
   traits?: T | Callback | null,
   options?: Options | Callback,

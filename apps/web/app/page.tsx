@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { Card } from "ui";
 import styles from "./page.module.css";
+import { TronicLogo } from "./components/TronicLogo";
 import { TrackButton } from "../components/TrackButton";
 
 function Gradient({
@@ -41,14 +41,7 @@ export default function Page(): JSX.Element {
             target="_blank"
           >
             By{" "}
-            <Image
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              height={24}
-              priority
-              src="/vercel.svg"
-              width={100}
-            />
+            <TronicLogo />
           </a>
         </div>
       </div>
@@ -56,29 +49,7 @@ export default function Page(): JSX.Element {
       <div className={styles.hero}>
         <div className={styles.heroContent}>
           <div className={styles.logos}>
-            <div className={styles.circles}>
-              <Image
-                alt="Turborepo"
-                height={614}
-                src="circles.svg"
-                width={614}
-              />
-            </div>
-            <div className={styles.logoGradientContainer}>
-              <Gradient className={styles.logoGradient} conic small />
-            </div>
-
-            <div className={styles.logo}>
-              <Image
-                alt=""
-                height={120}
-                priority
-                src="turborepo.svg"
-                width={120}
-              />
-            </div>
           </div>
-          <Gradient className={styles.backgroundGradient} conic />
           <div className={styles.turborepoWordmarkContainer}>
             <TrackButton />
           </div>

@@ -22,7 +22,7 @@ import { EventQueue } from '../queue/event-queue'
 import { Group, ID, User, UserOptions } from '../user'
 import autoBind from '../../lib/bind-all'
 import { PersistedPriorityQueue } from '../../lib/priority-queue/persisted'
-import type { LegacyDestination } from '../../plugins/ajs-destination'
+// import type { LegacyDestination } from '../../plugins/ajs-destination'
 import type {
   LegacyIntegration,
   ClassicIntegrationSource,
@@ -50,6 +50,8 @@ import {
 import { PluginFactory } from '../../plugins/remote-loader'
 import { setGlobalAnalytics } from '../../lib/global-analytics-helper'
 import { popPageContext } from '../buffer'
+
+type LegacyDestination = any;
 
 const deprecationWarning =
   'This is being deprecated and will be not be available in future releases of Analytics JS'
@@ -127,7 +129,7 @@ export interface InitOptions {
 
 export class Analytics
   extends Emitter
-  implements AnalyticsCore, AnalyticsClassic {
+  implements AnalyticsCore { // , AnalyticsClassic {
   protected settings: AnalyticsSettings
   private _user: User
   private _group: Group
@@ -242,10 +244,11 @@ export class Analytics
 
   async track(...args: EventParams): Promise<DispatchedEvent> {
     const pageCtx = popPageContext(args)
-    const [name, data, opts, cb] = resolveArguments(...args)
+    const [channelId, userId, name, data, opts, cb] = resolveArguments(...args)
 
     const segmentEvent = this.eventFactory.track(
-      'channelId',
+      channelId,
+      userId,
       name,
       data as EventProperties,
       // opts,
@@ -261,7 +264,7 @@ export class Analytics
 
   async identify(...args: IdentifyParams): Promise<DispatchedEvent> {
     const pageCtx = popPageContext(args)
-    const [id, _traits, options, callback] = resolveUserArguments(this._user)(
+    const [/*channelId,*/ id, _traits, options, callback] = resolveUserArguments(this._user)(
       ...args
     )
 

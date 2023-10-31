@@ -229,6 +229,7 @@ async function loadAnalytics(
   if (settings.cdnURL) setGlobalCDNUrl(settings.cdnURL)
 
   let legacySettings = {
+    integrations: {},
   } as LegacySettings/*
     settings.cdnSettings ??
     (await loadLegacySettings(settings.writeKey, settings.cdnURL))
@@ -239,7 +240,7 @@ async function loadAnalytics(
   }
 
   const retryQueue: boolean =
-    legacySettings.integrations['Segment.io']?.retryQueue ?? true
+    legacySettings?.integrations?.['Segment.io']?.retryQueue ?? true
 
   const opts: InitOptions = { retryQueue, ...options }
   const analytics = new Analytics(settings, opts)

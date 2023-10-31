@@ -53,11 +53,14 @@ export function queryString(
   }
 
   if (ajs_event) {
+    const channelId = Array.isArray(params.ajs_channel_id)
+      ? params.ajs_channel_id[0]
+      : params.ajs_channel_id
     const event = Array.isArray(params.ajs_event)
       ? params.ajs_event[0]
       : params.ajs_event
     const props = pickPrefix('ajs_prop_', params)
-    calls.push(analytics.track(event, props))
+    calls.push(analytics.track(channelId, event, props))
   }
 
   return Promise.all(calls)

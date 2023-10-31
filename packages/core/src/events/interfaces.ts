@@ -205,7 +205,7 @@ export interface CoreEvent {
   context?: CoreExtraContext
   // options?: CoreOptions
 
-  channelId: string
+  channelId?: string
   userId?: ID
   anonymousId?: ID
   groupId?: ID
@@ -233,6 +233,34 @@ export interface EventMetadata {
 }
 
 export type Timestamp = Date | string
+
+/**
+ * A Plan allows users to specify events and which destinations they would like them to be sent to
+ */
+export interface Plan {
+  track?: TrackPlan
+  identify?: TrackPlan
+  group?: TrackPlan
+}
+
+export interface TrackPlan {
+  [key: string]: PlanEvent | undefined
+  // __default SHOULD always exist, but marking as optional for extra safety.
+  __default?: PlanEvent
+}
+
+export interface PlanEvent {
+  /**
+   * Whether or not this plan event is enabled
+   */
+  enabled: boolean
+  /**
+   * Which integrations the plan event applies to
+   */
+  integrations?: {
+    [key: string]: boolean
+  }
+}
 
 type DbId = string | number // TODO: the docs says that this can only be a string?
 type PhoneNumber = string | number // TODO: the docs say this can only be a string?

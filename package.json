@@ -1,5 +1,5 @@
 {
-  "name": "tronic-analytics-monorepo",
+  "name": "tronic-receiver-monorepo",
   "private": true,
   "version": "0.0.0",
   "workspaces": [
@@ -12,16 +12,24 @@
   },
   "scripts": {
     "postinstall": "husky install",
-    "build": "turbo run build",
+    "xbuild": "turbo run build",
+    "build": "turbo run build --filter='./packages/**'",
+    "watch": "turbo run watch --filter='./packages/**'",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "changeset": "changeset",
+    "update-versions-and-changelogs": "changeset version && yarn version-run-all && bash scripts/update-lockfile.sh",
+    "release": "yarn clean && yarn build --force && changeset publish && git push origin HEAD:master --follow-tags --no-verify",
+    "version-run-all": "yarn workspaces foreach -vpt --no-private run version",
     "core": "yarn workspace @tronic/receiver-core",
     "browser": "yarn workspace @tronic/receiver-browser",
     "xnode": "yarn workspace @tronic/receiver-node",
     "clean": "bash scripts/clean.sh"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.4.5",
+    "@changesets/cli": "^2.23.2",
     "concurrently": "^8.2.1",
     "eslint": "^8.48.0",
     "husky": "^8.0.3",
