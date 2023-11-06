@@ -1,30 +1,6 @@
-import Image from "next/image";
 import styles from "./page.module.css";
 import { TronicLogo } from "./components/TronicLogo";
-import { TrackButton } from "../components/TrackButton";
-
-function Gradient({
-  conic,
-  className,
-  small,
-}: {
-  small?: boolean;
-  conic?: boolean;
-  className?: string;
-}): JSX.Element {
-  return (
-    <span
-      className={[
-        styles.gradient,
-        conic ? styles.glowConic : undefined,
-        small ? styles.gradientSmall : styles.gradientLarge,
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
-    />
-  );
-}
+import { TrackButton } from "./components/TrackButton";
 
 export default function Page(): JSX.Element {
   return (

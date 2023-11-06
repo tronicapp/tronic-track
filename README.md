@@ -25,3 +25,8 @@ To develop all apps and packages, run the following command:
 cd tronic-receiver
 pnpm dev
 ```
+
+Open Questions:
+1. Open source or not?
+2. What CDN will host scripts?
+3. Publishing to npm. Needs org and setup.

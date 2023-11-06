@@ -37,8 +37,8 @@ export type PreInitMethodName =
   | 'off'
   | 'on'
   | 'addSourceMiddleware'
-  | 'setAnonymousId'
-  | 'addDestinationMiddleware'
+  // | 'setAnonymousId'
+// | 'addDestinationMiddleware'
 
 // Union of all analytics methods that _do not_ return a Promise
 type SyncPreInitMethodName = {
@@ -327,8 +327,8 @@ export class AnalyticsBuffered
   off = this._createChainableMethod('off')
   on = this._createChainableMethod('on')
   addSourceMiddleware = this._createMethod('addSourceMiddleware')
-  setAnonymousId = this._createMethod('setAnonymousId')
-  addDestinationMiddleware = this._createMethod('addDestinationMiddleware')
+  // setAnonymousId = this._createMethod('setAnonymousId')
+  // addDestinationMiddleware = this._createMethod('addDestinationMiddleware')
 
   // screen = this._createMethod('screen')
   register = this._createMethod('register')
