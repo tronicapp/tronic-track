@@ -1,6 +1,6 @@
 import { uuid } from '../lib/uuid'
 import type { Context } from '../app/context'
-import { SegmentEvent } from '../app/types'
+import { TronicEvent } from '../app/types'
 
 const MAX_EVENT_SIZE_IN_KB = 32
 const MAX_BATCH_SIZE_IN_KB = 480 //  (500 KB is the limit, leaving some padding)
@@ -56,7 +56,7 @@ export class ContextBatch {
     return encodeURI(JSON.stringify(ctx.event)).split(/%..|i/).length
   }
 
-  getEvents(): SegmentEvent[] {
+  getEvents(): TronicEvent[] {
     const events = this.items.map(({ context }) => context.event)
     return events
   }

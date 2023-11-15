@@ -1,6 +1,6 @@
 import { pickPrefix } from './pickPrefix'
 import { gracefulDecodeURIComponent } from './gracefulDecodeURIComponent'
-import { Analytics } from '../analytics'
+import { Receiver } from '../receiver'
 import { Context } from '../context'
 import { isPlainObject } from '@tronic/receiver-core'
 
@@ -9,7 +9,7 @@ export interface QueryStringParams {
 }
 
 export function queryString(
-  analytics: Analytics,
+  receiver: Receiver,
   query: string
 ): Promise<Context[]> {
   const a = document.createElement('a')
@@ -25,9 +25,9 @@ export function queryString(
 
   const { ajs_uid, ajs_event, ajs_aid } = params
   const { aid: aidPattern = /.+/, uid: uidPattern = /.+/ } = isPlainObject(
-    analytics.options.useQueryString
+    receiver.options.useQueryString
   )
-    ? analytics.options.useQueryString
+    ? receiver.options.useQueryString
     : {}
 
   if (ajs_aid) {
@@ -36,7 +36,7 @@ export function queryString(
       : params.ajs_aid
 
     if (aidPattern.test(anonId)) {
-      analytics.setAnonymousId(anonId)
+      receiver.setAnonymousId(anonId)
     }
   }
 
@@ -48,7 +48,7 @@ export function queryString(
     if (uidPattern.test(uid)) {
       const traits = pickPrefix('ajs_trait_', params)
 
-      calls.push(analytics.identify(uid, traits))
+      calls.push(receiver.identify(uid, traits))
     }
   }
 
@@ -60,7 +60,7 @@ export function queryString(
       ? params.ajs_event[0]
       : params.ajs_event
     const props = pickPrefix('ajs_prop_', params)
-    calls.push(analytics.track(channelId, event, props))
+    calls.push(receiver.track(channelId, event, props))
   }
 
   return Promise.all(calls)

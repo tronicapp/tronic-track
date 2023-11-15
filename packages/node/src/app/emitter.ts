@@ -1,14 +1,14 @@
 import { CoreEmitterContract, Emitter } from '@tronic/receiver-core'
 import { Context } from './context'
-import type { AnalyticsSettings } from './settings'
-import { SegmentEvent } from './types'
+import type { ReceiverSettings } from './settings'
+import { TronicEvent } from './types'
 
 /**
  * Map of emitter event names to method args.
  */
 export type NodeEmitterEvents = CoreEmitterContract<Context> & {
-  initialize: [AnalyticsSettings]
-  call_after_close: [SegmentEvent] // any event that did not get dispatched due to close
+  initialize: [ReceiverSettings]
+  call_after_close: [TronicEvent] // any event that did not get dispatched due to close
   http_request: [
     {
       url: string

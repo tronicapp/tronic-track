@@ -1,10 +1,10 @@
-import { Analytics, InitOptions } from '../core/analytics'
+import { Receiver, InitOptions } from '../core/receiver'
 
-export interface AnalyticsSnippet extends AnalyticsStandalone {
+export interface ReceiverSnippet extends ReceiverStandalone {
   load: (writeKey: string, options?: InitOptions) => void
 }
 
-export interface AnalyticsStandalone extends Analytics {
+export interface ReceiverStandalone extends Receiver {
   _loadOptions?: InitOptions
   _writeKey?: string
   _cdn?: string

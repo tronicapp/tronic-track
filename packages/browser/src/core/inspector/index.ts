@@ -1,5 +1,5 @@
 import { getGlobal } from '../../lib/get-global'
-import type { Analytics } from '../analytics'
+import type { Receiver } from '../receiver'
 
 const env = getGlobal()
 
@@ -7,8 +7,8 @@ const env = getGlobal()
 // to add the inspect interface on to this object reference (unless the
 // extension code ran first and has already set up the variable)
 const inspectorHost: {
-  attach: (analytics: Analytics) => void
-} = ((env as any)['__SEGMENT_INSPECTOR__'] ??= {})
+  attach: (receiver: Receiver) => void
+} = ((env as any)['__TRONIC_INSPECTOR__'] ??= {})
 
-export const attachInspector = (analytics: Analytics) =>
-  inspectorHost.attach?.(analytics as any)
+export const attachInspector = (receiver: Receiver) =>
+  inspectorHost.attach?.(receiver as any)

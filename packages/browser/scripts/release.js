@@ -78,7 +78,7 @@ async function upload(meta) {
 
     const options = {
       Bucket: bucket,
-      Key: path.join(`analytics-next`, meta.branch, meta.sha, f),
+      Key: path.join(`tronic-receiver`, meta.branch, meta.sha, f),
       Body: await fs.readFile(filePath),
       GrantRead: cloudfrontCanonicalUserId,
       ContentType:
@@ -106,7 +106,7 @@ async function upload(meta) {
       .putObject({
         ...options,
         CacheControl: 'public,max-age=300,immutable',
-        Key: path.join(`analytics-next`, meta.branch, 'latest', f),
+        Key: path.join(`tronic-receiver`, meta.branch, 'latest', f),
       })
       .promise()
 
@@ -117,7 +117,7 @@ async function upload(meta) {
       await s3
         .putObject({
           ...options,
-          Key: path.join(`analytics-next`, 'bundles', f),
+          Key: path.join(`tronic-receiver`, 'bundles', f),
           CacheControl: 'public,max-age=31536000,immutable',
         })
         .promise()

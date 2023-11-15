@@ -1,5 +1,5 @@
 import { Facade } from '@segment/facade'
-import { Analytics } from '../../core/analytics'
+import { Receiver } from '../../core/receiver'
 import { LegacySettings } from '../../browser'
 import { isOffline } from '../../core/connection'
 import { Context } from '../../core/context'
@@ -40,8 +40,8 @@ export type TronicSettings = {
 
 type JSON = ReturnType<Facade['json']>
 
-function onAlias(analytics: Analytics, json: JSON): JSON {
-  const user = analytics.user()
+function onAlias(receiver: Receiver, json: JSON): JSON {
+  const user = receiver.user()
   json.previousId =
     json.previousId ?? json.from ?? user.id() ?? user.anonymousId()
   json.userId = json.userId ?? json.to
@@ -51,7 +51,7 @@ function onAlias(analytics: Analytics, json: JSON): JSON {
 }
 
 export function tronic(
-  analytics: Analytics,
+  receiver: Receiver,
   settings?: TronicSettings,
   integrations?: LegacySettings['integrations']
 ): Plugin {
@@ -64,10 +64,10 @@ export function tronic(
 
   const writeKey = settings?.apiKey ?? ''
 
-  const buffer = analytics.options.disableClientPersistence
-    ? new PriorityQueue<Context>(analytics.queue.queue.maxAttempts, [])
+  const buffer = receiver.options.disableClientPersistence
+    ? new PriorityQueue<Context>(receiver.queue.queue.maxAttempts, [])
     : new PersistedPriorityQueue(
-        analytics.queue.queue.maxAttempts,
+        receiver.queue.queue.maxAttempts,
         `${writeKey}:dest-tronic`
       )
 
@@ -108,7 +108,7 @@ export function tronic(
 
     /*
     if (ctx.event.type === 'alias') {
-      json = onAlias(analytics, json)
+      json = onAlias(receiver, json)
     }
      */
 
@@ -117,7 +117,7 @@ export function tronic(
     return client
       .dispatch(
         `${remote}/${path}`,
-        json, // normalize(analytics, json, settings, integrations)
+        json, // normalize(receiver, json, settings, integrations)
       )
       .then(() => ctx)
       .catch(() => {

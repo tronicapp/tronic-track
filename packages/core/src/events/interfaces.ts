@@ -35,7 +35,6 @@ export interface CoreOptions {
 
 /**
  * Context is a dictionary of extra information that provides useful context about a datapoint, for example the user’s ip address or locale. You should only use Context fields for their intended meaning.
- * @link https://segment.com/docs/connections/spec/common/#context
  */
 export interface CoreExtraContext {
   /**
@@ -100,11 +99,11 @@ export interface CoreExtraContext {
      */
     search?: string
     /**
-     * @example Analytics Academy
+     * @example Receiver Academy
      */
     title?: string
     /**
-     * @example https://segment.com/academy/
+     * @example https://tronic.com/academy/
      */
     url?: string
   }
@@ -146,7 +145,7 @@ export interface CoreExtraContext {
    */
   library?: {
     /**
-     * @example analytics-node-next/latest
+     * @example receiver-node/latest
      */
     name: string
     /**
@@ -267,8 +266,7 @@ type PhoneNumber = string | number // TODO: the docs say this can only be a stri
 
 /**
  * Traits are pieces of information you know about a group.
- * This interface represents reserved traits that Segment has standardized.
- * @link https://segment.com/docs/connections/spec/group/#traits
+ * This interface represents reserved standardized traits
  */
 type BaseGroupTraits = DeepNullable<{
   /**
@@ -282,7 +280,7 @@ type BaseGroupTraits = DeepNullable<{
   avatar?: BaseUserTraits['avatar']
 
   /**
-   * Date the group's account was first created. Segment recommends ISO-8601 date strings.
+   * Date the group's account was first created. Tronic recommends ISO-8601 date strings.
    */
   createdAt?: BaseUserTraits['createdAt']
 
@@ -332,8 +330,7 @@ type BaseGroupTraits = DeepNullable<{
 
 /**
  * Traits are pieces of information you know about a user.
- * This interface represents reserved traits that Segment has standardized.
- * @link https://segment.com/docs/connections/spec/identify/#traits
+ * This interface represents standardized reserved traits
  */
 type BaseUserTraits = DeepNullable<{
   /**
@@ -357,7 +354,7 @@ type BaseUserTraits = DeepNullable<{
   lastName?: string
 
   /**
-   * Full name of a user. If you only pass a first and last name Segment automatically fills in the full name for you.
+   * Full name of a user. If you only pass a first and last name Tronic automatically fills in the full name for you.
    */
   name?: string
 
@@ -426,7 +423,7 @@ type BaseUserTraits = DeepNullable<{
   plan?: string
 
   /**
-   * 	Date the user's account was first created. Segment recommends using ISO-8601 date strings.
+   * 	Date the user's account was first created. Tronic recommends using ISO-8601 date strings.
    */
   createdAt?: Timestamp
 
@@ -448,8 +445,7 @@ type BaseUserTraits = DeepNullable<{
 
 /**
  * Traits are pieces of information you know about a group.
- * This interface represents reserved traits that Segment has standardized.
- * @link https://segment.com/docs/connections/spec/group/#traits
+ * This interface represents standardized reserved traits.
  */
 export type GroupTraits = BaseGroupTraits & {
   [customTrait: string]: any
@@ -457,8 +453,7 @@ export type GroupTraits = BaseGroupTraits & {
 
 /**
  * Traits are pieces of information you know about a user.
- * This interface represents reserved traits that Segment has standardized.
- * @link https://segment.com/docs/connections/spec/identify/#traits
+ * This interface represents standardized reserved traits.
  */
 export type UserTraits = BaseUserTraits & {
   [customTrait: string]: any

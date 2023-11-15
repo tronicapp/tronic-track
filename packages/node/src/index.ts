@@ -1,4 +1,4 @@
-export { Analytics } from './app/analytics-node';
+export { Receiver } from './app/receiver-node';
 export { Context } from './app/context';
 export {
   type HTTPClient,
@@ -15,8 +15,8 @@ export type {
   TrackParams,
   IdentifyParams,
 } from './app/types';
-export type { AnalyticsSettings } from './app/settings';
+export type { ReceiverSettings } from './app/settings';
 
-// export Analytics as both a named export and a default export (for backwards-compat. reasons)
-import { Analytics } from './app/analytics-node';
-export default Analytics;
+// export Receiver as both a named export and a default export (for backwards-compat. reasons)
+import { Receiver } from './app/receiver-node';
+export default Receiver;

@@ -1,8 +1,8 @@
-import { getGlobalAnalytics } from './global-analytics-helper'
+import { getGlobalReceiver } from './global-receiver-helper'
 import { embeddedWriteKey } from './embedded-write-key'
 
-const analyticsScriptRegex =
-  /(https:\/\/.*)\/analytics\.js\/v1\/(?:.*?)\/(?:platform|analytics.*)?/
+const receiverScriptRegex =
+  /(https:\/\/.*)\/receiver\.js\/v1\/(?:.*?)\/(?:platform|receiver.*)?/
 const getCDNUrlFromScriptTag = (): string | undefined => {
   let cdn: string | undefined
   const scripts = Array.prototype.slice.call(
@@ -10,7 +10,7 @@ const getCDNUrlFromScriptTag = (): string | undefined => {
   )
   scripts.forEach((s) => {
     const src = s.getAttribute('src') ?? ''
-    const result = analyticsScriptRegex.exec(src)
+    const result = receiverScriptRegex.exec(src)
 
     if (result && result[1]) {
       cdn = result[1]
@@ -21,14 +21,14 @@ const getCDNUrlFromScriptTag = (): string | undefined => {
 
 let _globalCDN: string | undefined // set globalCDN as in-memory singleton
 const getGlobalCDNUrl = (): string | undefined => {
-  const result = _globalCDN ?? getGlobalAnalytics()?._cdn
+  const result = _globalCDN ?? getGlobalReceiver()?._cdn
   return result
 }
 
 export const setGlobalCDNUrl = (cdn: string) => {
-  const globalAnalytics = getGlobalAnalytics()
-  if (globalAnalytics) {
-    globalAnalytics._cdn = cdn
+  const globalReceiver = getGlobalReceiver()
+  if (globalReceiver) {
+    globalReceiver._cdn = cdn
   }
   _globalCDN = cdn
 }
@@ -46,7 +46,7 @@ export const getCDN = (): string => {
     // it's possible that the CDN is not found in the page because:
     // - the script is loaded through a proxy
     // - the script is removed after execution
-    // in this case, we fall back to the default Segment CDN
+    // in this case, we fall back to the default Tronic CDN
     return `https://cdn.tronic.com`
   }
 }
@@ -57,12 +57,12 @@ export const getNextIntegrationsURL = () => {
 }
 
 /**
- * Replaces the CDN URL in the script tag with the one from Analytics.js 1.0
+ * Replaces the CDN URL in the script tag with the one from Receiver.js 1.0
  *
- * @returns the path to Analytics JS 1.0
+ * @returns the path to Receiver JS 1.0
  **/
 export function getLegacyAJSPath(): string {
-  const writeKey = embeddedWriteKey() ?? getGlobalAnalytics()?._writeKey
+  const writeKey = embeddedWriteKey() ?? getGlobalReceiver()?._writeKey
 
   const scripts = Array.prototype.slice.call(
     document.querySelectorAll('script')
@@ -71,7 +71,7 @@ export function getLegacyAJSPath(): string {
 
   for (const s of scripts) {
     const src = s.getAttribute('src') ?? ''
-    const result = analyticsScriptRegex.exec(src)
+    const result = receiverScriptRegex.exec(src)
 
     if (result && result[1]) {
       path = src
@@ -80,8 +80,8 @@ export function getLegacyAJSPath(): string {
   }
 
   if (path) {
-    return path.replace('analytics.min.js', 'analytics.classic.js')
+    return path.replace('receiver.min.js', 'receiver.classic.js')
   }
 
-  return `https://cdn.segment.com/analytics.js/v1/${writeKey}/analytics.classic.js`
+  return `https://cdn.tronic.com/receiver.js/v1/${writeKey}/receiver.classic.js`
 }

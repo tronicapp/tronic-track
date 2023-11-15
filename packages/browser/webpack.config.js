@@ -8,7 +8,7 @@ const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 const isProd = process.env.NODE_ENV === 'production'
 const ASSET_PATH = isProd
-  ? 'https://cdn.segment.com/analytics-next/bundles/'
+  ? 'https://cdn.tronic.com/tronic-receiver/bundles/'
   : '/dist/umd/'
 
 const plugins = [
@@ -37,14 +37,14 @@ const config = {
     index: {
       import: path.resolve(__dirname, 'src/browser/browser-umd.ts'),
       library: {
-        name: 'AnalyticsNext',
+        name: 'TronicReceiver',
         type: 'umd',
       },
     },
     standalone: {
       import: path.resolve(__dirname, 'src/browser/standalone.ts'),
       library: {
-        name: 'AnalyticsNext',
+        name: 'TronicReceiver',
         type: 'window',
       },
     },

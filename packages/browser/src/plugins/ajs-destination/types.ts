@@ -1,11 +1,11 @@
 import { Group, Identify, Track, Page, Alias } from '@segment/facade'
-import { Analytics } from '../../core/analytics'
+import { Receiver } from '../../core/receiver'
 import { Emitter } from '@tronic/receiver-core'
 import { User } from '../../core/user'
 
 export interface LegacyIntegration extends Emitter {
   name: string
-  analytics?: Analytics
+  receiver?: Receiver
   initialize: () => void
   loaded: () => boolean
 
@@ -35,7 +35,7 @@ export interface ClassicIntegrationBuilder {
 }
 
 export interface ClassicIntegrationGenerator {
-  (analytics: { user: () => User; addIntegration: () => void }): void
+  (receiver: { user: () => User; addIntegration: () => void }): void
   Integration: ClassicIntegrationBuilder
 }
 

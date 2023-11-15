@@ -1,13 +1,13 @@
 import { ValidationError } from '@tronic/receiver-core'
 import { HTTPClient, HTTPFetchFn } from '../lib/http-client'
 
-export interface AnalyticsSettings {
+export interface ReceiverSettings {
   /**
-   * Key that corresponds to your Segment.io project
+   * Key that corresponds to your Tronic project
    */
   writeKey: string
   /**
-   * The base URL of the API. Default: "https://api.segment.io"
+   * The base URL of the API. Default: "https://api.tronic.io"
    */
   host?: string
   /**
@@ -31,7 +31,7 @@ export interface AnalyticsSettings {
    */
   httpRequestTimeout?: number
   /**
-   * Disable the analytics library. All calls will be a noop. Default: false.
+   * Disable the receiver library. All calls will be a noop. Default: false.
    */
   disable?: boolean
   /**
@@ -42,7 +42,7 @@ export interface AnalyticsSettings {
   httpClient?: HTTPFetchFn | HTTPClient
 }
 
-export const validateSettings = (settings: AnalyticsSettings) => {
+export const validateSettings = (settings: ReceiverSettings) => {
   if (!settings.writeKey) {
     throw new ValidationError('writeKey', 'writeKey is missing.')
   }

@@ -2,7 +2,7 @@ import { dispatch } from '@tronic/receiver-core'
 import type { NodeEmitter } from './emitter'
 import { Context } from './context'
 import { NodeEventQueue } from './event-queue'
-import { SegmentEvent } from './types'
+import { TronicEvent } from './types'
 
 export type Callback = (err?: unknown, ctx?: Context) => void
 
@@ -13,7 +13,7 @@ const normalizeDispatchCb = (cb: Callback) => (ctx: Context) => {
 
 /* Dispatch function, but swallow promise rejections and use event emitter instead */
 export const dispatchAndEmit = async (
-  event: SegmentEvent,
+  event: TronicEvent,
   queue: NodeEventQueue,
   emitter: NodeEmitter,
   callback?: Callback
