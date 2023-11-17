@@ -12,6 +12,8 @@
     "build:esm": "yarn tsc -p tsconfig.build.json",
     "build:cjs": "yarn tsc -p tsconfig.build.json --outDir ./dist/cjs --module commonjs",
     "watch": "yarn build:esm --watch",
+    "jest": "yarn run -T jest",
+    "test": "yarn jest",
     "tsc": "yarn run -T tsc",
     "concurrently": "yarn run -T concurrently"
   },
