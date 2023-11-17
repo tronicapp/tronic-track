@@ -1,4 +1,4 @@
-import type { CoreAnalytics } from '../analytics'
+import type { CoreReceiver } from '../receiver'
 import type { CoreContext } from '../context'
 
 interface CorePluginConfig {
@@ -19,7 +19,7 @@ export type PluginType =
 
 export interface CorePlugin<
   Ctx extends CoreContext = CoreContext,
-  Analytics extends CoreAnalytics = any
+  Receiver extends CoreReceiver = any
 > {
   name: string
   alternativeNames?: string[]
@@ -28,11 +28,11 @@ export interface CorePlugin<
   isLoaded: () => boolean
   load: (
     ctx: Ctx,
-    instance: Analytics,
+    instance: Receiver,
     config?: CorePluginConfig
   ) => Promise<unknown>
 
-  unload?: (ctx: Ctx, instance: Analytics) => Promise<unknown> | unknown
+  unload?: (ctx: Ctx, instance: Receiver) => Promise<unknown> | unknown
   ready?: () => Promise<unknown>
   identify?: (ctx: Ctx) => Promise<Ctx> | Ctx
   track?: (ctx: Ctx) => Promise<Ctx> | Ctx

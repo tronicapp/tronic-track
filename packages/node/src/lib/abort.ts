@@ -1,10 +1,8 @@
 /**
  * use non-native event emitter for the benefit of non-node runtimes like CF workers.
  */
-// import { Emitter } from '@segment/analytics-core'
+import { Emitter } from '@tronic/receiver-core'
 import { detectRuntime } from './env'
-
-type Emitter = any;
 
 /**
  * adapted from: https://www.npmjs.com/package/node-abort-controller
@@ -12,7 +10,7 @@ type Emitter = any;
 export class AbortSignal {
   onabort: globalThis.AbortSignal['onabort'] = null
   aborted = false
-  // eventEmitter = new Emitter()
+  eventEmitter = new Emitter()
 
   toString() {
     return '[object AbortSignal]'
@@ -21,10 +19,10 @@ export class AbortSignal {
     return 'AbortSignal'
   }
   removeEventListener(...args: Parameters<Emitter['off']>) {
-    // this.eventEmitter.off(...args)
+    this.eventEmitter.off(...args)
   }
   addEventListener(...args: Parameters<Emitter['on']>) {
-    // this.eventEmitter.on(...args)
+    this.eventEmitter.on(...args)
   }
   dispatchEvent(type: string) {
     const event = { type, target: this }
@@ -35,7 +33,7 @@ export class AbortSignal {
       ;(this as any)[handlerName](event)
     }
 
-    // this.eventEmitter.emit(type, event)
+    this.eventEmitter.emit(type, event)
   }
 }
 

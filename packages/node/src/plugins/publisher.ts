@@ -31,7 +31,7 @@ export interface PublisherProps {
 }
 
 /**
- * The Publisher is responsible for batching events and sending them to the Segment API.
+ * The Publisher is responsible for batching events and sending them to the Tronic API.
  */
 export class Publisher {
   private pendingFlushTimeout?: ReturnType<typeof setTimeout>
@@ -118,7 +118,7 @@ export class Publisher {
 
   /**
    * Enqueues the context for future delivery.
-   * @param ctx - Context containing a Segment event.
+   * @param ctx - Context containing a Tronic event.
    * @returns a promise that resolves with the context after the event has been delivered.
    */
   enqueue(ctx: Context): Promise<Context> {
@@ -210,7 +210,7 @@ export class Publisher {
           headers: {
             'Content-Type': 'application/json',
             'x-api-key': `${this._auth}`,
-            'User-Agent': 'analytics-node-next/latest',
+            'User-Agent': 'receiver-node/latest',
           },
           data, // { batch: events, sentAt: new Date() },
           httpRequestTimeout: this._httpRequestTimeout,
@@ -230,7 +230,6 @@ export class Publisher {
           batch.resolveEvents()
           return
         } else if (response.status === 400) {
-          // https://segment.com/docs/connections/sources/catalog/libraries/server/http-api/#max-request-size
           // Request either malformed or size exceeded - don't retry.
           resolveFailedBatch(
             batch,

@@ -11,7 +11,7 @@ export interface MetricsOptions {
 }
 
 /**
- * Type expected by the segment metrics API endpoint
+ * Type expected by the tronic metrics API endpoint
  */
 type RemoteMetric = {
   type: 'Counter'
@@ -41,7 +41,7 @@ const createRemoteMetric = (
     value: 1,
     tags: {
       ...formattedTags,
-      library: 'analytics.js',
+      library: 'receiver.js',
       library_version:
         versionType === 'web' ? `next-${version}` : `npm:next-${version}`,
     },
@@ -49,7 +49,7 @@ const createRemoteMetric = (
 }
 
 function logError(err: unknown): void {
-  console.error('Error sending segment performance metrics', err)
+  console.error('Error sending tronic performance metrics', err)
 }
 
 export class RemoteMetrics {
@@ -89,7 +89,7 @@ export class RemoteMetrics {
 
   increment(metric: string, tags: string[]): void {
     // All metrics are part of an allow list in Tracking API
-    if (!metric.includes('analytics_js.')) {
+    if (!metric.includes('receiver_js.')) {
       return
     }
 

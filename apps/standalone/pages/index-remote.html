@@ -24,18 +24,15 @@
 
       if (writeKey) {
         !(function () {
-        var analytics = (window.analytics = window.analytics || [])
-        if (!analytics.initialize)
-          if (analytics.invoked)
+        var receiver = (window.receiver = window.receiver || [])
+        if (!receiver.initialize)
+          if (receiver.invoked)
             window.console &&
               console.error &&
-              console.error('Segment snippet included twice.')
+              console.error('Tronic receiver included twice.')
           else {
-            analytics.invoked = !0
-            analytics.methods = [
-              'screen',
-              'register',
-              'deregister',
+            receiver.invoked = !0
+            receiver.methods = [
               'trackSubmit',
               'trackClick',
               'trackLink',
@@ -46,33 +43,33 @@
               'ready',
               'debug',
             ]
-            analytics.factory = function (e) {
+            receiver.factory = function (e) {
               return function () {
                 var t = Array.prototype.slice.call(arguments)
                 t.unshift(e)
-                analytics.push(t)
-                return analytics
+                receiver.push(t)
+                return receiver
               }
             }
-            for (var e = 0; e < analytics.methods.length; e++) {
-              var key = analytics.methods[e]
-              analytics[key] = analytics.factory(key)
+            for (var e = 0; e < receiver.methods.length; e++) {
+              var key = receiver.methods[e]
+              receiver[key] = receiver.factory(key)
             }
-            analytics.load = function (key, e) {
+            receiver.load = function (key, e) {
               var t = document.createElement('script')
               t.type = 'text/javascript'
               t.async = !0
               t.src =
                 'https://cdn.tronic.com/receiver.js/v1/' +
                 writeKey +
-                '/analytics.min.js'
+                '/receiver.min.js'
               var n = document.getElementsByTagName('script')[0]
               n.parentNode.insertBefore(t, n)
-              analytics._loadOptions = e
+              receiver._loadOptions = e
             }
-            analytics.SNIPPET_VERSION = '0.0.1'
-            analytics._writeKey = writeKey
-            analytics.load()
+            receiver.SNIPPET_VERSION = '0.0.1'
+            receiver._writeKey = writeKey
+            receiver.load()
           }
       })()
       }
@@ -104,7 +101,7 @@
         e.preventDefault()
         const contents = document.querySelector('#event').value
         const evt = JSON.parse(contents)
-        const promise = window.analytics.track(
+        const promise = window.receiver.track(
           evt.name ?? '',
           evt.properties ?? {},
           evt.options ?? {}
@@ -126,7 +123,7 @@
           e.preventDefault()
           const contents = document.querySelector('#event').value
           const evt = JSON.parse(contents)
-          const promise = window.analytics.identify(
+          const promise = window.receiver.identify(
             evt.name ?? '',
             evt.properties ?? {},
             evt.options ?? {}

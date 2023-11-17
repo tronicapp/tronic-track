@@ -1,7 +1,7 @@
 import { getCDN, setGlobalCDNUrl } from '../lib/parse-cdn'
 
 import { fetch } from '../lib/fetch'
-import { Analytics, AnalyticsSettings, InitOptions } from '../core/analytics'
+import { Receiver, ReceiverSettings, InitOptions } from '../core/receiver'
 import { Context } from '../core/context'
 import { Plugin } from '../core/plugin'
 import { MetricsOptions } from '../core/stats/remote-metrics'
@@ -17,9 +17,9 @@ import type { RoutingRule } from '../plugins/routing-middleware'
 import { tronic, TronicSettings } from '../plugins/tronic'
 import { validation } from '../plugins/validation'
 import {
-  AnalyticsBuffered,
+  ReceiverBuffered,
   PreInitMethodCallBuffer,
-  flushAnalyticsCallsInNewTask,
+  flushReceiverCallsInNewTask,
   flushAddSourceMiddleware,
   flushSetAnonymousID,
   flushOn,
@@ -27,7 +27,7 @@ import {
 import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
 import { attachInspector } from '../core/inspector'
 import { Stats } from '../core/stats'
-import { setGlobalAnalyticsKey } from '../lib/global-analytics-helper'
+import { setGlobalReceiverKey } from '../lib/global-receiver-helper'
 
 export interface LegacyIntegrationConfiguration {
   /* @deprecated - This does not indicate browser types anymore */
@@ -47,12 +47,12 @@ export interface LegacyIntegrationConfiguration {
   consentSettings?: {
     /**
      * Consent categories for the integration
-     * @example ["Analytics", "Advertising", "CAT001"]
+     * @example ["Receiver", "Advertising", "CAT001"]
      */
     categories: string[]
   }
 
-  // Segment.io specific
+  // Tronic.com specific
   retryQueue?: boolean
 
   // any extra unknown settings
@@ -81,16 +81,16 @@ export interface LegacySettings {
     /**
      * All unique consent categories.
      * There can be categories in this array that are important for consent that are not included in any integration  (e.g. 2 cloud mode categories).
-     * @example ["Analytics", "Advertising", "CAT001"]
+     * @example ["Receiver", "Advertising", "CAT001"]
      */
     allCategories: string[]
   }
 }
 
-export interface AnalyticsBrowserSettings extends AnalyticsSettings {
+export interface ReceiverBrowserSettings extends ReceiverSettings {
   /**
-   * The settings for the Segment Source.
-   * If provided, `AnalyticsBrowser` will not fetch remote settings
+   * The settings for the Tronic Source.
+   * If provided, `ReceiverBrowser` will not fetch remote settings
    * for the source.
    */
   cdnSettings?: LegacySettings & Record<string, unknown>
@@ -130,32 +130,32 @@ export function loadLegacySettings(
  * This is important so users can register to 'initialize' and any events that may fire early during setup.
  */
 function flushPreBuffer(
-  analytics: Analytics,
+  receiver: Receiver,
   buffer: PreInitMethodCallBuffer
 ): void {
-  flushSetAnonymousID(analytics, buffer)
-  flushOn(analytics, buffer)
+  flushSetAnonymousID(receiver, buffer)
+  flushOn(receiver, buffer)
 }
 
 /**
  * Finish flushing buffer and cleanup.
  */
 async function flushFinalBuffer(
-  analytics: Analytics,
+  receiver: Receiver,
   buffer: PreInitMethodCallBuffer
 ): Promise<void> {
   // Call popSnippetWindowBuffer before each flush task since there may be
-  // analytics calls during async function calls.
-  await flushAddSourceMiddleware(analytics, buffer)
-  flushAnalyticsCallsInNewTask(analytics, buffer)
-  // Clear buffer, just in case analytics is loaded twice; we don't want to fire events off again.
+  // receiver calls during async function calls.
+  await flushAddSourceMiddleware(receiver, buffer)
+  flushReceiverCallsInNewTask(receiver, buffer)
+  // Clear buffer, just in case receiver is loaded twice; we don't want to fire events off again.
   buffer.clear()
 }
 
 async function registerPlugins(
   writeKey: string,
   legacySettings: LegacySettings,
-  analytics: Analytics,
+  receiver: Receiver,
   opts: InitOptions,
   options: InitOptions,
   pluginLikes: (Plugin | PluginFactory)[] = [],
@@ -174,7 +174,7 @@ async function registerPlugins(
   const mergedSettings = mergedOptions(legacySettings, options)
   const remotePlugins = await remoteLoader(
     legacySettings,
-    analytics.integrations,
+    receiver.integrations,
     mergedSettings,
     options.obfuscate,
     undefined,
@@ -187,13 +187,13 @@ async function registerPlugins(
     ...plugins,
     ...remotePlugins,
     await tronic(
-      analytics,
+      receiver,
       mergedSettings['Tronic'] as TronicSettings,
       legacySettings.integrations
     ),
   ]
 
-  const ctx = await analytics.register(...toRegister)
+  const ctx = await receiver.register(...toRegister)
 
   if (
     Object.entries(legacySettings.enabledMiddleware ?? {}).some(
@@ -209,7 +209,7 @@ async function registerPlugins(
         options.obfuscate
       )
       const promises = middleware.map((mdw) =>
-        analytics.addSourceMiddleware(mdw)
+        receiver.addSourceMiddleware(mdw)
       )
       return Promise.all(promises)
     })
@@ -218,13 +218,13 @@ async function registerPlugins(
   return ctx
 }
 
-async function loadAnalytics(
-  settings: AnalyticsBrowserSettings,
+async function loadReceiver(
+  settings: ReceiverBrowserSettings,
   options: InitOptions = {},
   preInitBuffer: PreInitMethodCallBuffer
-): Promise<[Analytics, Context]> {
-  if (options.globalAnalyticsKey)
-    setGlobalAnalyticsKey(options.globalAnalyticsKey)
+): Promise<[Receiver, Context]> {
+  if (options.globalReceiverKey)
+    setGlobalReceiverKey(options.globalReceiverKey)
   // this is an ugly side-effect, but it's for the benefits of the plugins that get their cdn via getCDN()
   if (settings.cdnURL) setGlobalCDNUrl(settings.cdnURL)
 
@@ -243,9 +243,9 @@ async function loadAnalytics(
     legacySettings?.integrations?.['Segment.io']?.retryQueue ?? true
 
   const opts: InitOptions = { retryQueue, ...options }
-  const analytics = new Analytics(settings, opts)
+  const receiver = new Receiver(settings, opts)
 
-  attachInspector(analytics)
+  attachInspector(receiver)
 
   const plugins = settings.plugins ?? []
 
@@ -253,12 +253,12 @@ async function loadAnalytics(
   Stats.initRemoteMetrics(legacySettings.metrics)
 
   // needs to be flushed before plugins are registered
-  flushPreBuffer(analytics, preInitBuffer)
+  flushPreBuffer(receiver, preInitBuffer)
 
   const ctx = await registerPlugins(
     settings.writeKey,
     legacySettings,
-    analytics,
+    receiver,
     opts,
     options,
     plugins,
@@ -271,46 +271,46 @@ async function loadAnalytics(
   const term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '')
 
   if (term.includes('ajs_')) {
-    await analytics.queryString(term).catch(console.error)
+    await receiver.queryString(term).catch(console.error)
   }
 
-  analytics.initialized = true
-  analytics.emit('initialize', settings, options)
+  receiver.initialized = true
+  receiver.emit('initialize', settings, options)
 
   /*
 if (options.initialPageview) {
-  analytics.page().catch(console.error)
+  receiver.page().catch(console.error)
 }
    */
 
-  await flushFinalBuffer(analytics, preInitBuffer)
+  await flushFinalBuffer(receiver, preInitBuffer)
 
-  return [analytics, ctx]
+  return [receiver, ctx]
 }
 
 /**
- * The public browser interface for Segment Analytics
+ * The public browser interface for Tronic Receiver
  *
  * @example
  * ```ts
- *  export const analytics = new AnalyticsBrowser()
- *  analytics.load({ writeKey: 'foo' })
+ *  export const receiver = new ReceiverBrowser()
+ *  receiver.load({ writeKey: 'foo' })
  * ```
- * @link https://github.com/segmentio/analytics-next/#readme
+ * @link https://github.com/tronic/tronic-receiver/#readme
  */
-export class AnalyticsBrowser extends AnalyticsBuffered {
+export class ReceiverBrowser extends ReceiverBuffered {
   private _resolveLoadStart: (
-    settings: AnalyticsBrowserSettings,
+    settings: ReceiverBrowserSettings,
     options: InitOptions
   ) => void
 
   constructor() {
     const { promise: loadStart, resolve: resolveLoadStart } =
-      createDeferred<Parameters<AnalyticsBrowser['load']>>()
+      createDeferred<Parameters<ReceiverBrowser['load']>>()
 
     super((buffer) =>
       loadStart.then(([settings, options]) =>
-        loadAnalytics(settings, options, buffer)
+        loadReceiver(settings, options, buffer)
       )
     )
 
@@ -319,51 +319,51 @@ export class AnalyticsBrowser extends AnalyticsBuffered {
   }
 
   /**
-   * Fully initialize an analytics instance, including:
+   * Fully initialize an receiver instance, including:
    *
-   * * Fetching settings from the segment CDN (by default).
+   * * Fetching settings from the Tronic CDN (by default).
    * * Fetching all remote destinations configured by the user (if applicable).
-   * * Flushing buffered analytics events.
+   * * Flushing buffered receiver events.
    * * Loading all middleware.
    *
    * Note:️  This method should only be called *once* in your application.
    *
    * @example
    * ```ts
-   * export const analytics = new AnalyticsBrowser()
-   * analytics.load({ writeKey: 'foo' })
+   * export const receiver = new ReceiverBrowser()
+   * receiver.load({ writeKey: 'foo' })
    * ```
    */
   load(
-    settings: AnalyticsBrowserSettings,
+    settings: ReceiverBrowserSettings,
     options: InitOptions = {}
-  ): AnalyticsBrowser {
+  ): ReceiverBrowser {
     this._resolveLoadStart(settings, options)
     return this
   }
 
   /**
-   * Instantiates an object exposing Analytics methods.
+   * Instantiates an object exposing Receiver methods.
    *
    * @example
    * ```ts
-   * const ajs = AnalyticsBrowser.load({ writeKey: '<YOUR_WRITE_KEY>' })
+   * const ajs = ReceiverBrowser.load({ writeKey: '<YOUR_WRITE_KEY>' })
    *
    * ajs.track("foo")
    * ...
    * ```
    */
   static load(
-    settings: AnalyticsBrowserSettings,
+    settings: ReceiverBrowserSettings,
     options: InitOptions = {}
-  ): AnalyticsBrowser {
-    return new AnalyticsBrowser().load(settings, options)
+  ): ReceiverBrowser {
+    return new ReceiverBrowser().load(settings, options)
   }
 
   static standalone(
     writeKey: string,
     options?: InitOptions
-  ): Promise<Analytics> {
-    return AnalyticsBrowser.load({ writeKey }, options).then((res) => res[0])
+  ): Promise<Receiver> {
+    return ReceiverBrowser.load({ writeKey }, options).then((res) => res[0])
   }
 }

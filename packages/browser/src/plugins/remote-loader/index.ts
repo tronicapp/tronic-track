@@ -9,7 +9,7 @@ import {
   DestinationMiddlewareFunction,
 } from '../middleware'
 import { Context, ContextCancelation } from '../../core/context'
-import { Analytics } from '../../core/analytics'
+import { Receiver } from '../../core/receiver'
 
 export interface RemotePlugin {
   /** The name of the remote plugin */
@@ -97,12 +97,12 @@ export class ActionDestination implements DestinationPlugin {
     return this.action.ready ? this.action.ready() : Promise.resolve()
   }
 
-  load(ctx: Context, analytics: Analytics): Promise<unknown> {
-    return this.action.load(ctx, analytics)
+  load(ctx: Context, receiver: Receiver): Promise<unknown> {
+    return this.action.load(ctx, receiver)
   }
 
-  unload(ctx: Context, analytics: Analytics): Promise<unknown> | unknown {
-    return this.action.unload?.(ctx, analytics)
+  unload(ctx: Context, receiver: Receiver): Promise<unknown> | unknown {
+    return this.action.unload?.(ctx, receiver)
   }
 }
 
@@ -160,7 +160,7 @@ async function loadPluginFactory(
   remotePlugin: RemotePlugin,
   obfuscate?: boolean
 ): Promise<void | PluginFactory> {
-  const defaultCdn = new RegExp('https://cdn.segment.(com|build)')
+  const defaultCdn = new RegExp('https://cdn.tronic.(com|build)')
   const cdn = getCDN()
 
   if (obfuscate) {

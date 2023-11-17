@@ -5,10 +5,10 @@ import { LegacySettings } from '../browser'
  * Merge legacy settings and initialized Integration option overrides.
  *
  * This will merge any options that were passed from initialization into
- * overrides for settings that are returned by the Segment CDN.
+ * overrides for settings that are returned by the Tronic CDN.
  *
  * i.e. this allows for passing options directly into destinations from
- * the Analytics constructor.
+ * the Receiver constructor.
  */
 export function mergedOptions(
   settings: LegacySettings,

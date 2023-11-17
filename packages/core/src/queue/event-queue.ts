@@ -1,4 +1,4 @@
-import { CoreAnalytics } from '../analytics'
+import { CoreReceiver } from '../receiver'
 import { groupBy } from '../utils/group-by'
 import { ON_REMOVE_FROM_FUTURE, PriorityQueue } from '../priority-queue'
 
@@ -47,7 +47,7 @@ export abstract class CoreEventQueue<
   async register(
     ctx: Ctx,
     plugin: Plugin,
-    instance: CoreAnalytics
+    instance: CoreReceiver,
   ): Promise<void> {
     await Promise.resolve(plugin.load(ctx, instance))
       .then(() => {
@@ -73,7 +73,7 @@ export abstract class CoreEventQueue<
   async deregister(
     ctx: Ctx,
     plugin: CorePlugin<Ctx>,
-    instance: CoreAnalytics
+    instance: CoreReceiver,
   ): Promise<void> {
     try {
       if (plugin.unload) {

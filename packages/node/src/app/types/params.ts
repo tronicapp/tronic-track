@@ -25,8 +25,7 @@ type IdentityOptions =
 export type IdentifyParams = {
   /**
    * Traits are pieces of information you know about a group.
-   * This interface represents reserved traits that Segment has standardized.
-   * @link https://segment.com/docs/connections/spec/group/#traits
+   * This interface represents standardized reserved traits.
    */
   channelId: string;
   traits?: UserTraits

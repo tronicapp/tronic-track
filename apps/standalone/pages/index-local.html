@@ -27,15 +27,15 @@
       console.profile('snippet')
       console.time('snippet')
       !(function () {
-        var analytics = (window.analytics = window.analytics || [])
-        if (!analytics.initialize)
-          if (analytics.invoked)
+        var receiver = (window.receiver = window.receiver || [])
+        if (!receiver.initialize)
+          if (receiver.invoked)
             window.console &&
               console.error &&
-              console.error('Segment snippet included twice.')
+              console.error('Tronic snippet included twice.')
           else {
-            analytics.invoked = !0
-            analytics.methods = [
+            receiver.invoked = !0
+            receiver.methods = [
               'screen',
               'register',
               'deregister',
@@ -49,30 +49,30 @@
               'ready',
               'debug',
             ]
-            analytics.factory = function (e) {
+            receiver.factory = function (e) {
               return function () {
                 var t = Array.prototype.slice.call(arguments)
                 t.unshift(e)
-                analytics.push(t)
-                return analytics
+                receiver.push(t)
+                return receiver
               }
             }
-            for (var e = 0; e < analytics.methods.length; e++) {
-              var key = analytics.methods[e]
-              analytics[key] = analytics.factory(key)
+            for (var e = 0; e < receiver.methods.length; e++) {
+              var key = receiver.methods[e]
+              receiver[key] = receiver.factory(key)
             }
-            analytics.load = function (key, e) {
+            receiver.load = function (key, e) {
               var t = document.createElement('script')
               t.type = 'text/javascript'
               t.async = !0
               t.src = '/node_modules/@tronic/receiver-browser/dist/umd/standalone.js'
               var n = document.getElementsByTagName('script')[0]
               n.parentNode.insertBefore(t, n)
-              analytics._loadOptions = e
+              receiver._loadOptions = e
             }
-            analytics.SNIPPET_VERSION = '0.0.1'
-            analytics._writeKey = writeKey
-            analytics.load()
+            receiver.SNIPPET_VERSION = '0.0.1'
+            receiver._writeKey = writeKey
+            receiver.load()
           }
       })()
     }
@@ -101,8 +101,8 @@
   <pre id="logs"></pre>
 
   <script type="text/javascript">
-    if (window.analytics) {
-      window.analytics.ready(function onReady() {
+    if (window.receiver) {
+      window.receiver.ready(function onReady() {
         console.profileEnd('snippet')
         console.timeEnd('snippet')
         document.querySelector('#ready-logs').textContent = 'ready!'
@@ -114,7 +114,7 @@
         var evt = JSON.parse(contents)
         console.profile('track')
         console.time('track')
-        var promise = window.analytics.track(
+        var promise = window.receiver.track(
           evt.channelId || '',
           evt.userId || '',
           evt.name || '',
@@ -142,7 +142,7 @@
           var contents = document.querySelector('#event').value
           var evt = JSON.parse(contents)
           console.time('identify')
-          var promise = window.analytics.identify(
+          var promise = window.receiver.identify(
             evt.name || '',
             evt.properties || {},
             evt.options || {}

@@ -20,7 +20,7 @@ export async function remoteMiddlewares(
     .map(([name]) => name)
 
   const scripts = names.map(async (name) => {
-    const nonNamespaced = name.replace('@segment/', '')
+    const nonNamespaced = name.replace('@tronic/', '')
     let bundleName = nonNamespaced
     if (obfuscate) {
       bundleName = btoa(nonNamespaced).replace(/=/g, '')

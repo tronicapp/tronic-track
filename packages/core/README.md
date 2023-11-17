@@ -44,7 +44,7 @@ Context is a dictionary of extra information that provides useful context about 
 The first function (Source Middleware) allows you to manipulate the payload and filter events on a per-source basis, while the second function (Destination Middleware) allows this on a per destination basis. Middlewares run in the browser.
 
 ## Plugins
-The plugins you write can augment functionality, enrich data, and control the flow and delivery of events. From modifying event payloads to changing analytics functionality, plugins help to speed up the process of getting things done.
+The plugins you write can augment functionality, enrich data, and control the flow and delivery of events. From modifying event payloads to changing receiver functionality, plugins help to speed up the process of getting things done.
 
 Though middlewares function the same as plugins, it’s best to use plugins as they are easier to implement and are more testable.
 
@@ -73,7 +73,7 @@ When enabled, receiver.js automatically retries network and server errors. With 
 
 Receiver.js stores events in localStorage and falls back to in-memory storage when localStorage is unavailable. It retries up to 10 times with an incrementally increasing back-off time between each retry. Receiver.js queues up to 100 events at a time to avoid using too much of the device's local storage.
 
-Receiver.js tries to detect when a page is about to be closed and saves pending events to localStorage. When the user navigates to another page within the same domain, Analytics.js attempts to send any events it finds in localStorage.
+Receiver.js tries to detect when a page is about to be closed and saves pending events to localStorage. When the user navigates to another page within the same domain, Receiver.js attempts to send any events it finds in localStorage.
 
 ## Batching
 Batching support is not enabled at this time.

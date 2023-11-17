@@ -1,4 +1,4 @@
-import { Analytics } from './analytics'
+import { Receiver } from './receiver'
 import { EventProperties, Options } from './events'
 import { pTimeout } from './callback'
 
@@ -34,12 +34,12 @@ export interface JQueryShim<TElement = HTMLElement> {
 }
 
 export function link(
-  this: Analytics,
+  this: Receiver,
   links: Element | Array<Element> | JQueryShim | null,
   event: string | Function,
   properties?: EventProperties | Function,
   options?: Options
-): Analytics {
+): Receiver {
   let elements: Array<Element> = []
   // always arrays, handles jquery
   if (!links) {
@@ -98,12 +98,12 @@ export function link(
 export type LinkArgs = Parameters<typeof link>
 
 export function form(
-  this: Analytics,
+  this: Receiver,
   forms: HTMLFormElement | Array<HTMLFormElement> | null,
   event: string | Function,
   properties?: EventProperties | Function,
   options?: Options
-): Analytics {
+): Receiver {
   // always arrays, handles jquery
   if (!forms) return this
   if (forms instanceof HTMLFormElement) forms = [forms]

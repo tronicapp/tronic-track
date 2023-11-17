@@ -8,7 +8,7 @@ import { getVersionType } from '../../lib/version-type'
 import { tld } from '../../core/user/tld'
 import { gracefulDecodeURIComponent } from '../../core/query-string/gracefulDecodeURIComponent'
 import { CookieStorage, UniversalStorage } from '../../core/storage'
-import { Analytics } from '../../core/analytics'
+import { Receiver } from '../../core/receiver'
 import { clientHints } from '../../lib/client-hints'
 import { UADataValues } from '../../lib/client-hints/interfaces'
 
@@ -130,14 +130,14 @@ const objectToQueryString = (
 }
 
 class EnvironmentEnrichmentPlugin implements Plugin {
-  private instance!: Analytics
+  private instance!: Receiver
   private userAgentData: UADataValues | undefined
 
   name = 'Page Enrichment'
   type: PluginType = 'before'
   version = '0.1.0'
   isLoaded = () => true
-  load = async (_ctx: Context, instance: Analytics) => {
+  load = async (_ctx: Context, instance: Receiver) => {
     this.instance = instance
     try {
       this.userAgentData = await clientHints(
@@ -169,7 +169,7 @@ class EnvironmentEnrichmentPlugin implements Plugin {
     }
 
     evtCtx.library ??= {
-      name: 'analytics.js',
+      name: 'receiver.js',
       version: `${getVersionType() === 'web' ? 'next' : 'npm:next'}-${version}`,
     }
 

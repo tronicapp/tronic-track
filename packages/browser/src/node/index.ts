@@ -1,36 +1,36 @@
-import { Analytics } from '../core/analytics'
+import { Receiver } from '../core/receiver'
 import { Context } from '../core/context'
 import { validation } from '../plugins/validation'
-import { analyticsNode } from '../plugins/analytics-node'
+import { receiverNode } from '../plugins/receiver-node'
 import { Plugin } from '../core/plugin'
 import { EventQueue } from '../core/queue/event-queue'
 import { PriorityQueue } from '../lib/priority-queue'
 
-export class AnalyticsNode {
+export class ReceiverNode {
   static async load(settings: {
     writeKey: string
-  }): Promise<[Analytics, Context]> {
+  }): Promise<[Receiver, Context]> {
     const cookieOptions = {
       persist: false,
     }
 
     const queue = new EventQueue(new PriorityQueue(3, []))
     const options = { user: cookieOptions, group: cookieOptions }
-    const analytics = new Analytics(settings, options, queue)
+    const receiver = new Receiver(settings, options, queue)
 
     const nodeSettings = {
       writeKey: settings.writeKey,
-      name: 'analytics-node-next',
+      name: 'receiver-node-next',
       type: 'after' as Plugin['type'],
       version: 'latest',
     }
 
-    const ctx = await analytics.register(
+    const ctx = await receiver.register(
       validation,
-      analyticsNode(nodeSettings)
+      receiverNode(nodeSettings)
     )
-    analytics.emit('initialize', settings, cookieOptions ?? {})
+    receiver.emit('initialize', settings, cookieOptions ?? {})
 
-    return [analytics, ctx]
+    return [receiver, ctx]
   }
 }

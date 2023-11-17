@@ -1,15 +1,15 @@
-import { Analytics } from '../../core/analytics'
+import { Receiver } from '../../core/receiver'
 import { LegacySettings } from '../../browser'
 import { SegmentFacade } from '../../lib/to-facade'
 import { TronicSettings } from './index'
 
 export function normalize(
-  analytics: Analytics,
+  receiver: Receiver,
   json: ReturnType<SegmentFacade['json']>,
   settings?: TronicSettings,
   integrations?: LegacySettings['integrations']
 ): object {
-  const user = analytics.user()
+  const user = receiver.user()
 
   delete json.options
 
@@ -20,7 +20,7 @@ export function normalize(
 
   json.sentAt = new Date()
 
-  const failed = analytics.queue.failedInitializations || []
+  const failed = receiver.queue.failedInitializations || []
   if (failed.length > 0) {
     json._metadata = { failedInitializations: failed }
   }

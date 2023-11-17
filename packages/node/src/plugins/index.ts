@@ -25,11 +25,11 @@ type DefinedPluginFields =
   | 'identify'
   | 'track'
 
-type SegmentNodePlugin = Plugin & Required<Pick<Plugin, DefinedPluginFields>>
+type TronicNodePlugin = Plugin & Required<Pick<Plugin, DefinedPluginFields>>
 
 export type ConfigureNodePluginProps = PublisherProps
 
-export function createNodePlugin(publisher: Publisher): SegmentNodePlugin {
+export function createNodePlugin(publisher: Publisher): TronicNodePlugin {
   function action(ctx: Context): Promise<Context> {
     normalizeEvent(ctx)
     return publisher.enqueue(ctx)

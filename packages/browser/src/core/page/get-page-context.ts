@@ -1,7 +1,7 @@
 import { isPlainObject } from '@tronic/receiver-core'
 
 /**
- * Final Page Context object expected in the Segment Event context
+ * Final Page Context object expected in the Event context
  */
 export interface PageContext {
   path: string
@@ -77,7 +77,6 @@ const createCanonicalURL = (canonicalUrl: string, searchParams: string) => {
 
 /**
  * Strips hash from URL.
- * http://www.segment.local#test -> http://www.segment.local
  */
 const removeHash = (href: string) => {
   const hashIdx = href.indexOf('#')

@@ -12,21 +12,21 @@ if (process.env.ASSET_PATH) {
 
     // @ts-ignore
     __webpack_public_path__ = cdn
-      ? cdn + '/analytics-next/bundles/'
-      : 'https://cdn.segment.com/analytics-next/bundles/'
+      ? cdn + '/tronic-receiver/bundles/'
+      : 'https://cdn.tronic.com/tronic-receiver/bundles/'
   }
 }
 
 setVersionType('web')
 
-import { install } from './standalone-analytics'
+import { install } from './standalone-receiver'
 import '../lib/csp-detection'
 import { shouldPolyfill } from '../lib/browser-polyfill'
 import { RemoteMetrics } from '../core/stats/remote-metrics'
 import { embeddedWriteKey } from '../lib/embedded-write-key'
 import {
   loadAjsClassicFallback,
-  isAnalyticsCSPError,
+  isReceiverCSPError,
 } from '../lib/csp-detection'
 
 let ajsIdentifiedCSP = false
@@ -34,14 +34,14 @@ let ajsIdentifiedCSP = false
 const sendErrorMetrics = (tags: string[]) => {
   // this should not be instantied at the root, or it will break ie11.
   const metrics = new RemoteMetrics()
-  metrics.increment('analytics_js.invoke.error', [
+  metrics.increment('receiver_js.invoke.error', [
     ...tags,
     `wk:${embeddedWriteKey()}`,
   ])
 }
 
 function onError(err?: unknown) {
-  console.error('[analytics.js]', 'Failed to load Analytics.js', err)
+  console.error('[receiver.js]', 'Failed to load Receiver.js', err)
   sendErrorMetrics([
     'type:initialization',
     ...(err instanceof Error
@@ -51,7 +51,7 @@ function onError(err?: unknown) {
 }
 
 document.addEventListener('securitypolicyviolation', (e) => {
-  if (ajsIdentifiedCSP || !isAnalyticsCSPError(e)) {
+  if (ajsIdentifiedCSP || !isReceiverCSPError(e)) {
     return
   }
   ajsIdentifiedCSP = true
