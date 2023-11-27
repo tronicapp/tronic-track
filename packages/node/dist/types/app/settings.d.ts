@@ -1,0 +1,43 @@
+import { HTTPClient, HTTPFetchFn } from '../lib/http-client';
+export interface ReceiverSettings {
+    /**
+     * Key that corresponds to your Tronic project
+     */
+    writeKey: string;
+    /**
+     * The base URL of the API. Default: "https://api.tronic.io"
+     */
+    host?: string;
+    /**
+     * The API path route. Default: "/v1/batch"
+     */
+    path?: string;
+    /**
+     * The number of times to retry flushing a batch. Default: 3
+     */
+    maxRetries?: number;
+    /**
+     * The number of messages to enqueue before flushing. Default: 15
+     */
+    maxEventsInBatch?: number;
+    /**
+     * The number of milliseconds to wait before flushing the queue automatically. Default: 10000
+     */
+    flushInterval?: number;
+    /**
+     * The maximum number of milliseconds to wait for an http request. Default: 10000
+     */
+    httpRequestTimeout?: number;
+    /**
+     * Disable the receiver library. All calls will be a noop. Default: false.
+     */
+    disable?: boolean;
+    /**
+     * Supply a default http client implementation (such as one supporting proxy).
+     * Accepts either an HTTPClient instance or a fetch function.
+     * Default: an HTTP client that uses globalThis.fetch, with node-fetch as a fallback.
+     */
+    httpClient?: HTTPFetchFn | HTTPClient;
+}
+export declare const validateSettings: (settings: ReceiverSettings) => void;
+//# sourceMappingURL=settings.d.ts.map
