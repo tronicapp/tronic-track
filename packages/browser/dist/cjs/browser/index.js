@@ -182,7 +182,15 @@ function registerPlugins(writeKey, legacySettings, receiver, opts, options, plug
                             validation_1.validation,
                             env_enrichment_1.envEnrichment
                         ], plugins, true), remotePlugins, true)];
-                    return [4 /*yield*/, (0, tronic_1.tronic)(receiver, mergedSettings['Tronic'], legacySettings.integrations)];
+                    return [4 /*yield*/, (0, tronic_1.tronic)(receiver, mergedSettings['Tronic'], 
+                        /*
+                        {
+                          protocol: 'http',
+                          apiHost: ,
+                          apiKey: writeKey,
+                        },
+                          */
+                        legacySettings.integrations)];
                 case 2:
                     toRegister = __spreadArray.apply(void 0, _b.concat([[
                             _c.sent()
@@ -234,7 +242,7 @@ function loadReceiver(settings, options, preInitBuffer) {
                     if (settings.cdnURL)
                         (0, parse_cdn_1.setGlobalCDNUrl)(settings.cdnURL);
                     legacySettings = {
-                        integrations: {},
+                        integrations: options.integrations,
                     } /*
                       settings.cdnSettings ??
                       (await loadLegacySettings(settings.writeKey, settings.cdnURL))
