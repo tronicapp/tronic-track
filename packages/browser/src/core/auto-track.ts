@@ -2,6 +2,9 @@ import { Receiver } from './receiver'
 import { EventProperties, Options } from './events'
 import { pTimeout } from './callback'
 
+const channelId = '';
+const userId = '';
+
 // Check if a user is opening the link in a new tab
 function userNewTab(event: Event): boolean {
   const typedEvent = event as Event & {
@@ -67,7 +70,7 @@ export function link(
           el.getElementsByTagName('a')[0]?.getAttribute('href')
 
         const trackEvent = pTimeout(
-          this.track(ev, props, options ?? {}),
+          this.track(channelId, userId, ev, props, options ?? {}),
           this.settings.timeout ?? 500
         )
 
@@ -122,7 +125,7 @@ export function form(
       const props = properties instanceof Function ? properties(el) : properties
 
       const trackEvent = pTimeout(
-        this.track(ev, props, options ?? {}),
+        this.track(channelId, userId, ev, props, options ?? {}),
         this.settings.timeout ?? 500
       )
 

@@ -16,28 +16,28 @@ import {
  * The names of any ReceiverBrowser methods that also exist on Receiver
  */
 export type PreInitMethodName =
-//  | 'screen'
+  //  | 'screen'
   | 'register'
   | 'deregister'
   | 'user'
-//  | 'trackSubmit'
-//  | 'trackClick'
-//  | 'trackLink'
-//  | 'trackForm'
-//  | 'pageview'
+  //  | 'trackSubmit'
+  //  | 'trackClick'
+  //  | 'trackLink'
+  //  | 'trackForm'
+  //  | 'pageview'
   | 'identify'
   | 'reset'
-//  | 'group'
+  //  | 'group'
   | 'track'
   | 'ready'
-//  | 'alias'
+  //  | 'alias'
   | 'debug'
-//  | 'page'
+  //  | 'page'
   | 'once'
   | 'off'
   | 'on'
   | 'addSourceMiddleware'
-  // | 'setAnonymousId'
+// | 'setAnonymousId'
 // | 'addDestinationMiddleware'
 
 // Union of all receiver methods that _do not_ return a Promise
@@ -45,8 +45,8 @@ type SyncPreInitMethodName = {
   [MethodName in PreInitMethodName]: ReturnType<
     Receiver[MethodName]
   > extends Promise<any>
-    ? never
-    : MethodName
+  ? never
+  : MethodName
 }[PreInitMethodName]
 
 const flushSyncReceiverCalls = (
@@ -72,10 +72,12 @@ export const flushAddSourceMiddleware = async (
 
 export const flushOn = flushSyncReceiverCalls.bind(this, 'on')
 
+/*
 export const flushSetAnonymousID = flushSyncReceiverCalls.bind(
   this,
   'setAnonymousId'
 )
+ */
 
 export const flushReceiverCallsInNewTask = (
   receiver: Receiver,
@@ -136,8 +138,8 @@ export type PreInitMethodParams<MethodName extends PreInitMethodName> =
  */
 type ReturnTypeUnwrap<Fn> = Fn extends (...args: any[]) => infer ReturnT
   ? ReturnT extends PromiseLike<infer Unwrapped>
-    ? Unwrapped
-    : ReturnT
+  ? Unwrapped
+  : ReturnT
   : never
 
 type MethodCallMap = Partial<Record<PreInitMethodName, PreInitMethodCall[]>>
@@ -264,8 +266,7 @@ export type ReceiverLoader = (
 ) => Promise<[Receiver, Context]>
 
 export class ReceiverBuffered
-  implements PromiseLike<[Receiver, Context]>, ReceiverBrowserCore
-{
+  implements PromiseLike<[Receiver, Context]>, ReceiverBrowserCore {
   instance?: Receiver
   ctx?: Context
   private _preInitBuffer: PreInitMethodCallBuffer
@@ -287,9 +288,9 @@ export class ReceiverBuffered
   then<T1, T2 = never>(
     ...args: [
       onfulfilled:
-        | ((instance: [Receiver, Context]) => T1 | PromiseLike<T1>)
-        | null
-        | undefined,
+      | ((instance: [Receiver, Context]) => T1 | PromiseLike<T1>)
+      | null
+      | undefined,
       onrejected?: (reason: unknown) => T2 | PromiseLike<T2>
     ]
   ) {
@@ -299,9 +300,9 @@ export class ReceiverBuffered
   catch<TResult = never>(
     ...args: [
       onrejected?:
-        | ((reason: any) => TResult | PromiseLike<TResult>)
-        | undefined
-        | null
+      | ((reason: any) => TResult | PromiseLike<TResult>)
+      | undefined
+      | null
     ]
   ) {
     return this._promise.catch(...args)

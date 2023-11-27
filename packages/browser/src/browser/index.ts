@@ -21,7 +21,7 @@ import {
   PreInitMethodCallBuffer,
   flushReceiverCallsInNewTask,
   flushAddSourceMiddleware,
-  flushSetAnonymousID,
+  // flushSetAnonymousID,
   flushOn,
 } from '../core/buffer'
 import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
@@ -133,7 +133,7 @@ function flushPreBuffer(
   receiver: Receiver,
   buffer: PreInitMethodCallBuffer
 ): void {
-  flushSetAnonymousID(receiver, buffer)
+  // flushSetAnonymousID(receiver, buffer)
   flushOn(receiver, buffer)
 }
 
