@@ -80,7 +80,7 @@ const config = {
   },
   optimization: {
     moduleIds: 'deterministic',
-    minimize: isProd,
+    minimize: false, // isProd,
     minimizer: [
       new TerserPlugin({
         extractComments: false,
