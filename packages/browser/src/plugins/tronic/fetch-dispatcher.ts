@@ -6,7 +6,7 @@ export type StandardDispatcherConfig = {
   keepalive?: boolean
 }
 
-export default function (config?: StandardDispatcherConfig): {
+export default function (writeKey: string, config?: StandardDispatcherConfig): {
   dispatch: Dispatcher
 } {
   function dispatch(url: string, body: object): Promise<unknown> {
@@ -15,7 +15,7 @@ export default function (config?: StandardDispatcherConfig): {
       headers: {
         // 'Content-Type': 'text/plain',
         'Content-Type': 'application/json',
-        'X-Api-Key': '5663b25b-f8c3-4ccb-8f1f-fe891d3d1e9a',
+        'X-Api-Key': writeKey,
       },
       method: 'post',
       body: JSON.stringify(body),

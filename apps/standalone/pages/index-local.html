@@ -14,7 +14,7 @@
   </style>
 
   <form method="get">
-     <input type="text" name="writeKey" value="47ecad98-cb65-45de-97bd-9bec76de7c0b" placeholder="Writekey" />
+     <input type="text" name="writeKey" value="" placeholder="Writekey" />
     <button>Load</button>
   </form>
 
@@ -72,7 +72,14 @@
             }
             receiver.SNIPPET_VERSION = '0.0.1'
             receiver._writeKey = writeKey
-            receiver.load()
+            receiver.load('', {
+              integrations: {
+                'Tronic': {
+                  apiKey: writeKey,
+                  apiHost: 'dev-api.tronic.app',
+                },
+              },
+            })
           }
       })()
     }
@@ -83,7 +90,7 @@
   <form>
     <textarea name="event" id="event">
 {
-  "channelId": "2WffqYXFpaaDsZN21Wv3cEB92Bf",
+  "channelId": "2YUflBOLovgzw89JNtkxup30q5T",
   "userId": "2WffqQkUnMk5qM5y90fGlzcPDAv",
   "name": "event0",
   "properties": { "test": "yes" },
