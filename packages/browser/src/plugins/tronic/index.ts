@@ -75,14 +75,14 @@ export function tronic(
   const flushing = false
 
   const apiHost = settings?.apiHost ?? TRONIC_API_HOST
-  const protocol = 'http' // settings?.protocol ?? 'https'
+  const protocol = settings?.protocol ?? 'https'
   const remote = `${protocol}://${apiHost}`
 
   const deliveryStrategy = settings?.deliveryStrategy
   const client =
     deliveryStrategy?.strategy === 'batching'
       ? batch(apiHost, deliveryStrategy.config)
-      : standard(deliveryStrategy?.config as StandardDispatcherConfig)
+      : standard(writeKey, deliveryStrategy?.config as StandardDispatcherConfig)
 
   async function send(ctx: Context): Promise<Context> {
     if (isOffline()) {
@@ -112,7 +112,8 @@ export function tronic(
     }
      */
 
-    const json = {"userId":"2XWyaIZf7Tm2uQqa8fYH6GC0oYl","event":"event0","properties":{"test":"property"},"channelId":"2XWyaIasy88a5SJMoLKpkDuDt2O","timestamp":"2023-10-31T18:28:57.818Z"};
+    const json = _json;
+    // {"userId":"2XWyaIZf7Tm2uQqa8fYH6GC0oYl","event":"event0","properties":{"test":"property"},"channelId":"2XWyaIasy88a5SJMoLKpkDuDt2O","timestamp":"2023-10-31T18:28:57.818Z"};
 
     return client
       .dispatch(

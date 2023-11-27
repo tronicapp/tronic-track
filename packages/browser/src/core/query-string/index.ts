@@ -56,11 +56,14 @@ export function queryString(
     const channelId = Array.isArray(params.ajs_channel_id)
       ? params.ajs_channel_id[0]
       : params.ajs_channel_id
+    const userId = Array.isArray(params.ajs_user_id)
+      ? params.ajs_user_id[0]
+      : params.ajs_user_id
     const event = Array.isArray(params.ajs_event)
       ? params.ajs_event[0]
       : params.ajs_event
     const props = pickPrefix('ajs_prop_', params)
-    calls.push(receiver.track(channelId, event, props))
+    calls.push(receiver.track(channelId, userId, event, props))
   }
 
   return Promise.all(calls)

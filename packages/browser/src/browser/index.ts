@@ -21,7 +21,7 @@ import {
   PreInitMethodCallBuffer,
   flushReceiverCallsInNewTask,
   flushAddSourceMiddleware,
-  flushSetAnonymousID,
+  // flushSetAnonymousID,
   flushOn,
 } from '../core/buffer'
 import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
@@ -133,7 +133,7 @@ function flushPreBuffer(
   receiver: Receiver,
   buffer: PreInitMethodCallBuffer
 ): void {
-  flushSetAnonymousID(receiver, buffer)
+  // flushSetAnonymousID(receiver, buffer)
   flushOn(receiver, buffer)
 }
 
@@ -189,6 +189,13 @@ async function registerPlugins(
     await tronic(
       receiver,
       mergedSettings['Tronic'] as TronicSettings,
+      /*
+      {
+        protocol: 'http',
+        apiHost: ,
+        apiKey: writeKey,
+      },
+        */
       legacySettings.integrations
     ),
   ]
@@ -229,7 +236,7 @@ async function loadReceiver(
   if (settings.cdnURL) setGlobalCDNUrl(settings.cdnURL)
 
   let legacySettings = {
-    integrations: {},
+    integrations: options.integrations,
   } as LegacySettings/*
     settings.cdnSettings ??
     (await loadLegacySettings(settings.writeKey, settings.cdnURL))
