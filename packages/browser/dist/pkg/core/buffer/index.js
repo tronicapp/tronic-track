@@ -76,7 +76,12 @@ export var flushAddSourceMiddleware = function (receiver, buffer) { return __awa
     });
 }); };
 export var flushOn = flushSyncReceiverCalls.bind(this, 'on');
-export var flushSetAnonymousID = flushSyncReceiverCalls.bind(this, 'setAnonymousId');
+/*
+export const flushSetAnonymousID = flushSyncReceiverCalls.bind(
+  this,
+  'setAnonymousId'
+)
+ */
 export var flushReceiverCallsInNewTask = function (receiver, buffer) {
     buffer.toArray().forEach(function (m) {
         setTimeout(function () {

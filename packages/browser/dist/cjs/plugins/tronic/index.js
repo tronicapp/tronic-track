@@ -59,7 +59,7 @@ function onAlias(receiver, json) {
     return json;
 }
 function tronic(receiver, settings, integrations) {
-    var _a, _b;
+    var _a, _b, _c;
     // Attach `pagehide` before buffer is created so that inflight events are added
     // to the buffer before the buffer persists events in its own `pagehide` handler.
     window.addEventListener('pagehide', function () {
@@ -73,12 +73,12 @@ function tronic(receiver, settings, integrations) {
     var inflightEvents = new Set();
     var flushing = false;
     var apiHost = (_b = settings === null || settings === void 0 ? void 0 : settings.apiHost) !== null && _b !== void 0 ? _b : constants_1.TRONIC_API_HOST;
-    var protocol = 'http'; // settings?.protocol ?? 'https'
+    var protocol = (_c = settings === null || settings === void 0 ? void 0 : settings.protocol) !== null && _c !== void 0 ? _c : 'https';
     var remote = "".concat(protocol, "://").concat(apiHost);
     var deliveryStrategy = settings === null || settings === void 0 ? void 0 : settings.deliveryStrategy;
     var client = (deliveryStrategy === null || deliveryStrategy === void 0 ? void 0 : deliveryStrategy.strategy) === 'batching'
         ? (0, batched_dispatcher_1.default)(apiHost, deliveryStrategy.config)
-        : (0, fetch_dispatcher_1.default)(deliveryStrategy === null || deliveryStrategy === void 0 ? void 0 : deliveryStrategy.config);
+        : (0, fetch_dispatcher_1.default)(writeKey, deliveryStrategy === null || deliveryStrategy === void 0 ? void 0 : deliveryStrategy.config);
     function send(ctx) {
         return __awaiter(this, void 0, void 0, function () {
             var path, _json, json;
@@ -99,7 +99,8 @@ function tronic(receiver, settings, integrations) {
                     delete _json.sentAt;
                     delete _json.context;
                 }
-                json = { "userId": "2XWyaIZf7Tm2uQqa8fYH6GC0oYl", "event": "event0", "properties": { "test": "property" }, "channelId": "2XWyaIasy88a5SJMoLKpkDuDt2O", "timestamp": "2023-10-31T18:28:57.818Z" };
+                json = _json;
+                // {"userId":"2XWyaIZf7Tm2uQqa8fYH6GC0oYl","event":"event0","properties":{"test":"property"},"channelId":"2XWyaIasy88a5SJMoLKpkDuDt2O","timestamp":"2023-10-31T18:28:57.818Z"};
                 return [2 /*return*/, client
                         .dispatch("".concat(remote, "/").concat(path), json)
                         .then(function () { return ctx; })

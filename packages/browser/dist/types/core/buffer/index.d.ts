@@ -8,7 +8,6 @@ import { BufferedPageContext, PageContext } from '../page';
 export type PreInitMethodName = 'register' | 'deregister' | 'user' | 'identify' | 'reset' | 'track' | 'ready' | 'debug' | 'once' | 'off' | 'on' | 'addSourceMiddleware';
 export declare const flushAddSourceMiddleware: (receiver: Receiver, buffer: PreInitMethodCallBuffer) => Promise<void>;
 export declare const flushOn: (receiver: Receiver, buffer: PreInitMethodCallBuffer) => void;
-export declare const flushSetAnonymousID: (receiver: Receiver, buffer: PreInitMethodCallBuffer) => void;
 export declare const flushReceiverCallsInNewTask: (receiver: Receiver, buffer: PreInitMethodCallBuffer) => void;
 export declare const popPageContext: (args: unknown[]) => PageContext | undefined;
 export declare const hasBufferedPageContextAsLastArg: (args: unknown[]) => args is [...unknown[], BufferedPageContext] | [BufferedPageContext];
@@ -66,7 +65,7 @@ export declare class ReceiverBuffered implements PromiseLike<[Receiver, Context]
         onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null
     ]): Promise<[Receiver, Context] | TResult>;
     finally(...args: [onfinally?: (() => void) | undefined | null]): Promise<[Receiver, Context]>;
-    identify: (id?: object | import("../user").ID, traits?: import("@tronic/receiver-core").Callback | import("@tronic/receiver-core").UserTraits | null | undefined, options?: import("../events").Options | import("@tronic/receiver-core").Callback | undefined, callback?: import("@tronic/receiver-core").Callback | undefined) => Promise<Context>;
+    identify: (id?: object | import("../user").ID, traits?: import("@tronic/receiver-core").UserTraits | import("@tronic/receiver-core").Callback | null | undefined, options?: import("../events").Options | import("@tronic/receiver-core").Callback | undefined, callback?: import("@tronic/receiver-core").Callback | undefined) => Promise<Context>;
     reset: () => Promise<void>;
     track: (channelId: string, userId: string, eventName: string | import("../events").TronicEvent, properties?: import("../events").EventProperties | import("@tronic/receiver-core").Callback | undefined, options?: import("../events").Options | import("@tronic/receiver-core").Callback | undefined, callback?: import("@tronic/receiver-core").Callback | undefined) => Promise<Context>;
     ready: (callback?: Function | undefined) => Promise<unknown>;

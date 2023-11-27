@@ -78,7 +78,9 @@ import { envEnrichment } from '../plugins/env-enrichment';
 import { remoteLoader, } from '../plugins/remote-loader';
 import { tronic } from '../plugins/tronic';
 import { validation } from '../plugins/validation';
-import { ReceiverBuffered, flushReceiverCallsInNewTask, flushAddSourceMiddleware, flushSetAnonymousID, flushOn, } from '../core/buffer';
+import { ReceiverBuffered, flushReceiverCallsInNewTask, flushAddSourceMiddleware, 
+// flushSetAnonymousID,
+flushOn, } from '../core/buffer';
 import { attachInspector } from '../core/inspector';
 import { Stats } from '../core/stats';
 import { setGlobalReceiverKey } from '../lib/global-receiver-helper';
@@ -107,7 +109,7 @@ export function loadLegacySettings(writeKey, cdnURL) {
  * This is important so users can register to 'initialize' and any events that may fire early during setup.
  */
 function flushPreBuffer(receiver, buffer) {
-    flushSetAnonymousID(receiver, buffer);
+    // flushSetAnonymousID(receiver, buffer)
     flushOn(receiver, buffer);
 }
 /**
@@ -155,7 +157,15 @@ function registerPlugins(writeKey, legacySettings, receiver, opts, options, plug
                             validation,
                             envEnrichment
                         ], plugins, true), remotePlugins, true)];
-                    return [4 /*yield*/, tronic(receiver, mergedSettings['Tronic'], legacySettings.integrations)];
+                    return [4 /*yield*/, tronic(receiver, mergedSettings['Tronic'], 
+                        /*
+                        {
+                          protocol: 'http',
+                          apiHost: ,
+                          apiKey: writeKey,
+                        },
+                          */
+                        legacySettings.integrations)];
                 case 2:
                     toRegister = __spreadArray.apply(void 0, _b.concat([[
                             _c.sent()
@@ -207,7 +217,7 @@ function loadReceiver(settings, options, preInitBuffer) {
                     if (settings.cdnURL)
                         setGlobalCDNUrl(settings.cdnURL);
                     legacySettings = {
-                        integrations: {},
+                        integrations: options.integrations,
                     } /*
                       settings.cdnSettings ??
                       (await loadLegacySettings(settings.writeKey, settings.cdnURL))
