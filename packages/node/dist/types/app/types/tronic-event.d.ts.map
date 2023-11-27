@@ -1,0 +1,1 @@
+{"version":3,"file":"tronic-event.d.ts","sourceRoot":"","sources":["../../../../src/app/types/tronic-event.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,SAAS,EAAE,MAAM,uBAAuB,CAAA;AAEtD,KAAK,eAAe,GAAG,OAAO,GAAG,UAAU,CAAA;AAE3C,MAAM,WAAW,WAAY,SAAQ,SAAS;IAC5C,IAAI,EAAE,eAAe,CAAA;CACtB"}

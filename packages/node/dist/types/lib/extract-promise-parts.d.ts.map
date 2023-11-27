@@ -1,0 +1,1 @@
+{"version":3,"file":"extract-promise-parts.d.ts","sourceRoot":"","sources":["../../../src/lib/extract-promise-parts.ts"],"names":[],"mappings":"AAAA;;GAEG;AACH,wBAAgB,mBAAmB,CAAC,CAAC,GAAG,OAAO,KAAK;IAClD,OAAO,EAAE,OAAO,CAAC,CAAC,CAAC,CAAA;IACnB,OAAO,EAAE,CAAC,KAAK,EAAE,CAAC,KAAK,IAAI,CAAA;IAC3B,MAAM,EAAE,CAAC,MAAM,CAAC,EAAE,OAAO,KAAK,IAAI,CAAA;CACnC,CAaA"}
