@@ -1,29 +1,33 @@
 <html>
-  <head>
-    <style>
-      body {
-        font-family: monospace;
-      }
 
-      #event {
-        margin: 2em 0;
-        min-height: 200px;
-        min-width: 700px;
-      }
-    </style>
+<head>
+  <style>
+    body {
+      font-family: monospace;
+    }
 
-    <form method="get">
-      <input type="text" name="writeKey" placeholder="Writekey" />
-      <button>Load</button>
-    </form>
+    #event {
+      margin: 2em 0;
+      min-height: 200px;
+      min-width: 700px;
+    }
 
-    <script>
-      const { searchParams } = new URL(document.location);
-      const writeKey = searchParams.get("writeKey");
-      document.querySelector("input").value = writeKey;
+  </style>
 
-      if (writeKey) {
-        !(function () {
+  <form method="get">
+    <input type="text" name="writeKey" placeholder="Writekey" />
+    <button>Load</button>
+  </form>
+
+  <script>
+    const { searchParams } = new URL(document.location);
+    const writeKey = searchParams.get("writeKey");
+    document.querySelector("input").value = writeKey;
+
+    if (writeKey) {
+      console.profile('snippet')
+      console.time('snippet')
+      !(function () {
         var receiver = (window.receiver = window.receiver || [])
         if (!receiver.initialize)
           if (receiver.invoked)
@@ -69,15 +73,23 @@
             }
             receiver.SNIPPET_VERSION = '0.0.1'
             receiver._writeKey = writeKey
-            receiver.load()
+            receiver.load('', {
+              integrations: {
+                'Tronic': {
+                  apiKey: writeKey,
+                  apiHost: 'dev-api.tronic.app',
+                },
+              },
+            })
           }
       })()
-      }
-    </script>
-  </head>
-  <body>
-    <form>
-      <textarea name="event" id="event">
+    }
+  </script>
+</head>
+
+<body>
+  <form>
+    <textarea name="event" id="event">
 {
   "channelId": "2WffqYXFpaaDsZN21Wv3cEB92Bf",
   "userId": "2WffqQkUnMk5qM5y90fGlzcPDAv",
@@ -86,22 +98,31 @@
   "traits": { },
   "options": { }
 }
-    </textarea
-      >
-      <div>
-        <button id="track">Track</button>
-        <button id="identify">Identify</button>
-      </div>
-    </form>
+    </textarea>
+    <div>
+      <button id="track">Track</button>
+      <button id="identify">Identify</button>
+    </div>
+  </form>
 
-    <pre id="logs"></pre>
+  <pre id="ready-logs"></pre>
+  <pre id="logs"></pre>
 
-    <script type="text/javascript">
+  <script type="text/javascript">
+    if (window.receiver) {
+      window.receiver.ready(function onReady() {
+        console.profileEnd('snippet')
+        console.timeEnd('snippet')
+        document.querySelector('#ready-logs').textContent = 'ready!'
+      })
+
       document.querySelector('#track').addEventListener('click', async (e) => {
         e.preventDefault()
         const contents = document.querySelector('#event').value
         const evt = JSON.parse(contents)
         const promise = window.receiver.track(
+          evt.channelId || '',
+          evt.userId || '',
           evt.name ?? '',
           evt.properties ?? {},
           evt.options ?? {}
@@ -138,6 +159,8 @@
             )
           })
         })
-    </script>
-  </body>
+    }
+  </script>
+</body>
+
 </html>
