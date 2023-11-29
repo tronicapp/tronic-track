@@ -1,1 +1,1 @@
-export const TRONIC_API_HOST = 'localhost:3000'
+export const TRONIC_API_HOST = 'prod-api.tronic.app'
