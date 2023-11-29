@@ -1,2 +1,2 @@
-export var TRONIC_API_HOST = 'localhost:3000';
+export var TRONIC_API_HOST = 'prod-api.tronic.app';
 //# sourceMappingURL=index.js.map
