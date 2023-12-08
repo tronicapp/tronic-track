@@ -147,6 +147,7 @@
           evt.userId || '',
           evt.name || '',
           evt.properties || {},
+          evt.options ?? {}
         )
 
         promise &&
@@ -174,7 +175,7 @@
             evt.channelId || '',
             evt.userId || '',
             evt.traits || {},
-            evt.options || {}
+            evt.options || {},
           )
 
           promise &&

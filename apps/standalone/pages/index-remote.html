@@ -6,7 +6,13 @@
       font-family: monospace;
     }
 
-    #event {
+    #trackEvent {
+      margin: 2em 0;
+      min-height: 200px;
+      min-width: 700px;
+    }
+
+    #identifyEvent {
       margin: 2em 0;
       min-height: 200px;
       min-width: 700px;
@@ -89,18 +95,32 @@
 
 <body>
   <form>
-    <textarea name="event" id="event">
+    <div>
+      <div>
+        <textarea name="trackEvent" id="trackEvent">
 {
-  "channelId": "2WffqYXFpaaDsZN21Wv3cEB92Bf",
+  "channelId": "2YUflBOLovgzw89JNtkxup30q5T",
   "userId": "2WffqQkUnMk5qM5y90fGlzcPDAv",
   "name": "event0",
   "properties": { "test": "yes" },
-  "traits": { },
   "options": { }
 }
-    </textarea>
-    <div>
+      </textarea>
+      </div>
       <button id="track">Track</button>
+    </div>
+    <div>
+      <div>
+        <textarea name="identifyEvent" id="identifyEvent">
+{
+  "channelId": "2YUflBOLovgzw89JNtkxup30q5T",
+  "userId": "2WffqQkUnMk5qM5y90fGlzcPDAv",
+  "traits": {
+     "email": "hello@example.com"
+  }
+}
+      </textarea>
+      </div>
       <button id="identify">Identify</button>
     </div>
   </form>
@@ -118,7 +138,7 @@
 
       document.querySelector('#track').addEventListener('click', async (e) => {
         e.preventDefault()
-        const contents = document.querySelector('#event').value
+        const contents = document.querySelector('#trackEvent').value
         const evt = JSON.parse(contents)
         const promise = window.receiver.track(
           evt.channelId || '',
@@ -142,12 +162,13 @@
         .querySelector('#identify')
         .addEventListener('click', async (e) => {
           e.preventDefault()
-          const contents = document.querySelector('#event').value
+          const contents = document.querySelector('#identifyEvent').value
           const evt = JSON.parse(contents)
           const promise = window.receiver.identify(
-            evt.name ?? '',
-            evt.properties ?? {},
-            evt.options ?? {}
+            evt.channelId || '',
+            evt.userId || '',
+            evt.traits || {},
+            evt.options || {},
           )
 
           promise?.then((ctx) => {
