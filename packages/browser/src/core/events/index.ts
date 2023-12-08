@@ -5,6 +5,7 @@ import {
   // Options,
   // Integrations,
   EventProperties,
+  Options,
   Traits,
   TronicEvent,
 } from './interfaces'
@@ -42,24 +43,26 @@ export class EventFactory {
 
   identify(
     channelId: string,
-    userId: ID,
-    traits?: Traits,
-    // options?: Options,
+    userId: string,
+    traits?: Record<string, string>, // Traits,
+    options?: Options,
     // globalIntegrations?: Integrations,
     pageCtx?: PageContext
   ): TronicEvent {
-    return this.normalize(
+    const event = this.normalize(
       {
-        channelId,
         ...this.baseEvent(),
         type: 'identify' as const,
         userId,
+        channelId,
         traits,
-        // options: { ...options },
+        // context: { ...options },
         // integrations: { ...globalIntegrations },
       },
       pageCtx
     )
+    // delete event['timestamp'];
+    return event;
   }
 
   private baseEvent(): Partial<TronicEvent> {

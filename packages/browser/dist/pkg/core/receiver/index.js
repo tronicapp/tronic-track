@@ -186,18 +186,17 @@ var Receiver = /** @class */ (function (_super) {
             args[_i] = arguments[_i];
         }
         return __awaiter(this, void 0, void 0, function () {
-            var pageCtx, _a, id, _traits, options, callback, tronicEvent;
+            var pageCtx, _a, channelId, userId, traits, options, callback, tronicEvent;
             var _this = this;
             return __generator(this, function (_b) {
                 pageCtx = popPageContext(args);
-                _a = resolveUserArguments(this._user).apply(void 0, args), id = _a[0], _traits = _a[1], options = _a[2], callback = _a[3];
-                this._user.identify(id, _traits);
-                tronicEvent = this.eventFactory.identify('channelId', this._user.id(), this._user.traits(), 
-                // options,
+                _a = resolveUserArguments(this._user).apply(void 0, args), channelId = _a[0], userId = _a[1], traits = _a[2], options = _a[3], callback = _a[4];
+                tronicEvent = this.eventFactory.identify(channelId, userId, traits, // this._user.traits(),
+                options, 
                 // this.integrations,
                 pageCtx);
                 return [2 /*return*/, this._dispatch(tronicEvent, callback).then(function (ctx) {
-                        _this.emit('identify', ctx.event.userId, ctx.event.traits);
+                        _this.emit('identify', ctx.event.userId, ctx.event.traits, ctx.event.options);
                         return ctx;
                     })];
             });

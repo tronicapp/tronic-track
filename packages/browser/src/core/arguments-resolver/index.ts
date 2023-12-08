@@ -68,8 +68,9 @@ export const resolveUserArguments = <T extends Traits, U extends User>(
   user: U
 ): ResolveUser<T> => {
   return (...args): ReturnType<ResolveUser<T>> => {
+/*
     const values: {
-      // channelId?: string
+      channelId?: string
       id?: ID
       traits?: T | null
       options?: Options
@@ -81,7 +82,7 @@ export const resolveUserArguments = <T extends Traits, U extends User>(
       'options',
       'traits',
       'id',
-      // 'channelId',
+      'channelId',
     ]
 
     // Read each argument and eval the possible values here
@@ -115,17 +116,19 @@ export const resolveUserArguments = <T extends Traits, U extends User>(
     }
 
     return [
-      // values.channelId,
+      values.channelId,
       values.id ?? user.id(),
       (values.traits ?? {}) as T,
       values.options ?? {},
       values.callback,
     ]
+      */
+    return args;
   }
 }
 
 type ResolveUser<T extends Traits> = (
-  // channelId: string,
+  channelId: string,
   id?: ID | object,
   traits?: T | Callback | null,
   options?: Options | Callback,

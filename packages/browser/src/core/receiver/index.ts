@@ -264,16 +264,16 @@ export class Receiver
 
   async identify(...args: IdentifyParams): Promise<DispatchedEvent> {
     const pageCtx = popPageContext(args)
-    const [/*channelId,*/ id, _traits, options, callback] = resolveUserArguments(this._user)(
+    const [channelId, userId, traits, options, callback] = resolveUserArguments(this._user)(
       ...args
     )
 
-    this._user.identify(id, _traits)
+    // this._user.identify(id, _traits)
     const tronicEvent = this.eventFactory.identify(
-      'channelId',
-      this._user.id(),
-      this._user.traits(),
-      // options,
+      channelId,
+      userId,
+      traits, // this._user.traits(),
+      options,
       // this.integrations,
       pageCtx
     )
@@ -283,7 +283,7 @@ export class Receiver
         'identify',
         ctx.event.userId,
         ctx.event.traits,
-        // ctx.event.options
+        ctx.event.options
       )
       return ctx
     })

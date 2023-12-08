@@ -202,7 +202,7 @@ export interface CoreEvent {
 
   // integrations?: Integrations
   context?: CoreExtraContext
-  // options?: CoreOptions
+  options?: CoreOptions
 
   channelId?: string
   userId?: ID
