@@ -65,14 +65,14 @@ export declare class ReceiverBuffered implements PromiseLike<[Receiver, Context]
         onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null
     ]): Promise<[Receiver, Context] | TResult>;
     finally(...args: [onfinally?: (() => void) | undefined | null]): Promise<[Receiver, Context]>;
-    identify: (id?: object | import("../user").ID, traits?: any, options?: any, callback?: any) => Promise<Context>;
+    identify: (channelId: string, id?: object | import("../user").ID, traits?: import("@tronic/receiver-core").UserTraits | import("@tronic/receiver-core").Callback | null | undefined, options?: import("../events").Options | import("@tronic/receiver-core").Callback | undefined, callback?: import("@tronic/receiver-core").Callback | undefined) => Promise<Context>;
     reset: () => Promise<void>;
-    track: (channelId: string, userId: string, eventName: string | import("../events").TronicEvent, properties?: any, options?: any, callback?: any) => Promise<Context>;
+    track: (channelId: string, userId: string, eventName: string | import("../events").TronicEvent, properties?: import("../events").EventProperties | import("@tronic/receiver-core").Callback | undefined, options?: import("../events").Options | import("@tronic/receiver-core").Callback | undefined, callback?: import("@tronic/receiver-core").Callback | undefined) => Promise<Context>;
     ready: (callback?: Function | undefined) => Promise<unknown>;
     debug: (toggle: boolean) => ReceiverBuffered;
-    once: (...args: never) => ReceiverBuffered;
-    off: (...args: never) => ReceiverBuffered;
-    on: (...args: never) => ReceiverBuffered;
+    once: (event: string, callback: (...args: any[]) => void) => ReceiverBuffered;
+    off: (event: string, callback: (...args: any[]) => void) => ReceiverBuffered;
+    on: (event: string, callback: (...args: any[]) => void) => ReceiverBuffered;
     addSourceMiddleware: (fn: import("../..").MiddlewareFunction) => Promise<Receiver>;
     register: (...args: import("../plugin").Plugin[]) => Promise<Context>;
     deregister: (...args: string[]) => Promise<Context>;

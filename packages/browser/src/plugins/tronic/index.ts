@@ -98,7 +98,9 @@ export function tronic(
 
     let _json = toFacade(ctx.event).json()
 
-    if (ctx.event.type === 'track') {
+    if (
+      ctx.event.type === 'track' || ctx.event.type === 'identify'
+    ) {
       delete _json.type
       delete _json.traits
       delete _json.anonymousId
