@@ -33,13 +33,10 @@ var EventFactory = /** @class */ (function () {
     pageCtx) {
         return this.normalize(__assign(__assign({}, this.baseEvent()), { channelId: channelId, userId: userId, event: event, type: 'track', properties: properties }), pageCtx);
     };
-    EventFactory.prototype.identify = function (channelId, userId, traits, // Traits,
-    options, 
+    EventFactory.prototype.identify = function (channelId, userId, traits, options, 
     // globalIntegrations?: Integrations,
     pageCtx) {
-        var event = this.normalize(__assign(__assign({}, this.baseEvent()), { type: 'identify', userId: userId, channelId: channelId, traits: traits }), pageCtx);
-        // delete event['timestamp'];
-        return event;
+        return this.normalize(__assign(__assign({ channelId: channelId }, this.baseEvent()), { type: 'identify', userId: userId, traits: traits }), pageCtx);
     };
     EventFactory.prototype.baseEvent = function () {
         var base = {

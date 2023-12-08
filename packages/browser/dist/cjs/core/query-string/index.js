@@ -32,7 +32,7 @@ function queryString(receiver, query) {
             : params.ajs_uid;
         if (uidPattern.test(uid)) {
             var traits = (0, pickPrefix_1.pickPrefix)('ajs_trait_', params);
-            calls.push(receiver.identify(uid, traits));
+            // calls.push(receiver.identify(uid, traits))
         }
     }
     if (ajs_event) {

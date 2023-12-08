@@ -283,7 +283,7 @@ export class Receiver
         'identify',
         ctx.event.userId,
         ctx.event.traits,
-        ctx.event.options
+        // ctx.event.options
       )
       return ctx
     })

@@ -2,10 +2,9 @@ import { v4 as uuid } from '@lukeed/uuid'
 import { dset } from 'dset'
 import { ID, User } from '../user'
 import {
-  // Options,
+  Options,
   // Integrations,
   EventProperties,
-  Options,
   Traits,
   TronicEvent,
 } from './interfaces'
@@ -44,25 +43,23 @@ export class EventFactory {
   identify(
     channelId: string,
     userId: string,
-    traits?: Record<string, string>, // Traits,
+    traits?: Record<string, string>,
     options?: Options,
     // globalIntegrations?: Integrations,
     pageCtx?: PageContext
   ): TronicEvent {
-    const event = this.normalize(
+    return this.normalize(
       {
+        channelId,
         ...this.baseEvent(),
         type: 'identify' as const,
         userId,
-        channelId,
         traits,
-        // context: { ...options },
+        // options: { ...options },
         // integrations: { ...globalIntegrations },
       },
       pageCtx
     )
-    // delete event['timestamp'];
-    return event;
   }
 
   private baseEvent(): Partial<TronicEvent> {
