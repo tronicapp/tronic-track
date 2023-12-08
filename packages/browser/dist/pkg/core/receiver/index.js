@@ -196,7 +196,7 @@ var Receiver = /** @class */ (function (_super) {
                 // this.integrations,
                 pageCtx);
                 return [2 /*return*/, this._dispatch(tronicEvent, callback).then(function (ctx) {
-                        _this.emit('identify', ctx.event.userId, ctx.event.traits, ctx.event.options);
+                        _this.emit('identify', ctx.event.userId, ctx.event.traits);
                         return ctx;
                     })];
             });

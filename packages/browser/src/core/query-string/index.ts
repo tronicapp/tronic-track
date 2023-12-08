@@ -48,7 +48,7 @@ export function queryString(
     if (uidPattern.test(uid)) {
       const traits = pickPrefix('ajs_trait_', params)
 
-      calls.push(receiver.identify(uid, traits))
+      // calls.push(receiver.identify(uid, traits))
     }
   }
 
