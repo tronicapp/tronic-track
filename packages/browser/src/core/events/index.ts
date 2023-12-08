@@ -2,7 +2,7 @@ import { v4 as uuid } from '@lukeed/uuid'
 import { dset } from 'dset'
 import { ID, User } from '../user'
 import {
-  // Options,
+  Options,
   // Integrations,
   EventProperties,
   Traits,
@@ -42,9 +42,9 @@ export class EventFactory {
 
   identify(
     channelId: string,
-    userId: ID,
-    traits?: Traits,
-    // options?: Options,
+    userId: string,
+    traits?: Record<string, string>,
+    options?: Options,
     // globalIntegrations?: Integrations,
     pageCtx?: PageContext
   ): TronicEvent {

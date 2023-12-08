@@ -45,8 +45,8 @@ export function resolveArguments(
   const data = isPlainObject(eventName)
     ? eventName.properties ?? {}
     : isPlainObject(properties)
-    ? properties
-    : {}
+      ? properties
+      : {}
 
   let opts: Options = {}
   if (!isFunction(options)) {
@@ -67,70 +67,86 @@ export function resolveArguments(
 export const resolveUserArguments = <T extends Traits, U extends User>(
   user: U
 ): ResolveUser<T> => {
-  return (...args): ReturnType<ResolveUser<T>> => {
-    const values: {
-      // channelId?: string
-      id?: ID
-      traits?: T | null
-      options?: Options
-      callback?: Callback
-    } = {}
-    // It's a stack so it's reversed so that we go through each of the expected arguments
-    const orderStack: Array<keyof typeof values> = [
-      'callback',
-      'options',
-      'traits',
-      'id',
-      // 'channelId',
-    ]
-
-    // Read each argument and eval the possible values here
-    for (const arg of args) {
-      let current = orderStack.pop()
-      if (current === 'id') {
-        if (isString(arg) || isNumber(arg)) {
-          values.id = arg.toString()
-          continue
-        }
-        if (arg === null || arg === undefined) {
-          continue
-        }
-        // First argument should always be the id, if it is not a valid value we can skip it
-        current = orderStack.pop()
-      }
-
-      // Traits and Options
-      if (
-        (current === 'traits' || current === 'options') &&
-        (arg === null || arg === undefined || isPlainObject(arg))
-      ) {
-        values[current] = arg as T
-      }
-
-      // Callback
-      if (isFunction(arg)) {
-        values.callback = arg as Callback
-        break // This is always the last argument
-      }
-    }
+  return (channelId,
+    id,
+    traits,
+    options,
+    callback): ReturnType<ResolveUser<T>> => {
 
     return [
-      // values.channelId,
-      values.id ?? user.id(),
-      (values.traits ?? {}) as T,
-      values.options ?? {},
-      values.callback,
-    ]
+      channelId,
+      id,
+      traits,
+      options,
+      callback,
+    ];
+
+    /*
+        const values: {
+          channelId?: string
+          id?: ID
+          traits?: T | null
+          options?: Options
+          callback?: Callback
+        } = {}
+        // It's a stack so it's reversed so that we go through each of the expected arguments
+        const orderStack: Array<keyof typeof values> = [
+          'callback',
+          'options',
+          'traits',
+          'id',
+          'channelId',
+        ]
+
+        // Read each argument and eval the possible values here
+        for (const arg of args) {
+          let current = orderStack.pop()
+          if (current === 'id') {
+            if (isString(arg) || isNumber(arg)) {
+              values.id = arg.toString()
+              continue
+            }
+            if (arg === null || arg === undefined) {
+              continue
+            }
+            // First argument should always be the id, if it is not a valid value we can skip it
+            current = orderStack.pop()
+          }
+
+          // Traits and Options
+          if (
+            (current === 'traits' || current === 'options') &&
+            (arg === null || arg === undefined || isPlainObject(arg))
+          ) {
+            values[current] = arg as T
+          }
+
+          // Callback
+          if (isFunction(arg)) {
+            values.callback = arg as Callback
+            break // This is always the last argument
+          }
+        }
+
+        return [
+          values.channelId,
+          values.id ?? user.id(),
+          (values.traits ?? {}) as T,
+          values.options ?? {},
+          values.callback,
+        ]
+          */
+    // return args;
   }
 }
 
-type ResolveUser<T extends Traits> = (
-  // channelId: string,
-  id?: ID | object,
-  traits?: T | Callback | null,
-  options?: Options | Callback,
+type ResolveUser<T extends Record<string, string>> = (
+  channelId: string,
+  id: string, // ID | object,
+  traits: T, // | null, // Callback | null,
+  options?: Options, // | Callback,
   callback?: Callback
-) => [ID, T, Options, Callback | undefined]
+) => [string, string, T, Options | undefined, Callback | undefined]
 
 export type IdentifyParams = Parameters<ResolveUser<UserTraits>>
 export type EventParams = Parameters<typeof resolveArguments>

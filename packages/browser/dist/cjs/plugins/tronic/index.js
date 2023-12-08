@@ -92,7 +92,7 @@ function tronic(receiver, settings, integrations) {
                 inflightEvents.add(ctx);
                 path = 'external/' + ctx.event.type;
                 _json = (0, to_facade_1.toFacade)(ctx.event).json();
-                if (ctx.event.type === 'track') {
+                if (ctx.event.type === 'track' || ctx.event.type === 'identify') {
                     delete _json.type;
                     delete _json.traits;
                     delete _json.anonymousId;

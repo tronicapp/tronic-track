@@ -33,8 +33,7 @@ var EventFactory = /** @class */ (function () {
     pageCtx) {
         return this.normalize(__assign(__assign({}, this.baseEvent()), { channelId: channelId, userId: userId, event: event, type: 'track', properties: properties }), pageCtx);
     };
-    EventFactory.prototype.identify = function (channelId, userId, traits, 
-    // options?: Options,
+    EventFactory.prototype.identify = function (channelId, userId, traits, options, 
     // globalIntegrations?: Integrations,
     pageCtx) {
         return this.normalize(__assign(__assign({ channelId: channelId }, this.baseEvent()), { type: 'identify', userId: userId, traits: traits }), pageCtx);

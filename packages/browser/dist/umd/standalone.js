@@ -2238,9 +2238,9 @@ var NullStats = /** @class */ (function (_super) {
 /* harmony export */   Gg: function() { return /* binding */ exists; },
 /* harmony export */   HD: function() { return /* binding */ isString; },
 /* harmony export */   PO: function() { return /* binding */ isPlainObject; },
-/* harmony export */   hj: function() { return /* binding */ isNumber; },
 /* harmony export */   mf: function() { return /* binding */ isFunction; }
 /* harmony export */ });
+/* unused harmony export isNumber */
 function isString(obj) {
     return typeof obj === 'string';
 }
@@ -2387,7 +2387,7 @@ function dset(obj, keys, val) {
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = function(chunkId) {
 /******/ 			// return url for filenames based on template
-/******/ 			return "" + {"96":"queryString","119":"auto-track","214":"remoteMiddleware"}[chunkId] + ".bundle." + {"96":"8ad7389f7a02e2eeb348","119":"9d69785b8fe9e93141dd","214":"5fd76764311b4da6926a"}[chunkId] + ".js";
+/******/ 			return "" + {"96":"queryString","119":"auto-track","214":"remoteMiddleware"}[chunkId] + ".bundle." + {"96":"adab67f97112fd27533e","119":"9d69785b8fe9e93141dd","214":"5fd76764311b4da6926a"}[chunkId] + ".js";
 /******/ 		};
 /******/ 	}();
 /******/ 	
@@ -2609,54 +2609,70 @@ function resolveArguments(channelId, userId, eventName, properties, options, cal
  * Helper for group, identify methods
  */
 var resolveUserArguments = function (user) {
-    return function () {
-        var _a, _b, _c;
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var values = {};
-        // It's a stack so it's reversed so that we go through each of the expected arguments
-        var orderStack = [
-            'callback',
-            'options',
-            'traits',
-            'id',
-            // 'channelId',
+    return function (channelId, id, traits, options, callback) {
+        return [
+            channelId,
+            id,
+            traits,
+            options,
+            callback,
         ];
-        // Read each argument and eval the possible values here
-        for (var _d = 0, args_1 = args; _d < args_1.length; _d++) {
-            var arg = args_1[_d];
-            var current = orderStack.pop();
-            if (current === 'id') {
-                if ((0,helpers/* isString */.HD)(arg) || (0,helpers/* isNumber */.hj)(arg)) {
-                    values.id = arg.toString();
-                    continue;
+        /*
+            const values: {
+              channelId?: string
+              id?: ID
+              traits?: T | null
+              options?: Options
+              callback?: Callback
+            } = {}
+            // It's a stack so it's reversed so that we go through each of the expected arguments
+            const orderStack: Array<keyof typeof values> = [
+              'callback',
+              'options',
+              'traits',
+              'id',
+              'channelId',
+            ]
+    
+            // Read each argument and eval the possible values here
+            for (const arg of args) {
+              let current = orderStack.pop()
+              if (current === 'id') {
+                if (isString(arg) || isNumber(arg)) {
+                  values.id = arg.toString()
+                  continue
                 }
                 if (arg === null || arg === undefined) {
-                    continue;
+                  continue
                 }
                 // First argument should always be the id, if it is not a valid value we can skip it
-                current = orderStack.pop();
+                current = orderStack.pop()
+              }
+    
+              // Traits and Options
+              if (
+                (current === 'traits' || current === 'options') &&
+                (arg === null || arg === undefined || isPlainObject(arg))
+              ) {
+                values[current] = arg as T
+              }
+    
+              // Callback
+              if (isFunction(arg)) {
+                values.callback = arg as Callback
+                break // This is always the last argument
+              }
             }
-            // Traits and Options
-            if ((current === 'traits' || current === 'options') &&
-                (arg === null || arg === undefined || (0,helpers/* isPlainObject */.PO)(arg))) {
-                values[current] = arg;
-            }
-            // Callback
-            if ((0,helpers/* isFunction */.mf)(arg)) {
-                values.callback = arg;
-                break; // This is always the last argument
-            }
-        }
-        return [
-            // values.channelId,
-            (_a = values.id) !== null && _a !== void 0 ? _a : user.id(),
-            ((_b = values.traits) !== null && _b !== void 0 ? _b : {}),
-            (_c = values.options) !== null && _c !== void 0 ? _c : {},
-            values.callback,
-        ];
+    
+            return [
+              values.channelId,
+              values.id ?? user.id(),
+              (values.traits ?? {}) as T,
+              values.options ?? {},
+              values.callback,
+            ]
+              */
+        // return args;
     };
 };
 
@@ -3253,8 +3269,7 @@ var EventFactory = /** @class */ (function () {
     pageCtx) {
         return this.normalize(events_assign(events_assign({}, this.baseEvent()), { channelId: channelId, userId: userId, event: event, type: 'track', properties: properties }), pageCtx);
     };
-    EventFactory.prototype.identify = function (channelId, userId, traits, 
-    // options?: Options,
+    EventFactory.prototype.identify = function (channelId, userId, traits, options, 
     // globalIntegrations?: Integrations,
     pageCtx) {
         return this.normalize(events_assign(events_assign({ channelId: channelId }, this.baseEvent()), { type: 'identify', userId: userId, traits: traits }), pageCtx);
@@ -5489,14 +5504,13 @@ var Receiver = /** @class */ (function (_super) {
             args[_i] = arguments[_i];
         }
         return receiver_awaiter(this, void 0, Promise, function () {
-            var pageCtx, _a, id, _traits, options, callback, tronicEvent;
+            var pageCtx, _a, channelId, userId, traits, options, callback, tronicEvent;
             var _this = this;
             return receiver_generator(this, function (_b) {
                 pageCtx = popPageContext(args);
-                _a = resolveUserArguments(this._user).apply(void 0, args), id = _a[0], _traits = _a[1], options = _a[2], callback = _a[3];
-                this._user.identify(id, _traits);
-                tronicEvent = this.eventFactory.identify('channelId', this._user.id(), this._user.traits(), 
-                // options,
+                _a = resolveUserArguments(this._user).apply(void 0, args), channelId = _a[0], userId = _a[1], traits = _a[2], options = _a[3], callback = _a[4];
+                tronicEvent = this.eventFactory.identify(channelId, userId, traits, // this._user.traits(),
+                options, 
                 // this.integrations,
                 pageCtx);
                 return [2 /*return*/, this._dispatch(tronicEvent, callback).then(function (ctx) {
@@ -6829,7 +6843,7 @@ function tronic(receiver, settings, integrations) {
                 inflightEvents.add(ctx);
                 path = 'external/' + ctx.event.type;
                 _json = (0,to_facade/* toFacade */.D)(ctx.event).json();
-                if (ctx.event.type === 'track') {
+                if (ctx.event.type === 'track' || ctx.event.type === 'identify') {
                     delete _json.type;
                     delete _json.traits;
                     delete _json.anonymousId;
