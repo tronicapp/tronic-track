@@ -2387,7 +2387,7 @@ function dset(obj, keys, val) {
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = function(chunkId) {
 /******/ 			// return url for filenames based on template
-/******/ 			return "" + {"96":"queryString","119":"auto-track","214":"remoteMiddleware"}[chunkId] + ".bundle." + {"96":"8ad7389f7a02e2eeb348","119":"9d69785b8fe9e93141dd","214":"5fd76764311b4da6926a"}[chunkId] + ".js";
+/******/ 			return "" + {"96":"queryString","119":"auto-track","214":"remoteMiddleware"}[chunkId] + ".bundle." + {"96":"adab67f97112fd27533e","119":"9d69785b8fe9e93141dd","214":"5fd76764311b4da6926a"}[chunkId] + ".js";
 /******/ 		};
 /******/ 	}();
 /******/ 	
@@ -2609,11 +2609,14 @@ function resolveArguments(channelId, userId, eventName, properties, options, cal
  * Helper for group, identify methods
  */
 var resolveUserArguments = function (user) {
-    return function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
+    return function (channelId, id, traits, options, callback) {
+        return [
+            channelId,
+            id,
+            traits,
+            options,
+            callback,
+        ];
         /*
             const values: {
               channelId?: string
@@ -2630,7 +2633,7 @@ var resolveUserArguments = function (user) {
               'id',
               'channelId',
             ]
-        
+    
             // Read each argument and eval the possible values here
             for (const arg of args) {
               let current = orderStack.pop()
@@ -2645,7 +2648,7 @@ var resolveUserArguments = function (user) {
                 // First argument should always be the id, if it is not a valid value we can skip it
                 current = orderStack.pop()
               }
-        
+    
               // Traits and Options
               if (
                 (current === 'traits' || current === 'options') &&
@@ -2653,14 +2656,14 @@ var resolveUserArguments = function (user) {
               ) {
                 values[current] = arg as T
               }
-        
+    
               // Callback
               if (isFunction(arg)) {
                 values.callback = arg as Callback
                 break // This is always the last argument
               }
             }
-        
+    
             return [
               values.channelId,
               values.id ?? user.id(),
@@ -2669,7 +2672,7 @@ var resolveUserArguments = function (user) {
               values.callback,
             ]
               */
-        return args;
+        // return args;
     };
 };
 

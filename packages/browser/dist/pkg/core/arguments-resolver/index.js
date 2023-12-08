@@ -34,11 +34,14 @@ export function resolveArguments(channelId, userId, eventName, properties, optio
  * Helper for group, identify methods
  */
 export var resolveUserArguments = function (user) {
-    return function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
+    return function (channelId, id, traits, options, callback) {
+        return [
+            channelId,
+            id,
+            traits,
+            options,
+            callback,
+        ];
         /*
             const values: {
               channelId?: string
@@ -55,7 +58,7 @@ export var resolveUserArguments = function (user) {
               'id',
               'channelId',
             ]
-        
+    
             // Read each argument and eval the possible values here
             for (const arg of args) {
               let current = orderStack.pop()
@@ -70,7 +73,7 @@ export var resolveUserArguments = function (user) {
                 // First argument should always be the id, if it is not a valid value we can skip it
                 current = orderStack.pop()
               }
-        
+    
               // Traits and Options
               if (
                 (current === 'traits' || current === 'options') &&
@@ -78,14 +81,14 @@ export var resolveUserArguments = function (user) {
               ) {
                 values[current] = arg as T
               }
-        
+    
               // Callback
               if (isFunction(arg)) {
                 values.callback = arg as Callback
                 break // This is always the last argument
               }
             }
-        
+    
             return [
               values.channelId,
               values.id ?? user.id(),
@@ -94,7 +97,7 @@ export var resolveUserArguments = function (user) {
               values.callback,
             ]
               */
-        return args;
+        // return args;
     };
 };
 //# sourceMappingURL=index.js.map
