@@ -2368,7 +2368,7 @@ function dset(obj, keys, val) {
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = function(chunkId) {
 /******/ 			// return url for filenames based on template
-/******/ 			return "" + {"96":"queryString","119":"auto-track","214":"remoteMiddleware"}[chunkId] + ".bundle." + {"96":"adab67f97112fd27533e","119":"9d69785b8fe9e93141dd","214":"5fd76764311b4da6926a"}[chunkId] + ".js";
+/******/ 			return "" + {"96":"queryString","119":"auto-track","214":"remoteMiddleware"}[chunkId] + ".bundle." + {"96":"35511edd91b384c499b3","119":"9d69785b8fe9e93141dd","214":"5fd76764311b4da6926a"}[chunkId] + ".js";
 /******/ 		};
 /******/ 	}();
 /******/ 	
@@ -5387,6 +5387,7 @@ var receiver_spreadArray = (undefined && undefined.__spreadArray) || function (t
 
 
 
+// import { setGlobalReceiver } from '../../lib/global-receiver-helper'
 
 var deprecationWarning = 'This is being deprecated and will be not be available in future releases of Receiver JS';
 // reference any pre-existing "receiver" object so a user can restore the reference
@@ -6835,7 +6836,7 @@ function tronic(receiver, settings, integrations) {
                     delete _json.traits;
                     delete _json.anonymousId;
                     delete _json.sentAt;
-                    delete _json.context;
+                    // delete _json.context
                 }
                 json = _json;
                 // {"userId":"2XWyaIZf7Tm2uQqa8fYH6GC0oYl","event":"event0","properties":{"test":"property"},"channelId":"2XWyaIasy88a5SJMoLKpkDuDt2O","timestamp":"2023-10-31T18:28:57.818Z"};
@@ -7077,6 +7078,7 @@ var browser_spreadArray = (undefined && undefined.__spreadArray) || function (to
 
 
 
+// import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
 
 
 
@@ -7131,7 +7133,7 @@ function flushFinalBuffer(receiver, buffer) {
         });
     });
 }
-function registerPlugins(writeKey, legacySettings, receiver, opts, options, pluginLikes, legacyIntegrationSources) {
+function registerPlugins(writeKey, legacySettings, receiver, opts, options, pluginLikes) {
     var _a;
     if (pluginLikes === void 0) { pluginLikes = []; }
     return browser_awaiter(this, void 0, Promise, function () {
@@ -7199,12 +7201,12 @@ function registerPlugins(writeKey, legacySettings, receiver, opts, options, plug
     });
 }
 function loadReceiver(settings, options, preInitBuffer) {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f;
     if (options === void 0) { options = {}; }
     return browser_awaiter(this, void 0, Promise, function () {
-        var legacySettings, retryQueue, opts, receiver, plugins, classicIntegrations, ctx, search, hash, term;
-        return browser_generator(this, function (_h) {
-            switch (_h.label) {
+        var legacySettings, retryQueue, opts, receiver, plugins, ctx, search, hash, term;
+        return browser_generator(this, function (_g) {
+            switch (_g.label) {
                 case 0:
                     if (options.globalReceiverKey)
                         (0,global_receiver_helper/* setGlobalReceiverKey */.D4)(options.globalReceiverKey);
@@ -7220,26 +7222,26 @@ function loadReceiver(settings, options, preInitBuffer) {
                     if (options.updateCDNSettings) {
                         legacySettings = options.updateCDNSettings(legacySettings);
                     }
-                    retryQueue = (_c = (_b = (_a = legacySettings === null || legacySettings === void 0 ? void 0 : legacySettings.integrations) === null || _a === void 0 ? void 0 : _a['Segment.io']) === null || _b === void 0 ? void 0 : _b.retryQueue) !== null && _c !== void 0 ? _c : true;
+                    retryQueue = (_c = (_b = (_a = legacySettings === null || legacySettings === void 0 ? void 0 : legacySettings.integrations) === null || _a === void 0 ? void 0 : _a['Tronic']) === null || _b === void 0 ? void 0 : _b.retryQueue) !== null && _c !== void 0 ? _c : true;
                     opts = browser_assign({ retryQueue: retryQueue }, options);
                     receiver = new Receiver(settings, opts);
                     attachInspector(receiver);
                     plugins = (_d = settings.plugins) !== null && _d !== void 0 ? _d : [];
-                    classicIntegrations = (_e = settings.classicIntegrations) !== null && _e !== void 0 ? _e : [];
+                    // const classicIntegrations = settings.classicIntegrations ?? []
                     Stats.initRemoteMetrics(legacySettings.metrics);
                     // needs to be flushed before plugins are registered
                     flushPreBuffer(receiver, preInitBuffer);
-                    return [4 /*yield*/, registerPlugins(settings.writeKey, legacySettings, receiver, opts, options, plugins, classicIntegrations)];
+                    return [4 /*yield*/, registerPlugins(settings.writeKey, legacySettings, receiver, opts, options, plugins)];
                 case 1:
-                    ctx = _h.sent();
-                    search = (_f = window.location.search) !== null && _f !== void 0 ? _f : '';
-                    hash = (_g = window.location.hash) !== null && _g !== void 0 ? _g : '';
+                    ctx = _g.sent();
+                    search = (_e = window.location.search) !== null && _e !== void 0 ? _e : '';
+                    hash = (_f = window.location.hash) !== null && _f !== void 0 ? _f : '';
                     term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '');
                     if (!term.includes('ajs_')) return [3 /*break*/, 3];
                     return [4 /*yield*/, receiver.queryString(term).catch(console.error)];
                 case 2:
-                    _h.sent();
-                    _h.label = 3;
+                    _g.sent();
+                    _g.label = 3;
                 case 3:
                     receiver.initialized = true;
                     receiver.emit('initialize', settings, options);
@@ -7255,7 +7257,7 @@ function loadReceiver(settings, options, preInitBuffer) {
                     receiver.page().catch(console.error)
                   }
                      */
-                    _h.sent();
+                    _g.sent();
                     return [2 /*return*/, [receiver, ctx]];
             }
         });

@@ -6,7 +6,6 @@ import { Integrations, Plan } from '../events';
 import type { Plugin } from '../plugin';
 import { EventQueue } from '../queue/event-queue';
 import { Group, ID, User, UserOptions } from '../user';
-import type { ClassicIntegrationSource } from '../../plugins/ajs-destination/types';
 import type { DestinationMiddlewareFunction, MiddlewareFunction } from '../../plugins/middleware';
 import { ReceiverCore } from './interfaces';
 import { HighEntropyHint } from '../../lib/client-hints/interfaces';
@@ -17,7 +16,6 @@ export interface ReceiverSettings {
     writeKey: string;
     timeout?: number;
     plugins?: (Plugin | PluginFactory)[];
-    classicIntegrations?: ClassicIntegrationSource[];
 }
 export interface InitOptions {
     /**

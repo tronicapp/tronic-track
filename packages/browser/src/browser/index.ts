@@ -24,7 +24,7 @@ import {
   // flushSetAnonymousID,
   flushOn,
 } from '../core/buffer'
-import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
+// import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
 import { attachInspector } from '../core/inspector'
 import { Stats } from '../core/stats'
 import { setGlobalReceiverKey } from '../lib/global-receiver-helper'
@@ -159,7 +159,7 @@ async function registerPlugins(
   opts: InitOptions,
   options: InitOptions,
   pluginLikes: (Plugin | PluginFactory)[] = [],
-  legacyIntegrationSources: ClassicIntegrationSource[]
+  // legacyIntegrationSources: ClassicIntegrationSource[]
 ): Promise<Context> {
   const plugins = pluginLikes?.filter(
     (pluginLike) => typeof pluginLike === 'object'
@@ -247,7 +247,7 @@ async function loadReceiver(
   }
 
   const retryQueue: boolean =
-    legacySettings?.integrations?.['Segment.io']?.retryQueue ?? true
+    legacySettings?.integrations?.['Tronic']?.retryQueue ?? true
 
   const opts: InitOptions = { retryQueue, ...options }
   const receiver = new Receiver(settings, opts)
@@ -256,7 +256,8 @@ async function loadReceiver(
 
   const plugins = settings.plugins ?? []
 
-  const classicIntegrations = settings.classicIntegrations ?? []
+  // const classicIntegrations = settings.classicIntegrations ?? []
+
   Stats.initRemoteMetrics(legacySettings.metrics)
 
   // needs to be flushed before plugins are registered
@@ -269,7 +270,7 @@ async function loadReceiver(
     opts,
     options,
     plugins,
-    classicIntegrations
+    // classicIntegrations
   )
 
   const search = window.location.search ?? ''
