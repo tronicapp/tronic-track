@@ -22,11 +22,13 @@ import { EventQueue } from '../queue/event-queue'
 import { Group, ID, User, UserOptions } from '../user'
 import autoBind from '../../lib/bind-all'
 import { PersistedPriorityQueue } from '../../lib/priority-queue/persisted'
-// import type { LegacyDestination } from '../../plugins/ajs-destination'
+/*
+import type { LegacyDestination } from '../../plugins/ajs-destination'
 import type {
   LegacyIntegration,
   ClassicIntegrationSource,
-} from '../../plugins/ajs-destination/types'
+  } from '../../plugins/ajs-destination/types'
+ */
 import type {
   DestinationMiddlewareFunction,
   MiddlewareFunction,
@@ -34,7 +36,7 @@ import type {
 import { version } from '../../generated/version'
 import { PriorityQueue } from '../../lib/priority-queue'
 import { getGlobal } from '../../lib/get-global'
-import { ReceiverClassic, ReceiverCore } from './interfaces'
+import { ReceiverCore } from './interfaces'
 import { HighEntropyHint } from '../../lib/client-hints/interfaces'
 import type { LegacySettings } from '../../browser'
 import {
@@ -48,7 +50,7 @@ import {
   isArrayOfStoreType,
 } from '../storage'
 import { PluginFactory } from '../../plugins/remote-loader'
-import { setGlobalReceiver } from '../../lib/global-receiver-helper'
+// import { setGlobalReceiver } from '../../lib/global-receiver-helper'
 import { popPageContext } from '../buffer'
 
 type LegacyDestination = any;
@@ -76,7 +78,7 @@ export interface ReceiverSettings {
   writeKey: string
   timeout?: number
   plugins?: (Plugin | PluginFactory)[]
-  classicIntegrations?: ClassicIntegrationSource[]
+  // classicIntegrations?: ClassicIntegrationSource[]
 }
 
 export interface InitOptions {

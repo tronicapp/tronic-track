@@ -81,6 +81,7 @@ import { validation } from '../plugins/validation';
 import { ReceiverBuffered, flushReceiverCallsInNewTask, flushAddSourceMiddleware, 
 // flushSetAnonymousID,
 flushOn, } from '../core/buffer';
+// import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
 import { attachInspector } from '../core/inspector';
 import { Stats } from '../core/stats';
 import { setGlobalReceiverKey } from '../lib/global-receiver-helper';
@@ -135,7 +136,7 @@ function flushFinalBuffer(receiver, buffer) {
         });
     });
 }
-function registerPlugins(writeKey, legacySettings, receiver, opts, options, pluginLikes, legacyIntegrationSources) {
+function registerPlugins(writeKey, legacySettings, receiver, opts, options, pluginLikes) {
     var _a;
     if (pluginLikes === void 0) { pluginLikes = []; }
     return __awaiter(this, void 0, void 0, function () {
@@ -204,12 +205,12 @@ function registerPlugins(writeKey, legacySettings, receiver, opts, options, plug
     });
 }
 function loadReceiver(settings, options, preInitBuffer) {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f;
     if (options === void 0) { options = {}; }
     return __awaiter(this, void 0, void 0, function () {
-        var legacySettings, retryQueue, opts, receiver, plugins, classicIntegrations, ctx, search, hash, term;
-        return __generator(this, function (_h) {
-            switch (_h.label) {
+        var legacySettings, retryQueue, opts, receiver, plugins, ctx, search, hash, term;
+        return __generator(this, function (_g) {
+            switch (_g.label) {
                 case 0:
                     if (options.globalReceiverKey)
                         setGlobalReceiverKey(options.globalReceiverKey);
@@ -225,26 +226,26 @@ function loadReceiver(settings, options, preInitBuffer) {
                     if (options.updateCDNSettings) {
                         legacySettings = options.updateCDNSettings(legacySettings);
                     }
-                    retryQueue = (_c = (_b = (_a = legacySettings === null || legacySettings === void 0 ? void 0 : legacySettings.integrations) === null || _a === void 0 ? void 0 : _a['Segment.io']) === null || _b === void 0 ? void 0 : _b.retryQueue) !== null && _c !== void 0 ? _c : true;
+                    retryQueue = (_c = (_b = (_a = legacySettings === null || legacySettings === void 0 ? void 0 : legacySettings.integrations) === null || _a === void 0 ? void 0 : _a['Tronic']) === null || _b === void 0 ? void 0 : _b.retryQueue) !== null && _c !== void 0 ? _c : true;
                     opts = __assign({ retryQueue: retryQueue }, options);
                     receiver = new Receiver(settings, opts);
                     attachInspector(receiver);
                     plugins = (_d = settings.plugins) !== null && _d !== void 0 ? _d : [];
-                    classicIntegrations = (_e = settings.classicIntegrations) !== null && _e !== void 0 ? _e : [];
+                    // const classicIntegrations = settings.classicIntegrations ?? []
                     Stats.initRemoteMetrics(legacySettings.metrics);
                     // needs to be flushed before plugins are registered
                     flushPreBuffer(receiver, preInitBuffer);
-                    return [4 /*yield*/, registerPlugins(settings.writeKey, legacySettings, receiver, opts, options, plugins, classicIntegrations)];
+                    return [4 /*yield*/, registerPlugins(settings.writeKey, legacySettings, receiver, opts, options, plugins)];
                 case 1:
-                    ctx = _h.sent();
-                    search = (_f = window.location.search) !== null && _f !== void 0 ? _f : '';
-                    hash = (_g = window.location.hash) !== null && _g !== void 0 ? _g : '';
+                    ctx = _g.sent();
+                    search = (_e = window.location.search) !== null && _e !== void 0 ? _e : '';
+                    hash = (_f = window.location.hash) !== null && _f !== void 0 ? _f : '';
                     term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '');
                     if (!term.includes('ajs_')) return [3 /*break*/, 3];
                     return [4 /*yield*/, receiver.queryString(term).catch(console.error)];
                 case 2:
-                    _h.sent();
-                    _h.label = 3;
+                    _g.sent();
+                    _g.label = 3;
                 case 3:
                     receiver.initialized = true;
                     receiver.emit('initialize', settings, options);
@@ -260,7 +261,7 @@ function loadReceiver(settings, options, preInitBuffer) {
                     receiver.page().catch(console.error)
                   }
                      */
-                    _h.sent();
+                    _g.sent();
                     return [2 /*return*/, [receiver, ctx]];
             }
         });

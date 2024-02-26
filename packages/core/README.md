@@ -82,3 +82,144 @@ Batching support is not enabled at this time.
 Receiver.js does its best to deliver the queued events before the browser closes, but the delivery isn’t guaranteed.
 
 Upon receiving the beforeunload browser event, Receiver.js attempts to flush the queue using fetch requests with keepalive set to true. Since the max size of keepalive payloads is limited to 64 KB, if the queue size is bigger than 64 KB at the time the browser closes, then there is a chance of losing a subset of the queued events. Reducing the batch size or timeout will alleviate this issue, but that will be a trade-off decision.
+
+## Core
+Context
+
+Event
+
+Emitter
+
+Priority Queue
+
+Event Queue
+register - loads plugin
+deregister
+
+Task
+
+Receiver
+ctx
+queue
+emitter - metrics/progress
+options
+
+Validation
+
+Logger
+
+Stats
+guage
+increment
+
+## Browser
+
+Receiver
+Creates priority queue (${settings.writeKey}:event-queue)
+Create storage
+Gets users or group
+Creates event factory
+Has methods to dispatch main events + generics trackClick, trackLink, trackForm, trackSubmit (auto-track)
+register/deregister plugins - via event queue
+add source / destination middleware
+ready promise
+VERSION
+push for snippet
+
+Priority Queue - persisted option
+
+Event Queue - name/string -> PersistedPriorityQueue or your own
+
+Storage
+supports multi-storage (memory, local, cookie)
+
+Auto-track
+Attaches addEventListeners
+
+Callback
+pass-thru
+
+Connection
+isOnline/isOffline
+
+Environment
+isBrowser/isServer
+
+Context
+extends CoreContext, overrides NullStats
+
+Events
+pass-thru, export interface TronicEvent extends CoreEvent {}
+overrides/copies track/identify from core and adds page context
+
+Plugin
+plugin types - 'before' | 'after' | 'destination' | 'enrichment' | 'utility'
+2 built-in plugins - validation (before) and envEnrichment (before - utm) - track, identify
+
+envEnrichment
+ctx.event.context
+--page.search
+--userAgent
+--userAgentData
+--locale
+--library.{name|version}
+--campaign (utm)
+--amp { id: amp }
+--timezone
+
+Inspector
+browser extension?
+
+Page Context
+
+Constants
+export const TRONIC_API_HOST = 'prod-api.tronic.app'
+
+Stats
+RemoteMetrics
+
+# Node
+
+# Script tag
+
+## snippet
+
+Uses UMD browser/standalone.ts
+
+browser/standalone.ts
+
+CSP / addEventListener securitypolicyviolation
+polyfill if needed
+attempt(install)
+
+browser/standalone-receiver.ts
+
+install getWriteKey, _writeKey, _loadOptions
+
+browser/index.ts
+ReceiverBrowser.standalone(writeKey, options)
+ReceiverBrowser extends ReceiverBuffered
+static standalone -> ReceiverBrowser.load
+ReceiverBrowser.load -> new ReceiverBrowser().load(settings, options)
+load -> _resolveLoadStart (deferred promise loadStart resolver)
+loadStart.then loadReceiver
+
+loadReceiver:
+can override the global receiver key
+can set the global cdn url
+new Receiver -> core/receiver/index.ts
+attachInspector
+Stats.initRemoteMetrics
+flushPreBuffer(receiver, preInitBuffer)
+registerPlugins - remoteLoader
+ajs_ query string can cause identify or track calls
+receiver.initialized = true
+initialPageView? currently disabled
+flushFinalBuffer(receiver, preInitBuffer)
+
+const ctx = await registerPlugins() -> const ctx = await receiver.register(...toRegister)
+
+returns [receiver, ctx]
+
+src/lib/global-receiver-helper.ts
+set window.[name]

@@ -68,6 +68,7 @@
               receiver[key] = receiver.factory(key)
             }
             receiver.load = function (key, e) {
+              // key was used in t.src...
               var t = document.createElement('script')
               t.type = 'text/javascript'
               t.async = !0

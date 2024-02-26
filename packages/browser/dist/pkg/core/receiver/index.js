@@ -82,6 +82,7 @@ import { version } from '../../generated/version';
 import { PriorityQueue } from '../../lib/priority-queue';
 import { getGlobal } from '../../lib/get-global';
 import { MemoryStorage, UniversalStorage, StoreType, applyCookieOptions, initializeStorages, isArrayOfStoreType, } from '../storage';
+// import { setGlobalReceiver } from '../../lib/global-receiver-helper'
 import { popPageContext } from '../buffer';
 var deprecationWarning = 'This is being deprecated and will be not be available in future releases of Receiver JS';
 // reference any pre-existing "receiver" object so a user can restore the reference

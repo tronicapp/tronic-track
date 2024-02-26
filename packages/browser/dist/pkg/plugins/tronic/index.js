@@ -91,7 +91,7 @@ export function tronic(receiver, settings, integrations) {
                     delete _json.traits;
                     delete _json.anonymousId;
                     delete _json.sentAt;
-                    delete _json.context;
+                    // delete _json.context
                 }
                 json = _json;
                 // {"userId":"2XWyaIZf7Tm2uQqa8fYH6GC0oYl","event":"event0","properties":{"test":"property"},"channelId":"2XWyaIasy88a5SJMoLKpkDuDt2O","timestamp":"2023-10-31T18:28:57.818Z"};

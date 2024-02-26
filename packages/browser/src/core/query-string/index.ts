@@ -48,6 +48,7 @@ export function queryString(
     if (uidPattern.test(uid)) {
       const traits = pickPrefix('ajs_trait_', params)
 
+      // requires channelId
       // calls.push(receiver.identify(uid, traits))
     }
   }

@@ -105,7 +105,7 @@ export function tronic(
       delete _json.traits
       delete _json.anonymousId
       delete _json.sentAt
-      delete _json.context
+      // delete _json.context
     }
 
     /*
