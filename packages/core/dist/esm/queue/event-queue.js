@@ -288,8 +288,8 @@ var CoreEventQueue = /** @class */ (function (_super) {
     CoreEventQueue.prototype.availableExtensions = function (denyList) {
         var available = this.plugins.filter(function (p) {
             var _a, _b, _c;
-            // Only filter out destination plugins or the Segment.io plugin
-            if (p.type !== 'destination' && p.name !== 'Segment.io') {
+            // Only filter out destination plugins or the Tronic plugin
+            if (p.type !== 'destination' && p.name !== 'Tronic') {
                 return true;
             }
             var alternativeNameMatch = undefined;
@@ -298,8 +298,8 @@ var CoreEventQueue = /** @class */ (function (_super) {
                     alternativeNameMatch = denyList[name];
                 }
             });
-            // Explicit integration option takes precedence, `All: false` does not apply to Segment.io
-            return ((_c = (_b = denyList[p.name]) !== null && _b !== void 0 ? _b : alternativeNameMatch) !== null && _c !== void 0 ? _c : (p.name === 'Segment.io' ? true : denyList.All) !== false);
+            // Explicit integration option takes precedence, `All: false` does not apply to Tronic
+            return ((_c = (_b = denyList[p.name]) !== null && _b !== void 0 ? _b : alternativeNameMatch) !== null && _c !== void 0 ? _c : (p.name === 'Tronic' ? true : denyList.All) !== false);
         });
         var _a = groupBy(available, 'type'), _b = _a.before, before = _b === void 0 ? [] : _b, _c = _a.enrichment, enrichment = _c === void 0 ? [] : _c, _d = _a.destination, destination = _d === void 0 ? [] : _d, _e = _a.after, after = _e === void 0 ? [] : _e;
         return {

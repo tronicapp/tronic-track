@@ -17,10 +17,11 @@
       min-height: 200px;
       min-width: 700px;
     }
+
   </style>
 
   <form method="get">
-     <input type="text" name="writeKey" value="" placeholder="Writekey" />
+    <input type="text" name="writeKey" value="" placeholder="Writekey" />
     <button>Load</button>
   </form>
 
@@ -129,6 +130,11 @@
   <pre id="logs"></pre>
 
   <script type="text/javascript">
+
+    function writeToLog(str) {
+      document.querySelector('#logs').textContent = str;
+    }
+
     if (window.receiver) {
       window.receiver.ready(function onReady() {
         console.profileEnd('snippet')
@@ -136,31 +142,41 @@
         document.querySelector('#ready-logs').textContent = 'ready!'
       })
 
-      document.querySelector('#track').addEventListener('click', function (e) {
+      document.querySelector('#track').addEventListener('click', async function (e) {
+
         e.preventDefault()
+
         var contents = document.querySelector('#trackEvent').value
         var evt = JSON.parse(contents)
-        console.profile('track')
-        console.time('track')
-        var promise = window.receiver.track(
-          evt.channelId || '',
-          evt.userId || '',
-          evt.name || '',
-          evt.properties || {},
-        )
 
-        promise &&
-          promise.then &&
-          promise.then(function (ctx) {
-            console.timeEnd('track')
-            console.profileEnd('track')
-            ctx.flush()
-            document.querySelector('#logs').textContent = JSON.stringify(
-              ctx.event,
-              null,
-              '  '
-            )
-          })
+        // console.profile('track')
+        // console.time('track')
+
+        try {
+
+          var ctx = await window.receiver.track(
+            evt.name,
+            evt.channelId,
+            evt.properties || {},
+          )
+
+          ctx.flush()
+
+          writeToLog(JSON.stringify(
+            ctx.event,
+            null,
+            '  '
+          ))
+
+        } catch (err) {
+
+          writeToLog(err);
+
+        } finally {
+          // console.timeEnd('track')
+          // console.profileEnd('track')
+        }
+
       })
 
       document

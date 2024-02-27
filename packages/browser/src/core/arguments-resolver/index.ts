@@ -20,30 +20,21 @@ import { ID, User } from '../user'
  * Helper for the track method
  */
 export function resolveArguments(
-  channelId: string,
-  userId: string,
-  eventName: string | TronicEvent,
+  eventOrEventName: string | TronicEvent,
+  channelId?: string,
   properties?: EventProperties | Callback,
   options?: Options | Callback,
   callback?: Callback
-): [string, string, string, EventProperties | Callback, Options, Callback | undefined] {
-  const args = [channelId, userId, eventName, properties, options, callback]
+): [string, string | undefined, EventProperties | Callback, Options, Callback | undefined] {
+  const args = [eventOrEventName, channelId, properties, options, callback]
 
-  if (!channelId || !isString(channelId)) {
-    throw new Error('ChannelId missing')
-  }
-
-  if (!userId || !isString(userId)) {
-    throw new Error('UserId missing')
-  }
-
-  const name = isPlainObject(eventName) ? eventName.event : eventName
+  const name = isPlainObject(eventOrEventName) ? eventOrEventName.event : eventOrEventName
   if (!name || !isString(name)) {
     throw new Error('Event missing')
   }
 
-  const data = isPlainObject(eventName)
-    ? eventName.properties ?? {}
+  const data = isPlainObject(eventOrEventName)
+    ? eventOrEventName.properties ?? {}
     : isPlainObject(properties)
       ? properties
       : {}
@@ -53,12 +44,12 @@ export function resolveArguments(
     opts = options ?? {}
   }
 
-  if (isPlainObject(eventName) && !isFunction(properties)) {
+  if (isPlainObject(eventOrEventName) && !isFunction(properties)) {
     opts = properties ?? {}
   }
 
   const cb = args.find(isFunction) as Callback | undefined
-  return [channelId, userId, name, data, opts, cb]
+  return [name, channelId, data, opts, cb]
 }
 
 /**

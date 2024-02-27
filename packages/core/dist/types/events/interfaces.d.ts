@@ -10,12 +10,7 @@ export type JSONObject = {
 };
 export type JSONArray = JSONValue[];
 export type EventProperties = Record<string, any>;
-export type Integrations = {
-    All?: boolean;
-    [integration: string]: boolean | JSONObject | undefined;
-};
 export interface CoreOptions {
-    integrations?: Integrations;
     timestamp?: Timestamp;
     context?: CoreExtraContext;
     anonymousId?: string;

@@ -40,6 +40,7 @@ import { PersistedPriorityQueue } from '../../lib/priority-queue/persisted';
 import { toFacade } from '../../lib/to-facade';
 import batch from './batched-dispatcher';
 import standard from './fetch-dispatcher';
+import { normalize } from './normalize';
 import { scheduleFlush } from './schedule-flush';
 import { TRONIC_API_HOST } from '../../core/constants';
 function onAlias(receiver, json) {
@@ -75,7 +76,7 @@ export function tronic(receiver, settings, integrations) {
         : standard(writeKey, deliveryStrategy === null || deliveryStrategy === void 0 ? void 0 : deliveryStrategy.config);
     function send(ctx) {
         return __awaiter(this, void 0, void 0, function () {
-            var path, _json, json;
+            var path, json;
             return __generator(this, function (_a) {
                 if (isOffline()) {
                     buffer.push(ctx);
@@ -85,18 +86,17 @@ export function tronic(receiver, settings, integrations) {
                 }
                 inflightEvents.add(ctx);
                 path = 'external/' + ctx.event.type;
-                _json = toFacade(ctx.event).json();
-                if (ctx.event.type === 'track' || ctx.event.type === 'identify') {
-                    delete _json.type;
-                    delete _json.traits;
-                    delete _json.anonymousId;
-                    delete _json.sentAt;
-                    // delete _json.context
+                json = toFacade(ctx.event).json();
+                if (ctx.event.type === 'track') {
+                    delete json.traits;
                 }
-                json = _json;
-                // {"userId":"2XWyaIZf7Tm2uQqa8fYH6GC0oYl","event":"event0","properties":{"test":"property"},"channelId":"2XWyaIasy88a5SJMoLKpkDuDt2O","timestamp":"2023-10-31T18:28:57.818Z"};
+                /*
+                if (ctx.event.type === 'alias') {
+                  json = onAlias(receiver, json)
+                }
+                 */
                 return [2 /*return*/, client
-                        .dispatch("".concat(remote, "/").concat(path), json)
+                        .dispatch("".concat(remote, "/").concat(path), normalize(receiver, json, settings, integrations))
                         .then(function () { return ctx; })
                         .catch(function () {
                         buffer.pushWithBackoff(ctx);

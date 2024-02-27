@@ -17,13 +17,14 @@ export type JSONArray = JSONValue[]
 
 export type EventProperties = Record<string, any>
 
+/*
 export type Integrations = {
   All?: boolean
   [integration: string]: boolean | JSONObject | undefined
 }
+ */
 
 export interface CoreOptions {
-  integrations?: Integrations
   timestamp?: Timestamp
   context?: CoreExtraContext
   anonymousId?: string
@@ -200,11 +201,11 @@ export interface CoreEvent {
 
   traits?: Traits // Traits is only defined in 'identify' and 'group', even if it can be passed in other calls.
 
-  // integrations?: Integrations
   context?: CoreExtraContext
   options?: CoreOptions
 
   channelId?: string
+
   userId?: ID
   anonymousId?: ID
   groupId?: ID
@@ -463,6 +464,8 @@ export type UserTraits = BaseUserTraits & {
  * Traits are pieces of information you know about a user or group.
  */
 export type Traits = UserTraits | GroupTraits
+
+// export type Traits = Record<string, string>
 
 export type Campaign = {
   name: string

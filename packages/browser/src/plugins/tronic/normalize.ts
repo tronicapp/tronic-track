@@ -25,12 +25,13 @@ export function normalize(
     json._metadata = { failedInitializations: failed }
   }
 
+  /*
   const bundled: string[] = []
   const unbundled: string[] = []
 
   for (const key in integrations) {
     const integration = integrations[key]
-    if (key === 'Segment.io') {
+    if (key === 'Tronic') {
       bundled.push(key)
     }
     if (integration.bundlingStatus === 'bundled') {
@@ -66,6 +67,7 @@ export function normalize(
       bundledIds: bundledConfigIds,
     }
   }
+   */
 
   return json
 }

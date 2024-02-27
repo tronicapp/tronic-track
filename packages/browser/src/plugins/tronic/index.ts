@@ -96,16 +96,10 @@ export function tronic(
 
     const path = 'external/' + ctx.event.type; // ctx.event.type.charAt(0)
 
-    let _json = toFacade(ctx.event).json()
+    let json = toFacade(ctx.event).json()
 
-    if (
-      ctx.event.type === 'track' || ctx.event.type === 'identify'
-    ) {
-      delete _json.type
-      delete _json.traits
-      delete _json.anonymousId
-      delete _json.sentAt
-      // delete _json.context
+    if (ctx.event.type === 'track') {
+      delete json.traits
     }
 
     /*
@@ -114,13 +108,10 @@ export function tronic(
     }
      */
 
-    const json = _json;
-    // {"userId":"2XWyaIZf7Tm2uQqa8fYH6GC0oYl","event":"event0","properties":{"test":"property"},"channelId":"2XWyaIasy88a5SJMoLKpkDuDt2O","timestamp":"2023-10-31T18:28:57.818Z"};
-
     return client
       .dispatch(
         `${remote}/${path}`,
-        json, // normalize(receiver, json, settings, integrations)
+        normalize(receiver, json, settings, integrations)
       )
       .then(() => ctx)
       .catch(() => {

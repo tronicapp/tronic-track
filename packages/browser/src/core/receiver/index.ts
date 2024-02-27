@@ -246,20 +246,22 @@ export class Receiver
 
   async track(...args: EventParams): Promise<DispatchedEvent> {
     const pageCtx = popPageContext(args)
-    const [channelId, userId, name, data, opts, cb] = resolveArguments(...args)
+    const [name, channelId, data, opts, cb] = resolveArguments(...args)
 
-    const tronicEvent = this.eventFactory.track(
-      channelId,
-      userId,
+    const tronicEvent: any = this.eventFactory.track(
       name,
+      channelId,
       data as EventProperties,
-      // opts,
-      // this.integrations,
+      opts,
       pageCtx
     )
 
+    delete tronicEvent.type
+    delete tronicEvent.messageId
+    // delete tronicEvent.anonymousId
+
     return this._dispatch(tronicEvent, cb).then((ctx) => {
-      this.emit('track', name, ctx.event.properties) // , ctx.event.options)
+      this.emit('track', name, ctx.event.properties, ctx.event.options)
       return ctx
     })
   }
@@ -270,11 +272,13 @@ export class Receiver
       ...args
     )
 
-    // this._user.identify(id, _traits)
+    this._user.identify(id, _traits)
+
     const tronicEvent = this.eventFactory.identify(
       channelId,
-      userId,
-      traits, // this._user.traits(),
+      // userId,
+      this._user.id(),
+      this._user.traits(),
       options,
       // this.integrations,
       pageCtx

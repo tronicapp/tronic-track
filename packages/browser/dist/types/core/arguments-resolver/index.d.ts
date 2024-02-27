@@ -4,7 +4,7 @@ import { User } from '../user';
 /**
  * Helper for the track method
  */
-export declare function resolveArguments(channelId: string, userId: string, eventName: string | TronicEvent, properties?: EventProperties | Callback, options?: Options | Callback, callback?: Callback): [string, string, string, EventProperties | Callback, Options, Callback | undefined];
+export declare function resolveArguments(eventOrEventName: string | TronicEvent, channelId?: string, properties?: EventProperties | Callback, options?: Options | Callback, callback?: Callback): [string, string | undefined, EventProperties | Callback, Options, Callback | undefined];
 /**
  * Helper for group, identify methods
  */
