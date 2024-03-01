@@ -12,7 +12,7 @@ import { dispatch, Emitter } from '@tronic/receiver-core'
 import {
   Callback,
   EventFactory,
-  Integrations,
+  // Integrations,
   Plan,
   EventProperties,
   TronicEvent,
@@ -78,7 +78,6 @@ export interface ReceiverSettings {
   writeKey: string
   timeout?: number
   plugins?: (Plugin | PluginFactory)[]
-  // classicIntegrations?: ClassicIntegrationSource[]
 }
 
 export interface InitOptions {
@@ -100,7 +99,7 @@ export interface InitOptions {
   storage?: StorageSettings
   user?: UserOptions
   group?: UserOptions
-  integrations?: Integrations
+  // integrations?: Integrations
   plan?: Plan
   retryQueue?: boolean
   obfuscate?: boolean
@@ -140,7 +139,7 @@ export class Receiver
   private _universalStorage: UniversalStorage
 
   initialized = false
-  integrations: Integrations
+    // integrations: Integrations
   options: InitOptions
   queue: EventQueue
 
@@ -194,7 +193,7 @@ export class Receiver
         cookieOptions
       ).load()
     this.eventFactory = new EventFactory(this._user)
-    this.integrations = options?.integrations ?? {}
+    // this.integrations = options?.integrations ?? {}
     this.options = options ?? {}
     autoBind(this)
   }
@@ -268,19 +267,17 @@ export class Receiver
 
   async identify(...args: IdentifyParams): Promise<DispatchedEvent> {
     const pageCtx = popPageContext(args)
-    const [channelId, userId, traits, options, callback] = resolveUserArguments(this._user)(
+    const [channelId, id, _traits, options, callback] = resolveUserArguments(this._user)(
       ...args
     )
 
     this._user.identify(id, _traits)
 
     const tronicEvent = this.eventFactory.identify(
-      channelId,
-      // userId,
       this._user.id(),
+      channelId,
       this._user.traits(),
       options,
-      // this.integrations,
       pageCtx
     )
 
@@ -289,7 +286,7 @@ export class Receiver
         'identify',
         ctx.event.userId,
         ctx.event.traits,
-        // ctx.event.options
+        ctx.event.options
       )
       return ctx
     })
@@ -391,8 +388,8 @@ export class Receiver
         /* webpackChunkName: "middleware" */ '../../plugins/middleware'
       )
 
-      const integrations: Record<string, boolean> = {}
       /*
+      const integrations: Record<string, boolean> = {}
     this.queue.plugins.forEach((plugin) => {
       if (plugin.type === 'destination') {
         return (integrations[plugin.name] = true)

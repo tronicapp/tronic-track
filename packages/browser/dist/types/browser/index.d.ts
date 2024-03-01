@@ -58,17 +58,7 @@ export interface ReceiverBrowserSettings extends ReceiverSettings {
      */
     cdnURL?: string;
 }
-export declare function loadLegacySettings(writeKey: string, cdnURL?: string): Promise<LegacySettings>;
-/**
- * The public browser interface for Tronic Receiver
- *
- * @example
- * ```ts
- *  export const receiver = new ReceiverBrowser()
- *  receiver.load({ writeKey: 'foo' })
- * ```
- * @link https://github.com/tronic/tronic-receiver/#readme
- */
+export declare function fetchSettings(writeKey: string, cdnURL?: string): Promise<LegacySettings>;
 export declare class ReceiverBrowser extends ReceiverBuffered {
     private _resolveLoadStart;
     constructor();
@@ -89,17 +79,6 @@ export declare class ReceiverBrowser extends ReceiverBuffered {
      * ```
      */
     load(settings: ReceiverBrowserSettings, options?: InitOptions): ReceiverBrowser;
-    /**
-     * Instantiates an object exposing Receiver methods.
-     *
-     * @example
-     * ```ts
-     * const ajs = ReceiverBrowser.load({ writeKey: '<YOUR_WRITE_KEY>' })
-     *
-     * ajs.track("foo")
-     * ...
-     * ```
-     */
     static load(settings: ReceiverBrowserSettings, options?: InitOptions): ReceiverBrowser;
     static standalone(writeKey: string, options?: InitOptions): Promise<Receiver>;
 }

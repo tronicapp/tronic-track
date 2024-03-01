@@ -5,6 +5,7 @@ import { loadScript } from '../../lib/load-script'
 import { getNextIntegrationsURL } from '../../lib/parse-cdn'
 import { MiddlewareFunction } from '../middleware'
 
+/*
 export async function remoteMiddlewares(
   ctx: Context,
   settings: LegacySettings,
@@ -42,3 +43,4 @@ export async function remoteMiddlewares(
 
   return middleware as MiddlewareFunction[]
 }
+ */

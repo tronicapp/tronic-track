@@ -3286,7 +3286,7 @@ __webpack_require__.r(__webpack_exports__);
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
   ReceiverBrowser: function() { return /* reexport */ ReceiverBrowser; },
-  loadLegacySettings: function() { return /* reexport */ loadLegacySettings; }
+  fetchSettings: function() { return /* reexport */ fetchSettings; }
 });
 
 // EXTERNAL MODULE: ./src/lib/parse-cdn.ts
@@ -7789,17 +7789,6 @@ var browser_extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var browser_assign = (undefined && undefined.__assign) || function () {
-    browser_assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return browser_assign.apply(this, arguments);
-};
 var browser_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7855,11 +7844,10 @@ var browser_spreadArray = (undefined && undefined.__spreadArray) || function (to
 
 
 
-// import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
 
 
 
-function loadLegacySettings(writeKey, cdnURL) {
+function fetchSettings(writeKey, cdnURL) {
     var baseUrl = cdnURL !== null && cdnURL !== void 0 ? cdnURL : (0,parse_cdn/* getCDN */.Vl)();
     return fetch("".concat(baseUrl, "/v1/projects/").concat(writeKey, "/settings"))
         .then(function (res) {
@@ -7910,7 +7898,7 @@ function flushFinalBuffer(receiver, buffer) {
         });
     });
 }
-function registerPlugins(writeKey, legacySettings, receiver, opts, options, pluginLikes) {
+function registerPlugins(writeKey, legacySettings, receiver, options, pluginLikes) {
     var _a;
     if (pluginLikes === void 0) { pluginLikes = []; }
     return browser_awaiter(this, void 0, Promise, function () {
@@ -7978,48 +7966,50 @@ function registerPlugins(writeKey, legacySettings, receiver, opts, options, plug
     });
 }
 function loadReceiver(settings, options, preInitBuffer) {
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d;
     if (options === void 0) { options = {}; }
     return browser_awaiter(this, void 0, Promise, function () {
-        var legacySettings, retryQueue, opts, receiver, plugins, ctx, search, hash, term;
-        return browser_generator(this, function (_g) {
-            switch (_g.label) {
+        var legacySettings, _e, receiver, plugins, ctx, search, hash, term;
+        return browser_generator(this, function (_f) {
+            switch (_f.label) {
                 case 0:
-                    if (options.globalReceiverKey)
+                    if (options.globalReceiverKey) {
                         (0,global_receiver_helper/* setGlobalReceiverKey */.D4)(options.globalReceiverKey);
+                    }
                     // this is an ugly side-effect, but it's for the benefits of the plugins that get their cdn via getCDN()
-                    if (settings.cdnURL)
+                    if (settings.cdnURL) {
                         (0,parse_cdn/* setGlobalCDNUrl */.UH)(settings.cdnURL);
-                    legacySettings = {
-                        integrations: options.integrations,
-                    } /*
-                      settings.cdnSettings ??
-                      (await loadLegacySettings(settings.writeKey, settings.cdnURL))
-                                             */;
+                    }
+                    if (!((_a = settings.cdnSettings) !== null && _a !== void 0)) return [3 /*break*/, 1];
+                    _e = _a;
+                    return [3 /*break*/, 3];
+                case 1: return [4 /*yield*/, fetchSettings(settings.writeKey, settings.cdnURL)];
+                case 2:
+                    _e = (_f.sent());
+                    _f.label = 3;
+                case 3:
+                    legacySettings = _e;
                     if (options.updateCDNSettings) {
                         legacySettings = options.updateCDNSettings(legacySettings);
                     }
-                    retryQueue = (_c = (_b = (_a = legacySettings === null || legacySettings === void 0 ? void 0 : legacySettings.integrations) === null || _a === void 0 ? void 0 : _a['Tronic']) === null || _b === void 0 ? void 0 : _b.retryQueue) !== null && _c !== void 0 ? _c : true;
-                    opts = browser_assign({ retryQueue: retryQueue }, options);
-                    receiver = new Receiver(settings, opts);
+                    receiver = new Receiver(settings, options);
                     attachInspector(receiver);
-                    plugins = (_d = settings.plugins) !== null && _d !== void 0 ? _d : [];
-                    // const classicIntegrations = settings.classicIntegrations ?? []
+                    plugins = (_b = settings.plugins) !== null && _b !== void 0 ? _b : [];
                     Stats.initRemoteMetrics(legacySettings.metrics);
                     // needs to be flushed before plugins are registered
                     flushPreBuffer(receiver, preInitBuffer);
-                    return [4 /*yield*/, registerPlugins(settings.writeKey, legacySettings, receiver, opts, options, plugins)];
-                case 1:
-                    ctx = _g.sent();
-                    search = (_e = window.location.search) !== null && _e !== void 0 ? _e : '';
-                    hash = (_f = window.location.hash) !== null && _f !== void 0 ? _f : '';
+                    return [4 /*yield*/, registerPlugins(settings.writeKey, legacySettings, receiver, options, plugins)];
+                case 4:
+                    ctx = _f.sent();
+                    search = (_c = window.location.search) !== null && _c !== void 0 ? _c : '';
+                    hash = (_d = window.location.hash) !== null && _d !== void 0 ? _d : '';
                     term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '');
-                    if (!term.includes('ajs_')) return [3 /*break*/, 3];
+                    if (!term.includes('ajs_')) return [3 /*break*/, 6];
                     return [4 /*yield*/, receiver.queryString(term).catch(console.error)];
-                case 2:
-                    _g.sent();
-                    _g.label = 3;
-                case 3:
+                case 5:
+                    _f.sent();
+                    _f.label = 6;
+                case 6:
                     receiver.initialized = true;
                     receiver.emit('initialize', settings, options);
                     /*
@@ -8028,28 +8018,18 @@ function loadReceiver(settings, options, preInitBuffer) {
                   }
                      */
                     return [4 /*yield*/, flushFinalBuffer(receiver, preInitBuffer)];
-                case 4:
+                case 7:
                     /*
                   if (options.initialPageview) {
                     receiver.page().catch(console.error)
                   }
                      */
-                    _g.sent();
+                    _f.sent();
                     return [2 /*return*/, [receiver, ctx]];
             }
         });
     });
 }
-/**
- * The public browser interface for Tronic Receiver
- *
- * @example
- * ```ts
- *  export const receiver = new ReceiverBrowser()
- *  receiver.load({ writeKey: 'foo' })
- * ```
- * @link https://github.com/tronic/tronic-receiver/#readme
- */
 var ReceiverBrowser = /** @class */ (function (_super) {
     browser_extends(ReceiverBrowser, _super);
     function ReceiverBrowser() {
@@ -8087,17 +8067,7 @@ var ReceiverBrowser = /** @class */ (function (_super) {
         this._resolveLoadStart(settings, options);
         return this;
     };
-    /**
-     * Instantiates an object exposing Receiver methods.
-     *
-     * @example
-     * ```ts
-     * const ajs = ReceiverBrowser.load({ writeKey: '<YOUR_WRITE_KEY>' })
-     *
-     * ajs.track("foo")
-     * ...
-     * ```
-     */
+    // Instantiates an object exposing Receiver methods.
     ReceiverBrowser.load = function (settings, options) {
         if (options === void 0) { options = {}; }
         return new ReceiverBrowser().load(settings, options);

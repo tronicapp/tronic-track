@@ -58,18 +58,25 @@ export function resolveArguments(
 export const resolveUserArguments = <T extends Traits, U extends User>(
   user: U
 ): ResolveUser<T> => {
-  return (channelId,
-    id,
-    traits,
-    options,
-    callback): ReturnType<ResolveUser<T>> => {
+  return (...args): ReturnType<ResolveUser<T>> => {
+
+    /*
+    const values: {
+      id?: ID
+      traits?: T | null
+      options?: Options
+      callback?: Callback
+      } = {}
+     */
+
+    const x = args[1]
 
     return [
-      channelId,
-      id,
-      traits,
-      options,
-      callback,
+      args[0],
+      (args[1] ?? user.id()) as ID,
+      (args[2] ?? {}) as T ,
+      args[3] ?? {},
+      args[4],
     ];
 
     /*
@@ -133,11 +140,11 @@ export const resolveUserArguments = <T extends Traits, U extends User>(
 
 type ResolveUser<T extends Record<string, string>> = (
   channelId: string,
-  id: string, // ID | object,
-  traits: T, // | null, // Callback | null,
-  options?: Options, // | Callback,
+  id?: ID | object,
+  traits?: T | Callback | null,
+  options?: Options | Callback,
   callback?: Callback
-) => [string, string, T, Options | undefined, Callback | undefined]
+) => [string, ID, T, Options | undefined, Callback | undefined]
 
 export type IdentifyParams = Parameters<ResolveUser<UserTraits>>
 export type EventParams = Parameters<typeof resolveArguments>

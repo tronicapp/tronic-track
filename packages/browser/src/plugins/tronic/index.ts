@@ -28,12 +28,12 @@ export type TronicSettings = {
   apiHost?: string
   protocol?: 'http' | 'https'
 
-  addBundledMetadata?: boolean
-  unbundledIntegrations?: string[]
-  bundledConfigIds?: string[]
-  unbundledConfigIds?: string[]
+  // addBundledMetadata?: boolean
+  // unbundledIntegrations?: string[]
+  // bundledConfigIds?: string[]
+  // unbundledConfigIds?: string[]
 
-  maybeBundledConfigIds?: Record<string, string[]>
+  // maybeBundledConfigIds?: Record<string, string[]>
 
   deliveryStrategy?: DeliveryStrategy
 }
@@ -53,7 +53,6 @@ function onAlias(receiver: Receiver, json: JSON): JSON {
 export function tronic(
   receiver: Receiver,
   settings?: TronicSettings,
-  integrations?: LegacySettings['integrations']
 ): Plugin {
   // Attach `pagehide` before buffer is created so that inflight events are added
   // to the buffer before the buffer persists events in its own `pagehide` handler.
@@ -111,7 +110,7 @@ export function tronic(
     return client
       .dispatch(
         `${remote}/${path}`,
-        normalize(receiver, json, settings, integrations)
+        normalize(receiver, json, settings)
       )
       .then(() => ctx)
       .catch(() => {

@@ -1,4 +1,4 @@
-import type { Integrations } from '../../core/events/interfaces'
+// import type { Integrations } from '../../core/events/interfaces'
 import { LegacySettings } from '../../browser'
 import { JSONObject, JSONValue } from '../../core/events'
 import { DestinationPlugin, Plugin } from '../../core/plugin'
@@ -11,19 +11,22 @@ import {
 import { Context, ContextCancelation } from '../../core/context'
 import { Receiver } from '../../core/receiver'
 
+type Integrations = any
+
 export interface RemotePlugin {
-  /** The name of the remote plugin */
+  // The name of the remote plugin
   name: string
-  /** The creation name of the remote plugin */
+  // The creation name of the remote plugin
   creationName: string
-  /** The url of the javascript file to load */
+  // The url of the javascript file to load
   url: string
-  /** The UMD/global name the plugin uses. Plugins are expected to exist here with the `PluginFactory` method signature */
+  // The UMD/global name the plugin uses. Plugins are expected to exist here with the `PluginFactory` method signature
   libraryName: string
-  /** The settings related to this plugin. */
+  // The settings related to this plugin.
   settings: JSONObject
 }
 
+/*
 export class ActionDestination implements DestinationPlugin {
   name: string // destination name
   version = '1.0.0'
@@ -88,7 +91,7 @@ export class ActionDestination implements DestinationPlugin {
   identify = this._createMethod('identify')
   track = this._createMethod('track')
 
-  /* --- PASSTHROUGH METHODS --- */
+  // --- PASSTHROUGH METHODS ---
   isLoaded(): boolean {
     return this.action.isLoaded()
   }
@@ -105,12 +108,14 @@ export class ActionDestination implements DestinationPlugin {
     return this.action.unload?.(ctx, receiver)
   }
 }
+ */
 
 export type PluginFactory = {
   (settings: JSONValue): Plugin | Plugin[] | Promise<Plugin | Plugin[]>
   pluginName: string
 }
 
+/*
 function validate(pluginLike: unknown): pluginLike is Plugin[] {
   if (!Array.isArray(pluginLike)) {
     throw new Error('Not a valid list of plugins')
@@ -229,7 +234,7 @@ export async function remoteLoader(
               plugin
             )
 
-            /** Make sure we only apply destination filters to actions of the "destination" type to avoid causing issues for hybrid destinations */
+            // Make sure we only apply destination filters to actions of the "destination" type to avoid causing issues for hybrid destinations
             if (
               routing.length &&
               routingMiddleware &&
@@ -250,3 +255,4 @@ export async function remoteLoader(
   await Promise.all(pluginPromises)
   return allPlugins.filter(Boolean)
 }
+*/

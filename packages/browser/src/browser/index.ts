@@ -10,10 +10,10 @@ import { createDeferred } from '../lib/create-deferred'
 import { envEnrichment } from '../plugins/env-enrichment'
 import {
   PluginFactory,
-  remoteLoader,
+  // remoteLoader,
   RemotePlugin,
 } from '../plugins/remote-loader'
-import type { RoutingRule } from '../plugins/routing-middleware'
+// import type { RoutingRule } from '../plugins/routing-middleware'
 import { tronic, TronicSettings } from '../plugins/tronic'
 import { validation } from '../plugins/validation'
 import {
@@ -24,7 +24,6 @@ import {
   // flushSetAnonymousID,
   flushOn,
 } from '../core/buffer'
-// import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
 import { attachInspector } from '../core/inspector'
 import { Stats } from '../core/stats'
 import { setGlobalReceiverKey } from '../lib/global-receiver-helper'
@@ -61,6 +60,7 @@ export interface LegacyIntegrationConfiguration {
 }
 
 export interface LegacySettings {
+  /*
   integrations: {
     [name: string]: LegacyIntegrationConfiguration
   }
@@ -70,13 +70,12 @@ export interface LegacySettings {
   }
 
   enabledMiddleware?: Record<string, boolean>
+   */
   metrics?: MetricsOptions
 
   remotePlugins?: RemotePlugin[]
 
-  /**
-   * Top level consent settings
-   */
+  // Top level consent settings
   consentSettings?: {
     /**
      * All unique consent categories.
@@ -100,7 +99,7 @@ export interface ReceiverBrowserSettings extends ReceiverSettings {
   cdnURL?: string
 }
 
-export function loadLegacySettings(
+export function fetchSettings(
   writeKey: string,
   cdnURL?: string
 ): Promise<LegacySettings> {
@@ -156,10 +155,8 @@ async function registerPlugins(
   writeKey: string,
   legacySettings: LegacySettings,
   receiver: Receiver,
-  opts: InitOptions,
   options: InitOptions,
   pluginLikes: (Plugin | PluginFactory)[] = [],
-  // legacyIntegrationSources: ClassicIntegrationSource[]
 ): Promise<Context> {
   const plugins = pluginLikes?.filter(
     (pluginLike) => typeof pluginLike === 'object'
@@ -172,43 +169,39 @@ async function registerPlugins(
   ) as PluginFactory[]
 
   const mergedSettings = mergedOptions(legacySettings, options)
+
+    /*
   const remotePlugins = await remoteLoader(
     legacySettings,
-    receiver.integrations,
+    { All: true }, // receiver.integrations,
     mergedSettings,
     options.obfuscate,
     undefined,
     pluginSources
-  ).catch(() => [])
+    ).catch(() => [])
+     */
 
   const toRegister = [
     validation,
     envEnrichment,
     ...plugins,
-    ...remotePlugins,
+    // ...remotePlugins,
     await tronic(
       receiver,
       mergedSettings['Tronic'] as TronicSettings,
-      /*
-      {
-        protocol: 'http',
-        apiHost: ,
-        apiKey: writeKey,
-      },
-        */
-      legacySettings.integrations
     ),
   ]
 
   const ctx = await receiver.register(...toRegister)
 
+    /*
   if (
     Object.entries(legacySettings.enabledMiddleware ?? {}).some(
       ([, enabled]) => enabled
     )
   ) {
     await import(
-      /* webpackChunkName: "remoteMiddleware" */ '../plugins/remote-middleware'
+    //// webpackChunkName: "remoteMiddleware" //// '../plugins/remote-middleware'
     ).then(async ({ remoteMiddlewares }) => {
       const middleware = await remoteMiddlewares(
         ctx,
@@ -221,6 +214,7 @@ async function registerPlugins(
       return Promise.all(promises)
     })
   }
+  */
 
   return ctx
 }
@@ -230,33 +224,35 @@ async function loadReceiver(
   options: InitOptions = {},
   preInitBuffer: PreInitMethodCallBuffer
 ): Promise<[Receiver, Context]> {
-  if (options.globalReceiverKey)
-    setGlobalReceiverKey(options.globalReceiverKey)
-  // this is an ugly side-effect, but it's for the benefits of the plugins that get their cdn via getCDN()
-  if (settings.cdnURL) setGlobalCDNUrl(settings.cdnURL)
 
-  let legacySettings = {
-    integrations: options.integrations,
-  } as LegacySettings/*
-    settings.cdnSettings ??
-    (await loadLegacySettings(settings.writeKey, settings.cdnURL))
-                           */
+  if (options.globalReceiverKey) {
+    setGlobalReceiverKey(options.globalReceiverKey)
+  }
+
+  // this is an ugly side-effect, but it's for the benefits of the plugins that get their cdn via getCDN()
+  if (settings.cdnURL) {
+    setGlobalCDNUrl(settings.cdnURL)
+  }
+
+  // {
+  // integrations: options.integrations,
+  // } as LegacySettings/*
+
+  let legacySettings = settings.cdnSettings ?? (await fetchSettings(settings.writeKey, settings.cdnURL))
 
   if (options.updateCDNSettings) {
     legacySettings = options.updateCDNSettings(legacySettings)
   }
 
-  const retryQueue: boolean =
-    legacySettings?.integrations?.['Tronic']?.retryQueue ?? true
+  // const retryQueue: boolean =
+  // legacySettings?.integrations?.['Tronic']?.retryQueue ?? true
 
-  const opts: InitOptions = { retryQueue, ...options }
-  const receiver = new Receiver(settings, opts)
+  // const opts: InitOptions = { retryQueue, ...options }
+  const receiver = new Receiver(settings, options)
 
   attachInspector(receiver)
 
   const plugins = settings.plugins ?? []
-
-  // const classicIntegrations = settings.classicIntegrations ?? []
 
   Stats.initRemoteMetrics(legacySettings.metrics)
 
@@ -267,10 +263,8 @@ async function loadReceiver(
     settings.writeKey,
     legacySettings,
     receiver,
-    opts,
     options,
     plugins,
-    // classicIntegrations
   )
 
   const search = window.location.search ?? ''
@@ -296,16 +290,6 @@ if (options.initialPageview) {
   return [receiver, ctx]
 }
 
-/**
- * The public browser interface for Tronic Receiver
- *
- * @example
- * ```ts
- *  export const receiver = new ReceiverBrowser()
- *  receiver.load({ writeKey: 'foo' })
- * ```
- * @link https://github.com/tronic/tronic-receiver/#readme
- */
 export class ReceiverBrowser extends ReceiverBuffered {
   private _resolveLoadStart: (
     settings: ReceiverBrowserSettings,
@@ -350,17 +334,8 @@ export class ReceiverBrowser extends ReceiverBuffered {
     return this
   }
 
-  /**
-   * Instantiates an object exposing Receiver methods.
-   *
-   * @example
-   * ```ts
-   * const ajs = ReceiverBrowser.load({ writeKey: '<YOUR_WRITE_KEY>' })
-   *
-   * ajs.track("foo")
-   * ...
-   * ```
-   */
+  // Instantiates an object exposing Receiver methods.
+
   static load(
     settings: ReceiverBrowserSettings,
     options: InitOptions = {}

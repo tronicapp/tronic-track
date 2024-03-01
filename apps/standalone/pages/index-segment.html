@@ -1,0 +1,160 @@
+<html>
+
+<head>
+  <style>
+    body {
+      font-family: monospace;
+    }
+
+    #trackEvent {
+      margin: 2em 0;
+      min-height: 200px;
+      min-width: 700px;
+    }
+
+    #identifyEvent {
+      margin: 2em 0;
+      min-height: 200px;
+      min-width: 700px;
+    }
+
+  </style>
+
+  <form method="get">
+    <input type="text" name="writeKey" value="" placeholder="Writekey" />
+    <button>Load</button>
+  </form>
+
+  <script>
+    !function () {
+      var i = "analytics", analytics = window[i] = window[i] || []; if (!analytics.initialize) if (analytics.invoked) window.console && console.error && console.error("Segment snippet included twice."); else {
+        analytics.invoked = !0; analytics.methods = ["trackSubmit", "trackClick", "trackLink", "trackForm", "pageview", "identify", "reset", "group", "track", "ready", "alias", "debug", "page", "screen", "once", "off", "on", "addSourceMiddleware", "addIntegrationMiddleware", "setAnonymousId", "addDestinationMiddleware", "register"]; analytics.factory = function (e) { return function () { if (window[i].initialized) return window[i][e].apply(window[i], arguments); var n = Array.prototype.slice.call(arguments); if (["track", "screen", "alias", "group", "page", "identify"].indexOf(e) > -1) { var c = document.querySelector("link[rel='canonical']"); n.push({ __t: "bpc", c: c && c.getAttribute("href") || void 0, p: location.pathname, u: location.href, s: location.search, t: document.title, r: document.referrer }) } n.unshift(e); analytics.push(n); return analytics } }; for (var n = 0; n < analytics.methods.length; n++) { var key = analytics.methods[n]; analytics[key] = analytics.factory(key) } analytics.load = function (key, n) { var t = document.createElement("script"); t.type = "text/javascript"; t.async = !0; t.setAttribute("data-global-segment-analytics-key", i); t.src = "https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js"; var r = document.getElementsByTagName("script")[0]; r.parentNode.insertBefore(t, r); analytics._loadOptions = n }; analytics._writeKey = "UHDur3WauizTUQjYXqHPTZsfIJXtm3m4";; analytics.SNIPPET_VERSION = "5.2.0";
+        analytics.load("UHDur3WauizTUQjYXqHPTZsfIJXtm3m4"/*,{
+          integrations: {
+            'All': false,
+          }
+        }*/)
+        analytics.page();
+      }
+    }();
+  </script>
+</head>
+
+<body>
+  <form>
+    <div>
+      <div>
+        <textarea name="trackEvent" id="trackEvent">
+{
+  "userId": "2WffqQkUnMk5qM5y90fGlzcPDAv",
+  "name": "event0",
+  "properties": { "test": "yes" }
+  "options": {
+    "integrations": {
+      "Zapier": false
+    }
+  }
+}
+      </textarea>
+      </div>
+      <button id="track">Track</button>
+    </div>
+    <div>
+      <div>
+        <textarea name="identifyEvent" id="identifyEvent">
+{
+  "channelId": "2YUflBOLovgzw89JNtkxup30q5T",
+  "userId": "2WffqQkUnMk5qM5y90fGlzcPDAv",
+  "traits": {
+     "email": "hello@example.com"
+  }
+}
+      </textarea>
+      </div>
+      <button id="identify">Identify</button>
+    </div>
+  </form>
+
+  <pre id="ready-logs"></pre>
+  <pre id="logs"></pre>
+
+  <script type="text/javascript">
+
+    function writeToLog(str) {
+      document.querySelector('#logs').textContent = str;
+    }
+
+    if (window.analytics) {
+      window.analytics.ready(function onReady() {
+        console.profileEnd('snippet')
+        console.timeEnd('snippet')
+        document.querySelector('#ready-logs').textContent = 'ready!'
+      })
+
+      document.querySelector('#track').addEventListener('click', async function (e) {
+
+        e.preventDefault()
+
+        var contents = document.querySelector('#trackEvent').value
+        var evt = JSON.parse(contents)
+
+        // console.profile('track')
+        // console.time('track')
+
+        try {
+
+          var ctx = await window.analytics.track(
+            evt.name,
+            evt.properties || {},
+          )
+
+          ctx.flush()
+
+          writeToLog(JSON.stringify(
+            ctx.event,
+            null,
+            '  '
+          ))
+
+        } catch (err) {
+
+          writeToLog(err);
+
+        } finally {
+          // console.timeEnd('track')
+          // console.profileEnd('track')
+        }
+
+      })
+
+      document
+        .querySelector('#identify')
+        .addEventListener('click', function (e) {
+          e.preventDefault()
+          var contents = document.querySelector('#identifyEvent').value
+          var evt = JSON.parse(contents)
+          console.time('identify')
+          var promise = window.analytics.identify(
+            evt.channelId || '',
+            evt.userId || '',
+            evt.traits || {},
+            evt.options || {},
+          )
+
+          promise &&
+            promise.then &&
+            promise.then(function (ctx) {
+              console.timeEnd('identify')
+              ctx.flush()
+              document.querySelector('#logs').textContent = JSON.stringify(
+                ctx.event,
+                null,
+                '  '
+              )
+            })
+        })
+    }
+  </script>
+</body>
+
+</html>

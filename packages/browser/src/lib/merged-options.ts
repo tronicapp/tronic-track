@@ -14,7 +14,8 @@ export function mergedOptions(
   settings: LegacySettings,
   options: Options
 ): Record<string, JSONObject> {
-  const optionOverrides = Object.entries(options.integrations ?? {}).reduce(
+
+  /*const optionOverrides = Object.entries(options.integrations ?? {}).reduce(
     (overrides, [integration, options]) => {
       if (typeof options === 'object') {
         return {
@@ -43,4 +44,6 @@ export function mergedOptions(
     },
     {} as Record<string, JSONObject>
   )
+    */
+  return {} as Record<string, JSONObject>
 }
