@@ -1,6 +1,5 @@
 import { Facade } from '@segment/facade'
 import { Receiver } from '../../core/receiver'
-import { LegacySettings } from '../../browser'
 import { isOffline } from '../../core/connection'
 import { Context } from '../../core/context'
 import { Plugin } from '../../core/plugin'
@@ -28,18 +27,11 @@ export type TronicSettings = {
   apiHost?: string
   protocol?: 'http' | 'https'
 
-  // addBundledMetadata?: boolean
-  // unbundledIntegrations?: string[]
-  // bundledConfigIds?: string[]
-  // unbundledConfigIds?: string[]
-
-  // maybeBundledConfigIds?: Record<string, string[]>
-
   deliveryStrategy?: DeliveryStrategy
 }
 
+/*
 type JSON = ReturnType<Facade['json']>
-
 function onAlias(receiver: Receiver, json: JSON): JSON {
   const user = receiver.user()
   json.previousId =
@@ -49,6 +41,7 @@ function onAlias(receiver: Receiver, json: JSON): JSON {
   delete json.to
   return json
 }
+  */
 
 export function tronic(
   receiver: Receiver,

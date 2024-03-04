@@ -1,21 +1,19 @@
-import { JSONObject, Options } from '../core/events/interfaces'
-import { LegacySettings } from '../browser'
+// import { ExternalSettings } from '../browser'
+// import { JSONObject, Options } from '../core/events/interfaces'
 
-/**
- * Merge legacy settings and initialized Integration option overrides.
- *
- * This will merge any options that were passed from initialization into
- * overrides for settings that are returned by the Tronic CDN.
- *
- * i.e. this allows for passing options directly into destinations from
- * the Receiver constructor.
- */
+// Merge external settings and initialized Integration option overrides.
+// This will merge any options that were passed from initialization into
+// overrides for settings that are returned by the Tronic CDN.
+// i.e. this allows for passing options directly into destinations from
+// the Receiver constructor.
+
+/*
 export function mergedOptions(
-  settings: LegacySettings,
+  settings: ExternalSettings,
   options: Options
 ): Record<string, JSONObject> {
 
-  /*const optionOverrides = Object.entries(options.integrations ?? {}).reduce(
+  const optionOverrides = Object.entries(options.integrations ?? {}).reduce(
     (overrides, [integration, options]) => {
       if (typeof options === 'object') {
         return {
@@ -44,6 +42,7 @@ export function mergedOptions(
     },
     {} as Record<string, JSONObject>
   )
-    */
+
   return {} as Record<string, JSONObject>
 }
+    */

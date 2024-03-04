@@ -70,7 +70,7 @@ export function link(
 
         const trackEvent = pTimeout(
           this.track(channelId, ev, props, options ?? {}),
-          this.settings.timeout ?? 500
+          this.options.timeout ?? 500
         )
 
         if (
@@ -125,7 +125,7 @@ export function form(
 
       const trackEvent = pTimeout(
         this.track(channelId, ev, props, options ?? {}),
-        this.settings.timeout ?? 500
+        this.options.timeout ?? 500
       )
 
       trackEvent

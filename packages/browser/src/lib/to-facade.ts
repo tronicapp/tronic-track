@@ -6,11 +6,11 @@ import {
 } from '@segment/facade'
 import { TronicEvent } from '../core/events'
 
-export type SegmentFacade = Facade<TronicEvent> & {
+export type TronicFacade = Facade<TronicEvent> & {
   obj: TronicEvent
 }
 
-export function toFacade(evt: TronicEvent, options?: Options): SegmentFacade {
+export function toFacade(evt: TronicEvent, options?: Options): TronicFacade {
   let fcd = new Facade(evt, options)
 
   if (evt.type === 'track') {
@@ -44,5 +44,5 @@ export function toFacade(evt: TronicEvent, options?: Options): SegmentFacade {
     writable: true,
   })
 
-  return fcd as SegmentFacade
+  return fcd as TronicFacade
 }

@@ -1,11 +1,10 @@
 import { Receiver } from '../../core/receiver'
-import { LegacySettings } from '../../browser'
-import { SegmentFacade } from '../../lib/to-facade'
+import { TronicFacade } from '../../lib/to-facade'
 import { TronicSettings } from './index'
 
 export function normalize(
   receiver: Receiver,
-  json: ReturnType<SegmentFacade['json']>,
+  json: ReturnType<TronicFacade['json']>,
   settings?: TronicSettings,
 ): object {
   const user = receiver.user()

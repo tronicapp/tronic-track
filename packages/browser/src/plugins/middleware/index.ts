@@ -1,17 +1,17 @@
 import { Context, ContextCancelation } from '../../core/context'
 import { TronicEvent } from '../../core/events'
 import { Plugin } from '../../core/plugin'
-import { SegmentFacade, toFacade } from '../../lib/to-facade'
+import { TronicFacade, toFacade } from '../../lib/to-facade'
 
 export interface MiddlewareParams {
-  payload: SegmentFacade
+  payload: TronicFacade
 
   // integrations?: TronicEvent['integrations']
   next: (payload: MiddlewareParams['payload'] | null) => void
 }
 
 export interface DestinationMiddlewareParams {
-  payload: SegmentFacade
+  payload: TronicFacade
   // integration: string
   next: (payload: MiddlewareParams['payload'] | null) => void
 }
