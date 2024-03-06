@@ -2139,24 +2139,6 @@ function isFunction(val) {
 
 /***/ }),
 
-/***/ 204:
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   j: function() { return /* binding */ isBrowser; },
-/* harmony export */   s: function() { return /* binding */ isServer; }
-/* harmony export */ });
-function isBrowser() {
-    return typeof window !== 'undefined';
-}
-function isServer() {
-    return !isBrowser();
-}
-
-
-/***/ }),
-
 /***/ 863:
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
@@ -2178,225 +2160,6 @@ function gracefulDecodeURIComponent(encodedURIComponent) {
     catch (_a) {
         return encodedURIComponent;
     }
-}
-
-
-/***/ }),
-
-/***/ 584:
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   M: function() { return /* binding */ embeddedWriteKey; }
-/* harmony export */ });
-// This variable is used as an optional fallback for when customers
-// host or proxy their own receiver.js.
-try {
-    window.receiverWriteKey = '__WRITE_KEY__';
-}
-catch (_) {
-    // @ eslint-disable-next-line
-}
-function embeddedWriteKey() {
-    if (window.receiverWriteKey === undefined) {
-        return undefined;
-    }
-    // this is done so that we don't accidentally override every reference to __write_key__
-    return window.receiverWriteKey !== ['__', 'WRITE', '_', 'KEY', '__'].join('')
-        ? window.receiverWriteKey
-        : undefined;
-}
-
-
-/***/ }),
-
-/***/ 905:
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   D4: function() { return /* binding */ setGlobalReceiverKey; },
-/* harmony export */   aV: function() { return /* binding */ getGlobalReceiver; },
-/* harmony export */   jg: function() { return /* binding */ setGlobalReceiver; }
-/* harmony export */ });
-/**
- * Stores the global window receiver key
- */
-var _globalReceiverKey = 'receiver';
-/**
- * Gets the global receiver/buffer
- * @param key name of the window property where the buffer is stored (default: receiver)
- * @returns ReceiverSnippet
- */
-function getGlobalReceiver() {
-    return window[_globalReceiverKey];
-}
-/**
- * Replaces the global window key for the receiver/buffer object
- * @param key key name
- */
-function setGlobalReceiverKey(key) {
-    _globalReceiverKey = key;
-}
-/**
- * Sets the global receiver object
- * @param receiver receiver snippet
- */
-function setGlobalReceiver(receiver) {
-    ;
-    window[_globalReceiverKey] = receiver;
-}
-
-
-/***/ }),
-
-/***/ 70:
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   v: function() { return /* binding */ loadScript; }
-/* harmony export */ });
-/* unused harmony export unloadScript */
-function findScript(src) {
-    var scripts = Array.prototype.slice.call(window.document.querySelectorAll('script'));
-    return scripts.find(function (s) { return s.src === src; });
-}
-function loadScript(src, attributes) {
-    var found = findScript(src);
-    if (found !== undefined) {
-        var status = found === null || found === void 0 ? void 0 : found.getAttribute('status');
-        if (status === 'loaded') {
-            return Promise.resolve(found);
-        }
-        if (status === 'loading') {
-            return new Promise(function (resolve, reject) {
-                found.addEventListener('load', function () { return resolve(found); });
-                found.addEventListener('error', function (err) { return reject(err); });
-            });
-        }
-    }
-    return new Promise(function (resolve, reject) {
-        var _a;
-        var script = window.document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = src;
-        script.async = true;
-        script.setAttribute('status', 'loading');
-        for (var _i = 0, _b = Object.entries(attributes !== null && attributes !== void 0 ? attributes : {}); _i < _b.length; _i++) {
-            var _c = _b[_i], k = _c[0], v = _c[1];
-            script.setAttribute(k, v);
-        }
-        script.onload = function () {
-            script.onerror = script.onload = null;
-            script.setAttribute('status', 'loaded');
-            resolve(script);
-        };
-        script.onerror = function () {
-            script.onerror = script.onload = null;
-            script.setAttribute('status', 'error');
-            reject(new Error("Failed to load ".concat(src)));
-        };
-        var tag = window.document.getElementsByTagName('script')[0];
-        (_a = tag.parentElement) === null || _a === void 0 ? void 0 : _a.insertBefore(script, tag);
-    });
-}
-function unloadScript(src) {
-    var found = findScript(src);
-    if (found !== undefined) {
-        found.remove();
-    }
-    return Promise.resolve();
-}
-
-
-/***/ }),
-
-/***/ 566:
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Kg: function() { return /* binding */ getNextIntegrationsURL; },
-/* harmony export */   UH: function() { return /* binding */ setGlobalCDNUrl; },
-/* harmony export */   Vl: function() { return /* binding */ getCDN; },
-/* harmony export */   YM: function() { return /* binding */ getLegacyAJSPath; }
-/* harmony export */ });
-/* harmony import */ var _global_receiver_helper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(905);
-/* harmony import */ var _embedded_write_key__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(584);
-
-
-var receiverScriptRegex = /(https:\/\/.*)\/receiver\.js\/v1\/(?:.*?)\/(?:platform|receiver.*)?/;
-var getCDNUrlFromScriptTag = function () {
-    var cdn;
-    var scripts = Array.prototype.slice.call(document.querySelectorAll('script'));
-    scripts.forEach(function (s) {
-        var _a;
-        var src = (_a = s.getAttribute('src')) !== null && _a !== void 0 ? _a : '';
-        var result = receiverScriptRegex.exec(src);
-        if (result && result[1]) {
-            cdn = result[1];
-        }
-    });
-    return cdn;
-};
-var _globalCDN; // set globalCDN as in-memory singleton
-var getGlobalCDNUrl = function () {
-    var _a;
-    var result = _globalCDN !== null && _globalCDN !== void 0 ? _globalCDN : (_a = (0,_global_receiver_helper__WEBPACK_IMPORTED_MODULE_0__/* .getGlobalReceiver */ .aV)()) === null || _a === void 0 ? void 0 : _a._cdn;
-    return result;
-};
-var setGlobalCDNUrl = function (cdn) {
-    var globalReceiver = (0,_global_receiver_helper__WEBPACK_IMPORTED_MODULE_0__/* .getGlobalReceiver */ .aV)();
-    if (globalReceiver) {
-        globalReceiver._cdn = cdn;
-    }
-    _globalCDN = cdn;
-};
-var getCDN = function () {
-    var globalCdnUrl = getGlobalCDNUrl();
-    if (globalCdnUrl)
-        return globalCdnUrl;
-    var cdnFromScriptTag = getCDNUrlFromScriptTag();
-    if (cdnFromScriptTag) {
-        return cdnFromScriptTag;
-    }
-    else {
-        // it's possible that the CDN is not found in the page because:
-        // - the script is loaded through a proxy
-        // - the script is removed after execution
-        // in this case, we fall back to the default Tronic CDN
-        return "https://cdn.tronic.com";
-    }
-};
-var getNextIntegrationsURL = function () {
-    var cdn = getCDN();
-    return "".concat(cdn, "/next-integrations");
-};
-/**
- * Replaces the CDN URL in the script tag with the one from Receiver.js 1.0
- *
- * @returns the path to Receiver JS 1.0
- **/
-function getLegacyAJSPath() {
-    var _a, _b, _c;
-    var writeKey = (_a = (0,_embedded_write_key__WEBPACK_IMPORTED_MODULE_1__/* .embeddedWriteKey */ .M)()) !== null && _a !== void 0 ? _a : (_b = (0,_global_receiver_helper__WEBPACK_IMPORTED_MODULE_0__/* .getGlobalReceiver */ .aV)()) === null || _b === void 0 ? void 0 : _b._writeKey;
-    var scripts = Array.prototype.slice.call(document.querySelectorAll('script'));
-    var path = undefined;
-    for (var _i = 0, scripts_1 = scripts; _i < scripts_1.length; _i++) {
-        var s = scripts_1[_i];
-        var src = (_c = s.getAttribute('src')) !== null && _c !== void 0 ? _c : '';
-        var result = receiverScriptRegex.exec(src);
-        if (result && result[1]) {
-            path = src;
-            break;
-        }
-    }
-    if (path) {
-        return path.replace('receiver.min.js', 'receiver.classic.js');
-    }
-    return "https://cdn.tronic.com/receiver.js/v1/".concat(writeKey, "/receiver.classic.js");
 }
 
 
@@ -3131,7 +2894,7 @@ function dset(obj, keys, val) {
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = function(chunkId) {
 /******/ 			// return url for filenames based on template
-/******/ 			return "" + {"96":"queryString","119":"auto-track","214":"remoteMiddleware"}[chunkId] + ".bundle." + {"96":"35511edd91b384c499b3","119":"9d69785b8fe9e93141dd","214":"5fd76764311b4da6926a"}[chunkId] + ".js";
+/******/ 			return "" + {"96":"queryString","119":"auto-track"}[chunkId] + ".bundle." + {"96":"35511edd91b384c499b3","119":"551b24328bb3e8c917f0"}[chunkId] + ".js";
 /******/ 		};
 /******/ 	}();
 /******/ 	
@@ -3302,8 +3065,129 @@ var __webpack_exports__ = {};
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// EXTERNAL MODULE: ./src/lib/parse-cdn.ts
-var parse_cdn = __webpack_require__(566);
+;// CONCATENATED MODULE: ./src/lib/global-receiver-helper.ts
+/**
+ * Stores the global window receiver key
+ */
+var _globalReceiverKey = 'receiver';
+/**
+ * Gets the global receiver/buffer
+ * @param key name of the window property where the buffer is stored (default: receiver)
+ * @returns ReceiverSnippet
+ */
+function getGlobalReceiver() {
+    return window[_globalReceiverKey];
+}
+/**
+ * Replaces the global window key for the receiver/buffer object
+ * @param key key name
+ */
+function setGlobalReceiverKey(key) {
+    _globalReceiverKey = key;
+}
+/**
+ * Sets the global receiver object
+ * @param receiver receiver snippet
+ */
+function setGlobalReceiver(receiver) {
+    ;
+    window[_globalReceiverKey] = receiver;
+}
+
+;// CONCATENATED MODULE: ./src/lib/embedded-write-key.ts
+// This variable is used as an optional fallback for when customers
+// host or proxy their own receiver.js.
+try {
+    window.receiverWriteKey = '__WRITE_KEY__';
+}
+catch (_) {
+    // @ eslint-disable-next-line
+}
+function embeddedWriteKey() {
+    if (window.receiverWriteKey === undefined) {
+        return undefined;
+    }
+    // this is done so that we don't accidentally override every reference to __write_key__
+    return window.receiverWriteKey !== ['__', 'WRITE', '_', 'KEY', '__'].join('')
+        ? window.receiverWriteKey
+        : undefined;
+}
+
+;// CONCATENATED MODULE: ./src/lib/parse-cdn.ts
+
+
+var receiverScriptRegex = /(https:\/\/.*)\/receiver\.js\/v1\/(?:.*?)\/(?:platform|receiver.*)?/;
+var getCDNUrlFromScriptTag = function () {
+    var cdn;
+    var scripts = Array.prototype.slice.call(document.querySelectorAll('script'));
+    scripts.forEach(function (s) {
+        var _a;
+        var src = (_a = s.getAttribute('src')) !== null && _a !== void 0 ? _a : '';
+        var result = receiverScriptRegex.exec(src);
+        if (result && result[1]) {
+            cdn = result[1];
+        }
+    });
+    return cdn;
+};
+var _globalCDN; // set globalCDN as in-memory singleton
+var getGlobalCDNUrl = function () {
+    var _a;
+    var result = _globalCDN !== null && _globalCDN !== void 0 ? _globalCDN : (_a = getGlobalReceiver()) === null || _a === void 0 ? void 0 : _a._cdn;
+    return result;
+};
+var setGlobalCDNUrl = function (cdn) {
+    var globalReceiver = getGlobalReceiver();
+    if (globalReceiver) {
+        globalReceiver._cdn = cdn;
+    }
+    _globalCDN = cdn;
+};
+var getCDN = function () {
+    var globalCdnUrl = getGlobalCDNUrl();
+    if (globalCdnUrl)
+        return globalCdnUrl;
+    var cdnFromScriptTag = getCDNUrlFromScriptTag();
+    if (cdnFromScriptTag) {
+        return cdnFromScriptTag;
+    }
+    else {
+        // it's possible that the CDN is not found in the page because:
+        // - the script is loaded through a proxy
+        // - the script is removed after execution
+        // in this case, we fall back to the default Tronic CDN
+        return "https://cdn.tronic.com";
+    }
+};
+var getNextIntegrationsURL = function () {
+    var cdn = getCDN();
+    return "".concat(cdn, "/next-integrations");
+};
+/**
+ * Replaces the CDN URL in the script tag with the one from Receiver.js 1.0
+ *
+ * @returns the path to Receiver JS 1.0
+ **/
+function getLegacyAJSPath() {
+    var _a, _b, _c;
+    var writeKey = (_a = embeddedWriteKey()) !== null && _a !== void 0 ? _a : (_b = getGlobalReceiver()) === null || _b === void 0 ? void 0 : _b._writeKey;
+    var scripts = Array.prototype.slice.call(document.querySelectorAll('script'));
+    var path = undefined;
+    for (var _i = 0, scripts_1 = scripts; _i < scripts_1.length; _i++) {
+        var s = scripts_1[_i];
+        var src = (_c = s.getAttribute('src')) !== null && _c !== void 0 ? _c : '';
+        var result = receiverScriptRegex.exec(src);
+        if (result && result[1]) {
+            path = src;
+            break;
+        }
+    }
+    if (path) {
+        return path.replace('receiver.min.js', 'receiver.classic.js');
+    }
+    return "https://cdn.tronic.com/receiver.js/v1/".concat(writeKey, "/receiver.classic.js");
+}
+
 ;// CONCATENATED MODULE: ./src/lib/version-type.ts
 // Default value will be updated to 'web' in `bundle-umd.ts` for web build.
 var _version = 'npm';
@@ -3313,45 +3197,6 @@ function setVersionType(version) {
 function getVersionType() {
     return _version;
 }
-
-;// CONCATENATED MODULE: ../../node_modules/unfetch/dist/unfetch.module.js
-/* harmony default export */ function unfetch_module(e,n){return n=n||{},new Promise(function(t,r){var s=new XMLHttpRequest,o=[],u=[],i={},a=function(){return{ok:2==(s.status/100|0),statusText:s.statusText,status:s.status,url:s.responseURL,text:function(){return Promise.resolve(s.responseText)},json:function(){return Promise.resolve(s.responseText).then(JSON.parse)},blob:function(){return Promise.resolve(new Blob([s.response]))},clone:a,headers:{keys:function(){return o},entries:function(){return u},get:function(e){return i[e.toLowerCase()]},has:function(e){return e.toLowerCase()in i}}}};for(var l in s.open(n.method||"get",e,!0),s.onload=function(){s.getAllResponseHeaders().replace(/^(.*?):[^\S\n]*([\s\S]*?)$/gm,function(e,n,t){o.push(n=n.toLowerCase()),u.push([n,t]),i[n]=i[n]?i[n]+","+t:t}),t(a())},s.onerror=r,s.withCredentials="include"==n.credentials,n.headers)s.setRequestHeader(l,n.headers[l]);s.send(n.body||null)})}
-//# sourceMappingURL=unfetch.module.js.map
-
-;// CONCATENATED MODULE: ./src/lib/get-global.ts
-// This an imperfect polyfill for globalThis
-var getGlobal = function () {
-    if (typeof globalThis !== 'undefined') {
-        return globalThis;
-    }
-    if (typeof self !== 'undefined') {
-        return self;
-    }
-    if (typeof window !== 'undefined') {
-        return window;
-    }
-    if (typeof global !== 'undefined') {
-        return global;
-    }
-    return null;
-};
-
-;// CONCATENATED MODULE: ./src/lib/fetch.ts
-
-
-/**
- * Wrapper around native `fetch` containing `unfetch` fallback.
- */
-// @ts-ignore
-var fetch = function () {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    var global = getGlobal();
-    // @ts-ignore
-    return ((global && global.fetch) || unfetch_module).apply(void 0, args);
-};
 
 // EXTERNAL MODULE: ../core/dist/esm/validation/helpers.js
 var helpers = __webpack_require__(595);
@@ -3386,13 +3231,27 @@ function resolveArguments(eventOrEventName, channelId, properties, options, call
  * Helper for group, identify methods
  */
 var resolveUserArguments = function (user) {
-    return function (channelId, id, traits, options, callback) {
+    return function () {
+        /*
+        const values: {
+          id?: ID
+          traits?: T | null
+          options?: Options
+          callback?: Callback
+          } = {}
+         */
+        var _a, _b, _c;
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var x = args[1];
         return [
-            channelId,
-            id,
-            traits,
-            options,
-            callback,
+            args[0],
+            ((_a = args[1]) !== null && _a !== void 0 ? _a : user.id()),
+            ((_b = args[2]) !== null && _b !== void 0 ? _b : {}),
+            (_c = args[3]) !== null && _c !== void 0 ? _c : {},
+            args[4],
         ];
         /*
             const values: {
@@ -3453,12 +3312,18 @@ var resolveUserArguments = function (user) {
     };
 };
 
-// EXTERNAL MODULE: ./src/core/environment/index.ts
-var environment = __webpack_require__(204);
+;// CONCATENATED MODULE: ./src/core/environment/index.ts
+function isBrowser() {
+    return typeof window !== 'undefined';
+}
+function isServer() {
+    return !isBrowser();
+}
+
 ;// CONCATENATED MODULE: ./src/core/connection/index.ts
 
 function isOnline() {
-    if ((0,environment/* isBrowser */.j)()) {
+    if (isBrowser()) {
         return window.navigator.onLine;
     }
     return true;
@@ -3471,6 +3336,45 @@ function isOffline() {
 var context = __webpack_require__(494);
 // EXTERNAL MODULE: ../core/dist/esm/stats/index.js
 var stats = __webpack_require__(417);
+;// CONCATENATED MODULE: ../../node_modules/unfetch/dist/unfetch.module.js
+/* harmony default export */ function unfetch_module(e,n){return n=n||{},new Promise(function(t,r){var s=new XMLHttpRequest,o=[],u=[],i={},a=function(){return{ok:2==(s.status/100|0),statusText:s.statusText,status:s.status,url:s.responseURL,text:function(){return Promise.resolve(s.responseText)},json:function(){return Promise.resolve(s.responseText).then(JSON.parse)},blob:function(){return Promise.resolve(new Blob([s.response]))},clone:a,headers:{keys:function(){return o},entries:function(){return u},get:function(e){return i[e.toLowerCase()]},has:function(e){return e.toLowerCase()in i}}}};for(var l in s.open(n.method||"get",e,!0),s.onload=function(){s.getAllResponseHeaders().replace(/^(.*?):[^\S\n]*([\s\S]*?)$/gm,function(e,n,t){o.push(n=n.toLowerCase()),u.push([n,t]),i[n]=i[n]?i[n]+","+t:t}),t(a())},s.onerror=r,s.withCredentials="include"==n.credentials,n.headers)s.setRequestHeader(l,n.headers[l]);s.send(n.body||null)})}
+//# sourceMappingURL=unfetch.module.js.map
+
+;// CONCATENATED MODULE: ./src/lib/get-global.ts
+// This an imperfect polyfill for globalThis
+var getGlobal = function () {
+    if (typeof globalThis !== 'undefined') {
+        return globalThis;
+    }
+    if (typeof self !== 'undefined') {
+        return self;
+    }
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    if (typeof global !== 'undefined') {
+        return global;
+    }
+    return null;
+};
+
+;// CONCATENATED MODULE: ./src/lib/fetch.ts
+
+
+/**
+ * Wrapper around native `fetch` containing `unfetch` fallback.
+ */
+// @ts-ignore
+var fetch = function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    var global = getGlobal();
+    // @ts-ignore
+    return ((global && global.fetch) || unfetch_module).apply(void 0, args);
+};
+
 ;// CONCATENATED MODULE: ./src/generated/version.ts
 // This file is generated.
 var version = '0.0.1';
@@ -4230,7 +4134,7 @@ var loc = {
     removeItem: function () { },
 };
 try {
-    loc = (0,environment/* isBrowser */.j)() && window.localStorage ? window.localStorage : loc;
+    loc = isBrowser() && window.localStorage ? window.localStorage : loc;
 }
 catch (err) {
     console.warn('Unable to access localStorage', err);
@@ -5685,8 +5589,6 @@ var is_thenable_isThenable = function (value) {
         typeof value.then === 'function';
 };
 
-// EXTERNAL MODULE: ./src/lib/global-receiver-helper.ts
-var global_receiver_helper = __webpack_require__(905);
 ;// CONCATENATED MODULE: ./src/core/buffer/index.ts
 var buffer_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -5878,7 +5780,7 @@ var PreInitMethodCallBuffer = /** @class */ (function () {
      * This removes existing buffered calls from the window object.
      */
     PreInitMethodCallBuffer.prototype._pushSnippetWindowBuffer = function () {
-        var wa = (0,global_receiver_helper/* getGlobalReceiver */.aV)();
+        var wa = getGlobalReceiver();
         if (!Array.isArray(wa))
             return undefined;
         var buffered = wa.splice(0, wa.length);
@@ -6116,6 +6018,7 @@ var receiver_spreadArray = (undefined && undefined.__spreadArray) || function (t
 
 
 
+// import type { ExternalSettings } from '../../browser'
 
 // import { setGlobalReceiver } from '../../lib/global-receiver-helper'
 
@@ -6134,8 +6037,10 @@ function createDefaultQueue(name, retryQueue, disablePersistance) {
 }
 var Receiver = /** @class */ (function (_super) {
     receiver_extends(Receiver, _super);
-    function Receiver(settings, options, queue, user, group) {
-        var _a, _b, _c;
+    function Receiver(
+    // settings: ReceiverSettings,
+    options, queue, user, group) {
+        var _a;
         var _this = _super.call(this) || this;
         _this._debug = false;
         _this.initialized = false;
@@ -6144,10 +6049,10 @@ var Receiver = /** @class */ (function (_super) {
         };
         var cookieOptions = options === null || options === void 0 ? void 0 : options.cookie;
         var disablePersistance = (_a = options === null || options === void 0 ? void 0 : options.disableClientPersistence) !== null && _a !== void 0 ? _a : false;
-        _this.settings = settings;
-        _this.settings.timeout = (_b = _this.settings.timeout) !== null && _b !== void 0 ? _b : 300;
+        // this.settings = settings
+        // this.settings.timeout = this.settings.timeout ?? 300
         _this.queue =
-            queue !== null && queue !== void 0 ? queue : createDefaultQueue("".concat(settings.writeKey, ":event-queue"), options === null || options === void 0 ? void 0 : options.retryQueue, disablePersistance);
+            queue !== null && queue !== void 0 ? queue : createDefaultQueue("".concat(options.writeKey, ":event-queue"), options === null || options === void 0 ? void 0 : options.retryQueue, disablePersistance);
         var storageSetting = options === null || options === void 0 ? void 0 : options.storage;
         _this._universalStorage = _this.createStore(disablePersistance, storageSetting, cookieOptions);
         _this._user =
@@ -6155,15 +6060,12 @@ var Receiver = /** @class */ (function (_super) {
         _this._group =
             group !== null && group !== void 0 ? group : new Group(receiver_assign({ persist: !disablePersistance, storage: options === null || options === void 0 ? void 0 : options.storage }, options === null || options === void 0 ? void 0 : options.group), cookieOptions).load();
         _this.eventFactory = new EventFactory(_this._user);
-        _this.integrations = (_c = options === null || options === void 0 ? void 0 : options.integrations) !== null && _c !== void 0 ? _c : {};
-        _this.options = options !== null && options !== void 0 ? options : {};
+        // this.integrations = options?.integrations ?? {}
+        _this.options = options; // ?? {}
         bindAll(_this);
         return _this;
     }
-    /**
-     * Creates the storage system based on the settings received
-     * @returns Storage
-     */
+    // Creates the storage system based on the settings received
     Receiver.prototype.createStore = function (disablePersistance, storageSetting, cookieOptions) {
         // DisablePersistance option overrides all, no storage will be used outside of memory even if specified
         if (disablePersistance) {
@@ -6206,9 +6108,6 @@ var Receiver = /** @class */ (function (_super) {
                 pageCtx = popPageContext(args);
                 _a = resolveArguments.apply(void 0, args), name = _a[0], channelId = _a[1], data = _a[2], opts = _a[3], cb = _a[4];
                 tronicEvent = this.eventFactory.track(name, channelId, data, opts, pageCtx);
-                delete tronicEvent.type;
-                delete tronicEvent.messageId;
-                // delete tronicEvent.anonymousId
                 return [2 /*return*/, this._dispatch(tronicEvent, cb).then(function (ctx) {
                         _this.emit('track', name, ctx.event.properties, ctx.event.options);
                         return ctx;
@@ -6222,19 +6121,15 @@ var Receiver = /** @class */ (function (_super) {
             args[_i] = arguments[_i];
         }
         return receiver_awaiter(this, void 0, Promise, function () {
-            var pageCtx, _a, channelId, userId, traits, options, callback, tronicEvent;
+            var pageCtx, _a, channelId, id, _traits, options, callback, tronicEvent;
             var _this = this;
             return receiver_generator(this, function (_b) {
                 pageCtx = popPageContext(args);
-                _a = resolveUserArguments(this._user).apply(void 0, args), channelId = _a[0], userId = _a[1], traits = _a[2], options = _a[3], callback = _a[4];
+                _a = resolveUserArguments(this._user).apply(void 0, args), channelId = _a[0], id = _a[1], _traits = _a[2], options = _a[3], callback = _a[4];
                 this._user.identify(id, _traits);
-                tronicEvent = this.eventFactory.identify(channelId, 
-                // userId,
-                this._user.id(), this._user.traits(), options, 
-                // this.integrations,
-                pageCtx);
+                tronicEvent = this.eventFactory.identify(this._user.id(), channelId, this._user.traits(), options, pageCtx);
                 return [2 /*return*/, this._dispatch(tronicEvent, callback).then(function (ctx) {
-                        _this.emit('identify', ctx.event.userId, ctx.event.traits);
+                        _this.emit('identify', ctx.event.userId, ctx.event.traits, ctx.event.options);
                         return ctx;
                     })];
             });
@@ -6378,7 +6273,7 @@ var Receiver = /** @class */ (function (_super) {
         this.emit('reset');
     };
     Receiver.prototype.timeout = function (timeout) {
-        this.settings.timeout = timeout;
+        this.options.timeout = timeout;
     };
     Receiver.prototype._dispatch = function (event, callback) {
         return receiver_awaiter(this, void 0, Promise, function () {
@@ -6391,7 +6286,7 @@ var Receiver = /** @class */ (function (_super) {
                 return [2 /*return*/, dispatch(ctx, this.queue, this, {
                         callback: callback,
                         debug: this._debug,
-                        timeout: this.settings.timeout,
+                        timeout: this.options.timeout,
                     })];
             });
         });
@@ -6402,13 +6297,21 @@ var Receiver = /** @class */ (function (_super) {
             return receiver_generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.queue.criticalTasks.run(function () { return receiver_awaiter(_this, void 0, void 0, function () {
-                            var sourceMiddlewarePlugin, integrations, plugin;
+                            var sourceMiddlewarePlugin, plugin;
                             return receiver_generator(this, function (_a) {
                                 switch (_a.label) {
-                                    case 0: return [4 /*yield*/, Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, 338))];
+                                    case 0: return [4 /*yield*/, Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, 338))
+                                        /*
+                                        const integrations: Record<string, boolean> = {}
+                                      this.queue.plugins.forEach((plugin) => {
+                                        if (plugin.type === 'destination') {
+                                          return (integrations[plugin.name] = true)
+                                        }
+                                      })
+                                         */
+                                    ];
                                     case 1:
                                         sourceMiddlewarePlugin = (_a.sent()).sourceMiddlewarePlugin;
-                                        integrations = {};
                                         plugin = sourceMiddlewarePlugin(fn) //, integrations)
                                         ;
                                         return [4 /*yield*/, this.register(plugin)];
@@ -6425,7 +6328,7 @@ var Receiver = /** @class */ (function (_super) {
             });
         });
     };
-    /* TODO: This does not have to return a promise? */
+    // TODO: This does not have to return a promise?
     Receiver.prototype.addDestinationMiddleware = function (integrationName) {
         var middlewares = [];
         for (var _i = 1; _i < arguments.length; _i++) {
@@ -6490,44 +6393,6 @@ var Receiver = /** @class */ (function (_super) {
     return Receiver;
 }(Emitter));
 
-
-;// CONCATENATED MODULE: ./src/lib/merged-options.ts
-var merged_options_assign = (undefined && undefined.__assign) || function () {
-    merged_options_assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return merged_options_assign.apply(this, arguments);
-};
-/**
- * Merge legacy settings and initialized Integration option overrides.
- *
- * This will merge any options that were passed from initialization into
- * overrides for settings that are returned by the Tronic CDN.
- *
- * i.e. this allows for passing options directly into destinations from
- * the Receiver constructor.
- */
-function mergedOptions(settings, options) {
-    var _a;
-    var optionOverrides = Object.entries((_a = options.integrations) !== null && _a !== void 0 ? _a : {}).reduce(function (overrides, _a) {
-        var _b, _c;
-        var integration = _a[0], options = _a[1];
-        if (typeof options === 'object') {
-            return merged_options_assign(merged_options_assign({}, overrides), (_b = {}, _b[integration] = options, _b));
-        }
-        return merged_options_assign(merged_options_assign({}, overrides), (_c = {}, _c[integration] = {}, _c));
-    }, {});
-    return Object.entries(settings.integrations).reduce(function (integrationSettings, _a) {
-        var _b;
-        var integration = _a[0], settings = _a[1];
-        return merged_options_assign(merged_options_assign({}, integrationSettings), (_b = {}, _b[integration] = merged_options_assign(merged_options_assign({}, settings), optionOverrides[integration]), _b));
-    }, {});
-}
 
 ;// CONCATENATED MODULE: ./src/lib/create-deferred.ts
 /**
@@ -6821,8 +6686,58 @@ var EnvironmentEnrichmentPlugin = /** @class */ (function () {
 }());
 var envEnrichment = new EnvironmentEnrichmentPlugin();
 
-// EXTERNAL MODULE: ./src/lib/load-script.ts
-var load_script = __webpack_require__(70);
+;// CONCATENATED MODULE: ./src/lib/load-script.ts
+function findScript(src) {
+    var scripts = Array.prototype.slice.call(window.document.querySelectorAll('script'));
+    return scripts.find(function (s) { return s.src === src; });
+}
+function loadScript(src, attributes) {
+    var found = findScript(src);
+    if (found !== undefined) {
+        var status = found === null || found === void 0 ? void 0 : found.getAttribute('status');
+        if (status === 'loaded') {
+            return Promise.resolve(found);
+        }
+        if (status === 'loading') {
+            return new Promise(function (resolve, reject) {
+                found.addEventListener('load', function () { return resolve(found); });
+                found.addEventListener('error', function (err) { return reject(err); });
+            });
+        }
+    }
+    return new Promise(function (resolve, reject) {
+        var _a;
+        var script = window.document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = src;
+        script.async = true;
+        script.setAttribute('status', 'loading');
+        for (var _i = 0, _b = Object.entries(attributes !== null && attributes !== void 0 ? attributes : {}); _i < _b.length; _i++) {
+            var _c = _b[_i], k = _c[0], v = _c[1];
+            script.setAttribute(k, v);
+        }
+        script.onload = function () {
+            script.onerror = script.onload = null;
+            script.setAttribute('status', 'loaded');
+            resolve(script);
+        };
+        script.onerror = function () {
+            script.onerror = script.onload = null;
+            script.setAttribute('status', 'error');
+            reject(new Error("Failed to load ".concat(src)));
+        };
+        var tag = window.document.getElementsByTagName('script')[0];
+        (_a = tag.parentElement) === null || _a === void 0 ? void 0 : _a.insertBefore(script, tag);
+    });
+}
+function unloadScript(src) {
+    var found = findScript(src);
+    if (found !== undefined) {
+        found.remove();
+    }
+    return Promise.resolve();
+}
+
 // EXTERNAL MODULE: ./src/plugins/middleware/index.ts
 var middleware = __webpack_require__(338);
 ;// CONCATENATED MODULE: ./src/plugins/remote-loader/index.ts
@@ -6877,8 +6792,8 @@ var remote_loader_generator = (undefined && undefined.__generator) || function (
 
 
 
-var ActionDestination = /** @class */ (function () {
-    function ActionDestination(name, action) {
+var RemoteDestinationPlugin = /** @class */ (function () {
+    function RemoteDestinationPlugin(name, action) {
         this.version = '1.0.0';
         this.alternativeNames = [];
         this.middleware = [];
@@ -6889,7 +6804,7 @@ var ActionDestination = /** @class */ (function () {
         this.type = action.type;
         this.alternativeNames.push(action.name);
     }
-    ActionDestination.prototype.addMiddleware = function () {
+    RemoteDestinationPlugin.prototype.addMiddleware = function () {
         var _a;
         var fn = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -6899,7 +6814,7 @@ var ActionDestination = /** @class */ (function () {
             (_a = this.middleware).push.apply(_a, fn);
         }
     };
-    ActionDestination.prototype.transform = function (ctx) {
+    RemoteDestinationPlugin.prototype.transform = function (ctx) {
         return remote_loader_awaiter(this, void 0, Promise, function () {
             var modifiedEvent;
             return remote_loader_generator(this, function (_a) {
@@ -6918,7 +6833,7 @@ var ActionDestination = /** @class */ (function () {
             });
         });
     };
-    ActionDestination.prototype._createMethod = function (methodName) {
+    RemoteDestinationPlugin.prototype._createMethod = function (methodName) {
         var _this = this;
         return function (ctx) { return remote_loader_awaiter(_this, void 0, Promise, function () {
             var transformedContext;
@@ -6941,21 +6856,21 @@ var ActionDestination = /** @class */ (function () {
             });
         }); };
     };
-    /* --- PASSTHROUGH METHODS --- */
-    ActionDestination.prototype.isLoaded = function () {
+    // --- PASSTHROUGH METHODS ---
+    RemoteDestinationPlugin.prototype.isLoaded = function () {
         return this.action.isLoaded();
     };
-    ActionDestination.prototype.ready = function () {
+    RemoteDestinationPlugin.prototype.ready = function () {
         return this.action.ready ? this.action.ready() : Promise.resolve();
     };
-    ActionDestination.prototype.load = function (ctx, receiver) {
+    RemoteDestinationPlugin.prototype.load = function (ctx, receiver) {
         return this.action.load(ctx, receiver);
     };
-    ActionDestination.prototype.unload = function (ctx, receiver) {
+    RemoteDestinationPlugin.prototype.unload = function (ctx, receiver) {
         var _a, _b;
         return (_b = (_a = this.action).unload) === null || _b === void 0 ? void 0 : _b.call(_a, ctx, receiver);
     };
-    return ActionDestination;
+    return RemoteDestinationPlugin;
 }());
 
 function validate(pluginLike) {
@@ -6973,19 +6888,28 @@ function validate(pluginLike) {
     });
     return true;
 }
-function isPluginDisabled(userIntegrations, remotePlugin) {
-    var creationNameEnabled = userIntegrations[remotePlugin.creationName];
-    var currentNameEnabled = userIntegrations[remotePlugin.name];
+function isPluginDisabled(
+// userIntegrations: Integrations,
+// remotePlugin: RemotePluginConfig
+) {
+    /*
+    const creationNameEnabled = userIntegrations[remotePlugin.creationName]
+    const currentNameEnabled = userIntegrations[remotePlugin.name]
+  
     // Check that the plugin isn't explicitly enabled when All: false
-    if (userIntegrations.All === false &&
-        !creationNameEnabled &&
-        !currentNameEnabled) {
-        return true;
+    if (
+      userIntegrations.All === false &&
+      !creationNameEnabled &&
+      !currentNameEnabled
+    ) {
+      return true
     }
+  
     // Check that the plugin isn't explicitly disabled
     if (creationNameEnabled === false || currentNameEnabled === false) {
-        return true;
+      return true
     }
+     */
     return false;
 }
 function loadPluginFactory(remotePlugin, obfuscate) {
@@ -6995,7 +6919,7 @@ function loadPluginFactory(remotePlugin, obfuscate) {
             switch (_a.label) {
                 case 0:
                     defaultCdn = new RegExp('https://cdn.tronic.(com|build)');
-                    cdn = (0,parse_cdn/* getCDN */.Vl)();
+                    cdn = getCDN();
                     if (!obfuscate) return [3 /*break*/, 6];
                     urlSplit = remotePlugin.url.split('/');
                     name = urlSplit[urlSplit.length - 2];
@@ -7003,7 +6927,7 @@ function loadPluginFactory(remotePlugin, obfuscate) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 5]);
-                    return [4 /*yield*/, (0,load_script/* loadScript */.v)(obfuscatedURL.replace(defaultCdn, cdn))];
+                    return [4 /*yield*/, loadScript(obfuscatedURL.replace(defaultCdn, cdn))];
                 case 2:
                     _a.sent();
                     return [3 /*break*/, 5];
@@ -7011,14 +6935,14 @@ function loadPluginFactory(remotePlugin, obfuscate) {
                     error_1 = _a.sent();
                     // Due to syncing concerns it is possible that the obfuscated action destination (or requested version) might not exist.
                     // We should use the unobfuscated version as a fallback.
-                    return [4 /*yield*/, (0,load_script/* loadScript */.v)(remotePlugin.url.replace(defaultCdn, cdn))];
+                    return [4 /*yield*/, loadScript(remotePlugin.url.replace(defaultCdn, cdn))];
                 case 4:
                     // Due to syncing concerns it is possible that the obfuscated action destination (or requested version) might not exist.
                     // We should use the unobfuscated version as a fallback.
                     _a.sent();
                     return [3 /*break*/, 5];
                 case 5: return [3 /*break*/, 8];
-                case 6: return [4 /*yield*/, (0,load_script/* loadScript */.v)(remotePlugin.url.replace(defaultCdn, cdn))];
+                case 6: return [4 /*yield*/, loadScript(remotePlugin.url.replace(defaultCdn, cdn))];
                 case 7:
                     _a.sent();
                     _a.label = 8;
@@ -7033,22 +6957,24 @@ function loadPluginFactory(remotePlugin, obfuscate) {
         });
     });
 }
-function remoteLoader(settings, userIntegrations, mergedIntegrations, obfuscate, routingMiddleware, pluginSources) {
-    var _a, _b, _c;
+function remoteLoader(
+// settings: ExternalSettings,
+// obfuscate?: boolean,
+options, pluginSources) {
+    var _a;
     return remote_loader_awaiter(this, void 0, Promise, function () {
-        var allPlugins, routingRules, pluginPromises;
+        var allPlugins, pluginPromises;
         var _this = this;
-        return remote_loader_generator(this, function (_d) {
-            switch (_d.label) {
+        return remote_loader_generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     allPlugins = [];
-                    routingRules = (_b = (_a = settings.middlewareSettings) === null || _a === void 0 ? void 0 : _a.routingRules) !== null && _b !== void 0 ? _b : [];
-                    pluginPromises = ((_c = settings.remotePlugins) !== null && _c !== void 0 ? _c : []).map(function (remotePlugin) { return remote_loader_awaiter(_this, void 0, void 0, function () {
-                        var pluginFactory, _a, plugin, plugins, routing_1, error_2;
+                    pluginPromises = ((_a = options.remotePlugins) !== null && _a !== void 0 ? _a : []).map(function (remotePlugin) { return remote_loader_awaiter(_this, void 0, void 0, function () {
+                        var pluginFactory, _a, plugin, plugins, error_2;
                         return remote_loader_generator(this, function (_b) {
                             switch (_b.label) {
                                 case 0:
-                                    if (isPluginDisabled(userIntegrations, remotePlugin))
+                                    if (isPluginDisabled( /* userIntegrations, remotePlugin */))
                                         return [2 /*return*/];
                                     _b.label = 1;
                                 case 1:
@@ -7058,27 +6984,20 @@ function remoteLoader(settings, userIntegrations, mergedIntegrations, obfuscate,
                                         return pluginName === remotePlugin.name;
                                     }));
                                     if (_a) return [3 /*break*/, 3];
-                                    return [4 /*yield*/, loadPluginFactory(remotePlugin, obfuscate)];
+                                    return [4 /*yield*/, loadPluginFactory(remotePlugin, options.obfuscate)];
                                 case 2:
                                     _a = (_b.sent());
                                     _b.label = 3;
                                 case 3:
                                     pluginFactory = _a;
                                     if (!pluginFactory) return [3 /*break*/, 5];
-                                    return [4 /*yield*/, pluginFactory(remote_loader_assign(remote_loader_assign({}, remotePlugin.settings), mergedIntegrations[remotePlugin.name]))];
+                                    return [4 /*yield*/, pluginFactory(remote_loader_assign({}, remotePlugin.settings))];
                                 case 4:
                                     plugin = _b.sent();
                                     plugins = Array.isArray(plugin) ? plugin : [plugin];
                                     validate(plugins);
-                                    routing_1 = routingRules.filter(function (rule) { return rule.destinationName === remotePlugin.creationName; });
                                     plugins.forEach(function (plugin) {
-                                        var wrapper = new ActionDestination(remotePlugin.creationName, plugin);
-                                        /** Make sure we only apply destination filters to actions of the "destination" type to avoid causing issues for hybrid destinations */
-                                        if (routing_1.length &&
-                                            routingMiddleware &&
-                                            plugin.type === 'destination') {
-                                            wrapper.addMiddleware(routingMiddleware);
-                                        }
+                                        var wrapper = new RemoteDestinationPlugin(remotePlugin.creationName, plugin);
                                         allPlugins.push(wrapper);
                                     });
                                     _b.label = 5;
@@ -7093,7 +7012,7 @@ function remoteLoader(settings, userIntegrations, mergedIntegrations, obfuscate,
                     }); });
                     return [4 /*yield*/, Promise.all(pluginPromises)];
                 case 1:
-                    _d.sent();
+                    _b.sent();
                     return [2 /*return*/, allPlugins.filter(Boolean)];
             }
         });
@@ -7310,59 +7229,18 @@ function batch(apiHost, config) {
 }
 
 ;// CONCATENATED MODULE: ./src/plugins/tronic/normalize.ts
-function normalize(receiver, json, settings, integrations) {
+function normalize(receiver, json, settings) {
     var user = receiver.user();
     delete json.options;
-    json.writeKey = settings === null || settings === void 0 ? void 0 : settings.apiKey;
+    // json.writeKey = settings?.apiKey
     json.userId = json.userId || user.id();
     json.anonymousId = json.anonymousId || user.anonymousId();
-    json.sentAt = new Date();
-    var failed = receiver.queue.failedInitializations || [];
-    if (failed.length > 0) {
-        json._metadata = { failedInitializations: failed };
-    }
+    // json.sentAt = new Date()
     /*
-    const bundled: string[] = []
-    const unbundled: string[] = []
-  
-    for (const key in integrations) {
-      const integration = integrations[key]
-      if (key === 'Tronic') {
-        bundled.push(key)
-      }
-      if (integration.bundlingStatus === 'bundled') {
-        bundled.push(key)
-      }
-      if (integration.bundlingStatus === 'unbundled') {
-        unbundled.push(key)
-      }
-    }
-  
-    // This will make sure that the disabled cloud mode destinations will be
-    // included in the unbundled list.
-    for (const settingsUnbundled of settings?.unbundledIntegrations || []) {
-      if (!unbundled.includes(settingsUnbundled)) {
-        unbundled.push(settingsUnbundled)
-      }
-    }
-  
-    const configIds = settings?.maybeBundledConfigIds ?? {}
-    const bundledConfigIds: string[] = []
-  
-    bundled.sort().forEach((name) => {
-      ;(configIds[name] ?? []).forEach((id) => {
-        bundledConfigIds.push(id)
-      })
-    })
-  
-    if (settings?.addBundledMetadata !== false) {
-      json._metadata = {
-        ...json._metadata,
-        bundled: bundled.sort(),
-        unbundled: unbundled.sort(),
-        bundledIds: bundledConfigIds,
-      }
-    }
+  const failed = receiver.queue.failedInitializations || []
+  if (failed.length > 0) {
+    json._metadata = { failedInitializations: failed }
+  }
      */
     return json;
 }
@@ -7578,17 +7456,19 @@ var tronic_generator = (undefined && undefined.__generator) || function (thisArg
 
 
 
-function onAlias(receiver, json) {
-    var _a, _b, _c, _d;
-    var user = receiver.user();
-    json.previousId =
-        (_c = (_b = (_a = json.previousId) !== null && _a !== void 0 ? _a : json.from) !== null && _b !== void 0 ? _b : user.id()) !== null && _c !== void 0 ? _c : user.anonymousId();
-    json.userId = (_d = json.userId) !== null && _d !== void 0 ? _d : json.to;
-    delete json.from;
-    delete json.to;
-    return json;
+/*
+type JSON = ReturnType<Facade['json']>
+function onAlias(receiver: Receiver, json: JSON): JSON {
+  const user = receiver.user()
+  json.previousId =
+    json.previousId ?? json.from ?? user.id() ?? user.anonymousId()
+  json.userId = json.userId ?? json.to
+  delete json.from
+  delete json.to
+  return json
 }
-function tronic(receiver, settings, integrations) {
+  */
+function tronic(receiver, settings) {
     var _a, _b, _c;
     // Attach `pagehide` before buffer is created so that inflight events are added
     // to the buffer before the buffer persists events in its own `pagehide` handler.
@@ -7623,7 +7503,11 @@ function tronic(receiver, settings, integrations) {
                 path = 'external/' + ctx.event.type;
                 json = (0,to_facade/* toFacade */.D)(ctx.event).json();
                 if (ctx.event.type === 'track') {
+                    delete json.type;
+                    delete json.messageId;
                     delete json.traits;
+                    delete json.writeKey;
+                    delete json.sentAt;
                 }
                 /*
                 if (ctx.event.type === 'alias') {
@@ -7631,7 +7515,7 @@ function tronic(receiver, settings, integrations) {
                 }
                  */
                 return [2 /*return*/, client
-                        .dispatch("".concat(remote, "/").concat(path), normalize(receiver, json, settings, integrations))
+                        .dispatch("".concat(remote, "/").concat(path), normalize(receiver, json, settings))
                         .then(function () { return ctx; })
                         .catch(function () {
                         buffer.pushWithBackoff(ctx);
@@ -7802,6 +7686,17 @@ var browser_extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var browser_assign = (undefined && undefined.__assign) || function () {
+    browser_assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return browser_assign.apply(this, arguments);
+};
 var browser_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7848,6 +7743,10 @@ var browser_spreadArray = (undefined && undefined.__spreadArray) || function (to
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 
+// import { fetch } from '../lib/fetch'
+
+// import { MetricsOptions } from '../core/stats/remote-metrics'
+// import { mergedOptions } from '../lib/merged-options'
 
 
 
@@ -7857,40 +7756,97 @@ var browser_spreadArray = (undefined && undefined.__spreadArray) || function (to
 
 
 
+/*
+export interface LegacyIntegrationConfiguration {
+// @deprecated - This does not indicate browser types anymore
+  type?: string
 
+  versionSettings?: {
+    version?: string
+    override?: string
+    componentTypes?: Array<'browser' | 'android' | 'ios' | 'server'>
+  }
 
+  bundlingStatus?: string
 
-function fetchSettings(writeKey, cdnURL) {
-    var baseUrl = cdnURL !== null && cdnURL !== void 0 ? cdnURL : (0,parse_cdn/* getCDN */.Vl)();
-    return fetch("".concat(baseUrl, "/v1/projects/").concat(writeKey, "/settings"))
-        .then(function (res) {
-        if (!res.ok) {
-            return res.text().then(function (errorResponseMessage) {
-                throw new Error(errorResponseMessage);
-            });
-        }
-        return res.json();
-    })
-        .catch(function (err) {
-        console.error(err.message);
-        throw err;
-    });
+ // Consent settings for the integration
+  consentSettings?: {
+  // Consent categories for the integration
+  // @example ["Receiver", "Advertising", "CAT001"]
+    categories: string[]
+  }
+
+  // Tronic.com specific
+  // retryQueue?: boolean
+
+  // any extra unknown settings
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
 }
-/**
- * With AJS classic, we allow users to call setAnonymousId before the library initialization.
- * This is important because some of the destinations will use the anonymousId during the initialization,
- * and if we set anonId afterwards, that wouldn’t impact the destination.
- *
- * Also Ensures events can be registered before library initialization.
- * This is important so users can register to 'initialize' and any events that may fire early during setup.
+*/
+/*
+export interface ExternalSettings {
+
+  metrics?: MetricsOptions
+
+  remotePlugins?: RemotePlugin[]
+
+  // Top level consent settings
+  consentSettings?: {
+
+     // All unique consent categories.
+     // There can be categories in this array that are important for consent that are not included in any integration  (e.g. 2 cloud mode categories).
+     // @example ["Receiver", "Advertising", "CAT001"]
+
+    allCategories: string[]
+  }
+}
+
+export interface ReceiverBrowserSettings extends ReceiverSettings {
+
+  // The settings for the Tronic Source.
+  // If provided, `ReceiverBrowser` will not fetch remote settings
+  // for the source.
+
+  cdnSettings?: ExternalSettings & Record<string, unknown>
+    // If provided, will override the default CDN.
+
+  cdnURL?: string
+}
+  */
+/*
+export function fetchSettings(
+  writeKey: string,
+  cdnURL?: string
+): Promise<ExternalSettings> {
+  const baseUrl = cdnURL ?? getCDN()
+
+  return fetch(`${baseUrl}/v1/projects/${writeKey}/settings`)
+    .then((res) => {
+      if (!res.ok) {
+        return res.text().then((errorResponseMessage) => {
+          throw new Error(errorResponseMessage)
+        })
+      }
+      return res.json()
+    })
+    .catch((err) => {
+      console.error(err.message)
+      throw err
+    })
+}
  */
+// With AJS classic, we allow users to call setAnonymousId before the library initialization.
+// This is important because some of the destinations will use the anonymousId during the initialization,
+// and if we set anonId afterwards, that wouldn’t impact the destination.
+//
+// Also Ensures events can be registered before library initialization.
+// This is important so users can register to 'initialize' and any events that may fire early during setup.
 function flushPreBuffer(receiver, buffer) {
     // flushSetAnonymousID(receiver, buffer)
     flushOn(receiver, buffer);
 }
-/**
- * Finish flushing buffer and cleanup.
- */
+// Finish flushing buffer and cleanup.
 function flushFinalBuffer(receiver, buffer) {
     return browser_awaiter(this, void 0, Promise, function () {
         return browser_generator(this, function (_a) {
@@ -7911,12 +7867,14 @@ function flushFinalBuffer(receiver, buffer) {
         });
     });
 }
-function registerPlugins(writeKey, legacySettings, receiver, options, pluginLikes) {
+function registerPlugins(receiver, 
+// writeKey: string,
+// externalSettings: ExternalSettings,
+options, pluginLikes) {
     var _a;
     if (pluginLikes === void 0) { pluginLikes = []; }
     return browser_awaiter(this, void 0, Promise, function () {
-        var plugins, pluginSources, mergedSettings, remotePlugins, toRegister, _b, ctx;
-        var _this = this;
+        var plugins, pluginSources, remotePlugins, toRegister, _b, ctx;
         return browser_generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -7925,23 +7883,20 @@ function registerPlugins(writeKey, legacySettings, receiver, options, pluginLike
                         return typeof pluginLike === 'function' &&
                             typeof pluginLike.pluginName === 'string';
                     });
-                    mergedSettings = mergedOptions(legacySettings, options);
-                    return [4 /*yield*/, remoteLoader(legacySettings, receiver.integrations, mergedSettings, options.obfuscate, undefined, pluginSources).catch(function () { return []; })];
+                    return [4 /*yield*/, remoteLoader(options, // externalSettings,
+                        // { All: true }, // receiver.integrations,
+                        // mergedSettings,
+                        // options.obfuscate,
+                        pluginSources).catch(function () { return []; })];
                 case 1:
                     remotePlugins = _c.sent();
                     _b = [browser_spreadArray(browser_spreadArray([
                             validation,
                             envEnrichment
                         ], plugins, true), remotePlugins, true)];
-                    return [4 /*yield*/, tronic(receiver, mergedSettings['Tronic'], 
-                        /*
-                        {
-                          protocol: 'http',
-                          apiHost: ,
-                          apiKey: writeKey,
-                        },
-                          */
-                        legacySettings.integrations)];
+                    return [4 /*yield*/, tronic(receiver, 
+                        // mergedSettings['Tronic'] as TronicSettings,
+                        (_a = options.pluginSettings) === null || _a === void 0 ? void 0 : _a['Tronic'])];
                 case 2:
                     toRegister = browser_spreadArray.apply(void 0, _b.concat([[
                             _c.sent()
@@ -7949,95 +7904,81 @@ function registerPlugins(writeKey, legacySettings, receiver, options, pluginLike
                     return [4 /*yield*/, receiver.register.apply(receiver, toRegister)];
                 case 3:
                     ctx = _c.sent();
-                    if (!Object.entries((_a = legacySettings.enabledMiddleware) !== null && _a !== void 0 ? _a : {}).some(function (_a) {
-                        var enabled = _a[1];
-                        return enabled;
-                    })) return [3 /*break*/, 5];
-                    return [4 /*yield*/, __webpack_require__.e(/* import() | remoteMiddleware */ 214).then(__webpack_require__.bind(__webpack_require__, 568)).then(function (_a) {
-                            var remoteMiddlewares = _a.remoteMiddlewares;
-                            return browser_awaiter(_this, void 0, void 0, function () {
-                                var middleware, promises;
-                                return browser_generator(this, function (_b) {
-                                    switch (_b.label) {
-                                        case 0: return [4 /*yield*/, remoteMiddlewares(ctx, legacySettings, options.obfuscate)];
-                                        case 1:
-                                            middleware = _b.sent();
-                                            promises = middleware.map(function (mdw) {
-                                                return receiver.addSourceMiddleware(mdw);
-                                            });
-                                            return [2 /*return*/, Promise.all(promises)];
-                                    }
-                                });
-                            });
-                        })];
-                case 4:
-                    _c.sent();
-                    _c.label = 5;
-                case 5: return [2 /*return*/, ctx];
+                    /*
+                  if (
+                    Object.entries(externalSettings.enabledMiddleware ?? {}).some(
+                      ([, enabled]) => enabled
+                    )
+                  ) {
+                    await import(
+                    //// webpackChunkName: "remoteMiddleware" //// '../plugins/remote-middleware'
+                    ).then(async ({ remoteMiddlewares }) => {
+                      const middleware = await remoteMiddlewares(
+                        ctx,
+                        externalSettings,
+                        options.obfuscate
+                      )
+                      const promises = middleware.map((mdw) =>
+                        receiver.addSourceMiddleware(mdw)
+                      )
+                      return Promise.all(promises)
+                    })
+                  }
+                  */
+                    return [2 /*return*/, ctx];
             }
         });
     });
 }
-function loadReceiver(settings, options, preInitBuffer) {
-    var _a, _b, _c, _d;
-    if (options === void 0) { options = {}; }
+function loadReceiver(
+// settings: ReceiverBrowserSettings,
+options, preInitBuffer) {
+    var _a, _b, _c;
     return browser_awaiter(this, void 0, Promise, function () {
-        var legacySettings, _e, receiver, plugins, ctx, search, hash, term;
-        return browser_generator(this, function (_f) {
-            switch (_f.label) {
+        var receiver, plugins, ctx, search, hash, term;
+        return browser_generator(this, function (_d) {
+            switch (_d.label) {
                 case 0:
                     if (options.globalReceiverKey) {
-                        (0,global_receiver_helper/* setGlobalReceiverKey */.D4)(options.globalReceiverKey);
+                        setGlobalReceiverKey(options.globalReceiverKey);
                     }
                     // this is an ugly side-effect, but it's for the benefits of the plugins that get their cdn via getCDN()
-                    if (settings.cdnURL) {
-                        (0,parse_cdn/* setGlobalCDNUrl */.UH)(settings.cdnURL);
+                    if (options.cdnURL) {
+                        setGlobalCDNUrl(options.cdnURL);
                     }
-                    if (!((_a = settings.cdnSettings) !== null && _a !== void 0)) return [3 /*break*/, 1];
-                    _e = _a;
-                    return [3 /*break*/, 3];
-                case 1: return [4 /*yield*/, fetchSettings(settings.writeKey, settings.cdnURL)];
-                case 2:
-                    _e = (_f.sent());
-                    _f.label = 3;
-                case 3:
-                    legacySettings = _e;
-                    if (options.updateCDNSettings) {
-                        legacySettings = options.updateCDNSettings(legacySettings);
-                    }
-                    receiver = new Receiver(settings, options);
+                    receiver = new Receiver(options);
                     attachInspector(receiver);
-                    plugins = (_b = settings.plugins) !== null && _b !== void 0 ? _b : [];
-                    Stats.initRemoteMetrics(legacySettings.metrics);
+                    plugins = (_a = options.plugins) !== null && _a !== void 0 ? _a : [];
+                    Stats.initRemoteMetrics(options.metrics);
                     // needs to be flushed before plugins are registered
                     flushPreBuffer(receiver, preInitBuffer);
-                    return [4 /*yield*/, registerPlugins(settings.writeKey, legacySettings, receiver, options, plugins)];
-                case 4:
-                    ctx = _f.sent();
-                    search = (_c = window.location.search) !== null && _c !== void 0 ? _c : '';
-                    hash = (_d = window.location.hash) !== null && _d !== void 0 ? _d : '';
+                    return [4 /*yield*/, registerPlugins(receiver, options, plugins)];
+                case 1:
+                    ctx = _d.sent();
+                    search = (_b = window.location.search) !== null && _b !== void 0 ? _b : '';
+                    hash = (_c = window.location.hash) !== null && _c !== void 0 ? _c : '';
                     term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '');
-                    if (!term.includes('ajs_')) return [3 /*break*/, 6];
+                    if (!term.includes('ajs_')) return [3 /*break*/, 3];
                     return [4 /*yield*/, receiver.queryString(term).catch(console.error)];
-                case 5:
-                    _f.sent();
-                    _f.label = 6;
-                case 6:
+                case 2:
+                    _d.sent();
+                    _d.label = 3;
+                case 3:
                     receiver.initialized = true;
-                    receiver.emit('initialize', settings, options);
+                    receiver.emit('initialize', options);
                     /*
                   if (options.initialPageview) {
                     receiver.page().catch(console.error)
                   }
                      */
                     return [4 /*yield*/, flushFinalBuffer(receiver, preInitBuffer)];
-                case 7:
+                case 4:
                     /*
                   if (options.initialPageview) {
                     receiver.page().catch(console.error)
                   }
                      */
-                    _f.sent();
+                    _d.sent();
                     return [2 /*return*/, [receiver, ctx]];
             }
         });
@@ -8050,50 +7991,38 @@ var ReceiverBrowser = /** @class */ (function (_super) {
         var _a = createDeferred(), loadStart = _a.promise, resolveLoadStart = _a.resolve;
         _this = _super.call(this, function (buffer) {
             return loadStart.then(function (_a) {
-                var settings = _a[0], options = _a[1];
-                return loadReceiver(settings, options, buffer);
+                var options = _a[0];
+                return loadReceiver(options, buffer);
             });
         }) || this;
-        _this._resolveLoadStart = function (settings, options) {
-            return resolveLoadStart([settings, options]);
+        _this._resolveLoadStart = function (options) {
+            return resolveLoadStart([options]);
         };
         return _this;
     }
-    /**
-     * Fully initialize an receiver instance, including:
-     *
-     * * Fetching settings from the Tronic CDN (by default).
-     * * Fetching all remote destinations configured by the user (if applicable).
-     * * Flushing buffered receiver events.
-     * * Loading all middleware.
-     *
-     * Note:️  This method should only be called *once* in your application.
-     *
-     * @example
-     * ```ts
-     * export const receiver = new ReceiverBrowser()
-     * receiver.load({ writeKey: 'foo' })
-     * ```
-     */
-    ReceiverBrowser.prototype.load = function (settings, options) {
-        if (options === void 0) { options = {}; }
-        this._resolveLoadStart(settings, options);
+    //
+    // Fully initialize an receiver instance, including:
+    // Fetching settings from the Tronic CDN (by default).
+    // Fetching all remote destinations configured by the user (if applicable).
+    // Flushing buffered receiver events.
+    // Loading all middleware.
+    //
+    // Note:️  This method should only be called *once* in your application.
+    ReceiverBrowser.prototype.load = function (options) {
+        this._resolveLoadStart(options);
         return this;
     };
     // Instantiates an object exposing Receiver methods.
-    ReceiverBrowser.load = function (settings, options) {
-        if (options === void 0) { options = {}; }
-        return new ReceiverBrowser().load(settings, options);
+    ReceiverBrowser.load = function (options) {
+        return new ReceiverBrowser().load(options);
     };
     ReceiverBrowser.standalone = function (writeKey, options) {
-        return ReceiverBrowser.load({ writeKey: writeKey }, options).then(function (res) { return res[0]; });
+        return ReceiverBrowser.load(browser_assign(browser_assign({}, options), { writeKey: writeKey })).then(function (res) { return res[0]; });
     };
     return ReceiverBrowser;
 }(ReceiverBuffered));
 
 
-// EXTERNAL MODULE: ./src/lib/embedded-write-key.ts
-var embedded_write_key = __webpack_require__(584);
 ;// CONCATENATED MODULE: ./src/browser/standalone-receiver.ts
 var standalone_receiver_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -8136,10 +8065,10 @@ var standalone_receiver_generator = (undefined && undefined.__generator) || func
 
 function getWriteKey() {
     var _a;
-    if ((0,embedded_write_key/* embeddedWriteKey */.M)()) {
-        return (0,embedded_write_key/* embeddedWriteKey */.M)();
+    if (embeddedWriteKey()) {
+        return embeddedWriteKey();
     }
-    var receiver = (0,global_receiver_helper/* getGlobalReceiver */.aV)();
+    var receiver = getGlobalReceiver();
     if (receiver === null || receiver === void 0 ? void 0 : receiver._writeKey) {
         return receiver._writeKey;
     }
@@ -8173,12 +8102,12 @@ function install() {
             switch (_d.label) {
                 case 0:
                     writeKey = getWriteKey();
-                    options = (_b = (_a = (0,global_receiver_helper/* getGlobalReceiver */.aV)()) === null || _a === void 0 ? void 0 : _a._loadOptions) !== null && _b !== void 0 ? _b : {};
+                    options = (_b = (_a = getGlobalReceiver()) === null || _a === void 0 ? void 0 : _a._loadOptions) !== null && _b !== void 0 ? _b : {};
                     if (!writeKey) {
                         console.error('Failed to load Write Key. Make sure to use the latest version of the Tronic snippet, which can be found in your source settings.');
                         return [2 /*return*/];
                     }
-                    _c = global_receiver_helper/* setGlobalReceiver */.jg;
+                    _c = setGlobalReceiver;
                     return [4 /*yield*/, ReceiverBrowser.standalone(writeKey, options)];
                 case 1:
                     _c.apply(void 0, [(_d.sent())]);
@@ -8257,8 +8186,8 @@ function loadAjsClassicFallback() {
                 case 0:
                     console.warn('Your CSP policy is missing permissions required in order to run Receiver.js 2.0', 'https://tronic.com/docs');
                     console.warn('Reverting to Receiver.js 1.0');
-                    classicPath = (0,parse_cdn/* getLegacyAJSPath */.YM)();
-                    return [4 /*yield*/, (0,load_script/* loadScript */.v)(classicPath)];
+                    classicPath = getLegacyAJSPath();
+                    return [4 /*yield*/, loadScript(classicPath)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];
@@ -8319,8 +8248,8 @@ var standalone_spreadArray = (undefined && undefined.__spreadArray) || function 
 if (true) {
     if (false) {}
     else {
-        var cdn = (0,parse_cdn/* getCDN */.Vl)();
-        (0,parse_cdn/* setGlobalCDNUrl */.UH)(cdn);
+        var cdn = getCDN();
+        setGlobalCDNUrl(cdn);
         // @ts-ignore
         __webpack_require__.p = cdn
             ? cdn + '/tronic-receiver/bundles/'
@@ -8339,7 +8268,7 @@ var sendErrorMetrics = function (tags) {
     // this should not be instantied at the root, or it will break ie11.
     var metrics = new RemoteMetrics();
     metrics.increment('receiver_js.invoke.error', standalone_spreadArray(standalone_spreadArray([], tags, true), [
-        "wk:".concat((0,embedded_write_key/* embeddedWriteKey */.M)()),
+        "wk:".concat(embeddedWriteKey()),
     ], false));
 };
 function onError(err) {

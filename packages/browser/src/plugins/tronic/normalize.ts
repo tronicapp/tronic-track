@@ -11,17 +11,18 @@ export function normalize(
 
   delete json.options
 
-  json.writeKey = settings?.apiKey
+  // json.writeKey = settings?.apiKey
 
   json.userId = json.userId || user.id()
   json.anonymousId = json.anonymousId || user.anonymousId()
 
-  json.sentAt = new Date()
+  // json.sentAt = new Date()
 
+    /*
   const failed = receiver.queue.failedInitializations || []
   if (failed.length > 0) {
     json._metadata = { failedInitializations: failed }
   }
-
+     */
   return json
 }

@@ -91,7 +91,11 @@ export function tronic(
     let json = toFacade(ctx.event).json()
 
     if (ctx.event.type === 'track') {
+      delete json.type
+      delete json.messageId
       delete json.traits
+      delete json.writeKey
+      delete json.sentAt
     }
 
     /*

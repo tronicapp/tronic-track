@@ -28,13 +28,27 @@ export function resolveArguments(eventOrEventName, channelId, properties, option
  * Helper for group, identify methods
  */
 export var resolveUserArguments = function (user) {
-    return function (channelId, id, traits, options, callback) {
+    return function () {
+        /*
+        const values: {
+          id?: ID
+          traits?: T | null
+          options?: Options
+          callback?: Callback
+          } = {}
+         */
+        var _a, _b, _c;
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var x = args[1];
         return [
-            channelId,
-            id,
-            traits,
-            options,
-            callback,
+            args[0],
+            ((_a = args[1]) !== null && _a !== void 0 ? _a : user.id()),
+            ((_b = args[2]) !== null && _b !== void 0 ? _b : {}),
+            (_c = args[3]) !== null && _c !== void 0 ? _c : {},
+            args[4],
         ];
         /*
             const values: {

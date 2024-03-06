@@ -268,10 +268,6 @@ export class Receiver
       pageCtx
     )
 
-    delete tronicEvent.type
-    delete tronicEvent.messageId
-    // delete tronicEvent.anonymousId
-
     return this._dispatch(tronicEvent, cb).then((ctx) => {
       this.emit('track', name, ctx.event.properties, ctx.event.options)
       return ctx
