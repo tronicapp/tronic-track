@@ -11,39 +11,39 @@ export function queryString(receiver, query) {
         return acc;
     }, {});
     var calls = [];
-    var ajs_uid = params.ajs_uid, ajs_event = params.ajs_event, ajs_aid = params.ajs_aid;
+    var rjs_uid = params.rjs_uid, rjs_event = params.rjs_event, rjs_aid = params.rjs_aid;
     var _a = isPlainObject(receiver.options.useQueryString)
         ? receiver.options.useQueryString
         : {}, _b = _a.aid, aidPattern = _b === void 0 ? /.+/ : _b, _c = _a.uid, uidPattern = _c === void 0 ? /.+/ : _c;
-    if (ajs_aid) {
-        var anonId = Array.isArray(params.ajs_aid)
-            ? params.ajs_aid[0]
-            : params.ajs_aid;
+    if (rjs_aid) {
+        var anonId = Array.isArray(params.rjs_aid)
+            ? params.rjs_aid[0]
+            : params.rjs_aid;
         if (aidPattern.test(anonId)) {
             receiver.setAnonymousId(anonId);
         }
     }
-    if (ajs_uid) {
-        var uid = Array.isArray(params.ajs_uid)
-            ? params.ajs_uid[0]
-            : params.ajs_uid;
+    if (rjs_uid) {
+        var uid = Array.isArray(params.rjs_uid)
+            ? params.rjs_uid[0]
+            : params.rjs_uid;
         if (uidPattern.test(uid)) {
-            var traits = pickPrefix('ajs_trait_', params);
+            var traits = pickPrefix('rjs_trait_', params);
             // requires channelId
             // calls.push(receiver.identify(uid, traits))
         }
     }
-    if (ajs_event) {
-        var channelId = Array.isArray(params.ajs_channel_id)
-            ? params.ajs_channel_id[0]
-            : params.ajs_channel_id;
-        var userId = Array.isArray(params.ajs_user_id)
-            ? params.ajs_user_id[0]
-            : params.ajs_user_id;
-        var event_1 = Array.isArray(params.ajs_event)
-            ? params.ajs_event[0]
-            : params.ajs_event;
-        var props = pickPrefix('ajs_prop_', params);
+    if (rjs_event) {
+        var channelId = Array.isArray(params.rjs_channel_id)
+            ? params.rjs_channel_id[0]
+            : params.rjs_channel_id;
+        var userId = Array.isArray(params.rjs_user_id)
+            ? params.rjs_user_id[0]
+            : params.rjs_user_id;
+        var event_1 = Array.isArray(params.rjs_event)
+            ? params.rjs_event[0]
+            : params.rjs_event;
+        var props = pickPrefix('rjs_prop_', params);
         calls.push(receiver.track(channelId, userId, event_1, props));
     }
     return Promise.all(calls);

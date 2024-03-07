@@ -65,9 +65,9 @@ export declare class ReceiverBuffered implements PromiseLike<[Receiver, Context]
         onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null
     ]): Promise<[Receiver, Context] | TResult>;
     finally(...args: [onfinally?: (() => void) | undefined | null]): Promise<[Receiver, Context]>;
-    identify: (channelId: string, id: string, traits: import("@tronic/receiver-core").UserTraits, options?: import("../events").Options | undefined, callback?: import("@tronic/receiver-core").Callback | undefined) => Promise<Context>;
+    identify: (channelId: string, id?: object | import("../user").ID, traits?: import("@tronic/receiver-core").UserTraits | import("@tronic/receiver-core").Callback | null | undefined, options?: import("@tronic/receiver-core").Callback | import("../events").Options | undefined, callback?: import("@tronic/receiver-core").Callback | undefined) => Promise<Context>;
     reset: () => Promise<void>;
-    track: (channelId: string, userId: string, eventName: string | import("../events").TronicEvent, properties?: import("../events").EventProperties | import("@tronic/receiver-core").Callback | undefined, options?: import("../events").Options | import("@tronic/receiver-core").Callback | undefined, callback?: import("@tronic/receiver-core").Callback | undefined) => Promise<Context>;
+    track: (eventOrEventName: string | import("../events").TronicEvent, channelId?: string | undefined, properties?: import("@tronic/receiver-core").Callback | import("../events").EventProperties | undefined, options?: import("@tronic/receiver-core").Callback | import("../events").Options | undefined, callback?: import("@tronic/receiver-core").Callback | undefined) => Promise<Context>;
     ready: (callback?: Function | undefined) => Promise<unknown>;
     debug: (toggle: boolean) => ReceiverBuffered;
     once: (event: string, callback: (...args: any[]) => void) => ReceiverBuffered;

@@ -1,4 +1,5 @@
 <html>
+
 <head>
   <style>
     body {
@@ -25,69 +26,17 @@
   </form>
 
   <script>
-    const { searchParams } = new URL(document.location);
-    const writeKey = searchParams.get("writeKey");
-    document.querySelector("input").value = writeKey;
-
-    if (writeKey) {
-      !(function () {
-        var receiver = (window.receiver = window.receiver || [])
-        if (!receiver.initialize)
-          if (receiver.invoked)
-            window.console &&
-              console.error &&
-              console.error('Tronic snippet included twice.')
-          else {
-            receiver.invoked = !0
-            receiver.methods = [
-              'screen',
-              'register',
-              'deregister',
-              'trackSubmit',
-              'trackClick',
-              'trackLink',
-              'trackForm',
-              'identify',
-              'reset',
-              'track',
-              'ready',
-              'debug',
-            ]
-            receiver.factory = function (e) {
-              return function () {
-                var t = Array.prototype.slice.call(arguments)
-                t.unshift(e)
-                receiver.push(t)
-                return receiver
-              }
-            }
-            for (var e = 0; e < receiver.methods.length; e++) {
-              var key = receiver.methods[e]
-              receiver[key] = receiver.factory(key)
-            }
-            receiver.load = function (key, e) {
-              // key was used in t.src...
-              var t = document.createElement('script')
-              t.type = 'text/javascript'
-              t.async = !0
-              t.src = 'https://cdn.jsdelivr.net/gh/tronicapp/tronic-track@latest/packages/browser/dist/umd/standalone.js'
-              var n = document.getElementsByTagName('script')[0]
-              n.parentNode.insertBefore(t, n)
-              receiver._loadOptions = e
-            }
-            receiver.SNIPPET_VERSION = '0.0.1'
-            receiver._writeKey = writeKey
-            receiver.load('', {
-              pluginSettings: {
-                'Tronic': {
-                  apiKey: writeKey,
-                  apiHost: 'dev-api.tronic.app',
-                },
-              },
-            })
+    !function () {
+      var i = "analytics", analytics = window[i] = window[i] || []; if (!analytics.initialize) if (analytics.invoked) window.console && console.error && console.error("Segment snippet included twice."); else {
+        analytics.invoked = !0; analytics.methods = ["trackSubmit", "trackClick", "trackLink", "trackForm", "pageview", "identify", "reset", "group", "track", "ready", "alias", "debug", "page", "screen", "once", "off", "on", "addSourceMiddleware", "addIntegrationMiddleware", "setAnonymousId", "addDestinationMiddleware", "register"]; analytics.factory = function (e) { return function () { if (window[i].initialized) return window[i][e].apply(window[i], arguments); var n = Array.prototype.slice.call(arguments); if (["track", "screen", "alias", "group", "page", "identify"].indexOf(e) > -1) { var c = document.querySelector("link[rel='canonical']"); n.push({ __t: "bpc", c: c && c.getAttribute("href") || void 0, p: location.pathname, u: location.href, s: location.search, t: document.title, r: document.referrer }) } n.unshift(e); analytics.push(n); return analytics } }; for (var n = 0; n < analytics.methods.length; n++) { var key = analytics.methods[n]; analytics[key] = analytics.factory(key) } analytics.load = function (key, n) { var t = document.createElement("script"); t.type = "text/javascript"; t.async = !0; t.setAttribute("data-global-segment-analytics-key", i); t.src = "https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js"; var r = document.getElementsByTagName("script")[0]; r.parentNode.insertBefore(t, r); analytics._loadOptions = n }; analytics._writeKey = "UHDur3WauizTUQjYXqHPTZsfIJXtm3m4";; analytics.SNIPPET_VERSION = "5.2.0";
+        analytics.load("UHDur3WauizTUQjYXqHPTZsfIJXtm3m4"/*,{
+          integrations: {
+            'All': false,
           }
-      })()
-    }
+        }*/)
+        analytics.page();
+      }
+    }();
   </script>
 </head>
 
@@ -97,10 +46,14 @@
       <div>
         <textarea name="trackEvent" id="trackEvent">
 {
-  "channelId": "2YUflBOLovgzw89JNtkxup30q5T",
+  "userId": "2WffqQkUnMk5qM5y90fGlzcPDAv",
   "name": "event0",
   "properties": { "test": "yes" },
-  "options": { }
+  "options": {
+    "integrations": {
+      "Zapier": false
+    }
+  }
 }
       </textarea>
       </div>
@@ -131,8 +84,10 @@
       document.querySelector('#logs').textContent = str;
     }
 
-    if (window.receiver) {
-      window.receiver.ready(function onReady() {
+    if (window.analytics) {
+      window.analytics.ready(function onReady() {
+        console.profileEnd('snippet')
+        console.timeEnd('snippet')
         document.querySelector('#ready-logs').textContent = 'ready!'
       })
 
@@ -143,11 +98,13 @@
         var contents = document.querySelector('#trackEvent').value
         var evt = JSON.parse(contents)
 
+        // console.profile('track')
+        // console.time('track')
+
         try {
 
-          var ctx = await window.receiver.track(
+          var ctx = await window.analytics.track(
             evt.name,
-            evt.channelId,
             evt.properties || {},
           )
 
@@ -164,6 +121,8 @@
           writeToLog(err);
 
         } finally {
+          // console.timeEnd('track')
+          // console.profileEnd('track')
         }
 
       })
@@ -174,7 +133,8 @@
           e.preventDefault()
           var contents = document.querySelector('#identifyEvent').value
           var evt = JSON.parse(contents)
-          var promise = window.receiver.identify(
+          console.time('identify')
+          var promise = window.analytics.identify(
             evt.channelId || '',
             evt.userId || '',
             evt.traits || {},
@@ -184,6 +144,7 @@
           promise &&
             promise.then &&
             promise.then(function (ctx) {
+              console.timeEnd('identify')
               ctx.flush()
               document.querySelector('#logs').textContent = JSON.stringify(
                 ctx.event,

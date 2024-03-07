@@ -1,12 +1,12 @@
 import { TronicEvent } from '../../core/events';
 import { Plugin } from '../../core/plugin';
-import { SegmentFacade } from '../../lib/to-facade';
+import { TronicFacade } from '../../lib/to-facade';
 export interface MiddlewareParams {
-    payload: SegmentFacade;
+    payload: TronicFacade;
     next: (payload: MiddlewareParams['payload'] | null) => void;
 }
 export interface DestinationMiddlewareParams {
-    payload: SegmentFacade;
+    payload: TronicFacade;
     next: (payload: MiddlewareParams['payload'] | null) => void;
 }
 export type MiddlewareFunction = (middleware: MiddlewareParams) => void | Promise<void>;

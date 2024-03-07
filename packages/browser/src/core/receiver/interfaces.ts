@@ -1,90 +1,92 @@
-import type { Receiver, ReceiverSettings, InitOptions } from '.'
+// import type { Receiver, ReceiverSettings, InitOptions } from '.'
 import type { Plugin } from '../plugin'
 import type {
   EventParams,
   DispatchedEvent,
   IdentifyParams,
+  // GroupParams,
 } from '../arguments-resolver'
 import type { Context } from '../context'
-import type { TronicEvent } from '../events'
+// import type { TronicEvent } from '../events'
 import type { Group, User } from '../user'
-import type { LegacyIntegration } from '../../plugins/ajs-destination/types'
+// import type { LegacyIntegration } from '../../plugins/ajs-destination/types'
 import { CoreReceiver } from '@tronic/receiver-core'
 
 // we can define a contract because:
 // - it gives us a neat place to put all our typedocs (they end up being inherited by the class that implements them).
 // - it makes it easy to reason about what's being shared between browser and node
 
-/**
- * All of these methods are a no-op.
- */
-/** @deprecated */
+/*
+// @deprecated
 interface ReceiverClassicStubs {
-  /** @deprecated */
+  // @deprecated
   log(this: never): void
-  /** @deprecated */
+  // @deprecated
   addIntegrationMiddleware(this: never): void
-  /** @deprecated */
+  // @deprecated
   listeners(this: never): void
-  /** @deprecated */
+  // @deprecated
   addEventListener(this: never): void
-  /** @deprecated */
+  // @deprecated
   removeAllListeners(this: never): void
-  /** @deprecated */
+  // @deprecated
   removeListener(this: never): void
-  /** @deprecated */
+  // @deprecated
   removeEventListener(this: never): void
-  /** @deprecated */
+  // @deprecated
   hasListeners(this: never): void
-  /** @deprecated */
+  // @deprecated
   // This function is only used to add GA and Appcue, but these are already being added to Integrations by AJSN
   addIntegration(this: never): void
-  /** @deprecated */
+  // @deprecated
   add(this: never): void
 }
+ */
 
-/** @deprecated */
+/*
+// @deprecated
 export interface ReceiverClassic extends ReceiverClassicStubs {
-  /** @deprecated */
+  // @deprecated
   initialize(
     settings?: ReceiverSettings,
     options?: InitOptions
   ): Promise<Receiver>
 
-  /** @deprecated */
+  // @deprecated
   noConflict(): Receiver
 
-  /** @deprecated */
+  // @deprecated
   normalize(msg: TronicEvent): TronicEvent
 
-  /** @deprecated */
+  // @deprecated
   readonly failedInitializations: string[]
 
-  /** @deprecated */
+  // @deprecated
   // pageview(url: string): Promise<Receiver>
 
-  /**  @deprecated*/
+  //  @deprecated
   readonly plugins: any
 
-  /** @deprecated */
+  // @deprecated
   readonly Integrations: Record<string, LegacyIntegration>
 }
-
-/**
- * Interface implemented by concrete Receiver class (commonly accessible if you use "await" on ReceiverBrowser.load())
  */
+
+// Interface implemented by concrete Receiver class (commonly accessible if you use "await" on ReceiverBrowser.load())
 export interface ReceiverCore extends CoreReceiver {
   track(...args: EventParams): Promise<DispatchedEvent>
   identify(...args: IdentifyParams): Promise<DispatchedEvent>
+  // group(): Promise<Group>
+  // group(...args: GroupParams): Promise<DispatchedEvent>
+  user(): User
   register(...plugins: Plugin[]): Promise<Context>
   deregister(...plugins: string[]): Promise<Context>
-  user(): User
   readonly VERSION: string
 }
 
-/**
- * Interface implemented by ReceiverBrowser (buffered version of receiver) (commonly accessible through ReceiverBrowser.load())
- */
+// Interface implemented by ReceiverBrowser (buffered version of receiver) (commonly accessible through ReceiverBrowser.load())
 export type ReceiverBrowserCore = Omit<ReceiverCore, 'group' | 'user'> & {
+  // group(): Promise<Group>
+  // group(...args: GroupParams): Promise<DispatchedEvent>
   user(): Promise<User>
 }

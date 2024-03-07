@@ -1,6 +1,5 @@
 import { Facade } from '@segment/facade'
 import { Receiver } from '../../core/receiver'
-import { LegacySettings } from '../../browser'
 import { isOffline } from '../../core/connection'
 import { Context } from '../../core/context'
 import { Plugin } from '../../core/plugin'
@@ -28,18 +27,11 @@ export type TronicSettings = {
   apiHost?: string
   protocol?: 'http' | 'https'
 
-  addBundledMetadata?: boolean
-  unbundledIntegrations?: string[]
-  bundledConfigIds?: string[]
-  unbundledConfigIds?: string[]
-
-  maybeBundledConfigIds?: Record<string, string[]>
-
   deliveryStrategy?: DeliveryStrategy
 }
 
+/*
 type JSON = ReturnType<Facade['json']>
-
 function onAlias(receiver: Receiver, json: JSON): JSON {
   const user = receiver.user()
   json.previousId =
@@ -49,11 +41,11 @@ function onAlias(receiver: Receiver, json: JSON): JSON {
   delete json.to
   return json
 }
+  */
 
 export function tronic(
   receiver: Receiver,
   settings?: TronicSettings,
-  integrations?: LegacySettings['integrations']
 ): Plugin {
   // Attach `pagehide` before buffer is created so that inflight events are added
   // to the buffer before the buffer persists events in its own `pagehide` handler.
@@ -96,16 +88,15 @@ export function tronic(
 
     const path = 'external/' + ctx.event.type; // ctx.event.type.charAt(0)
 
-    let _json = toFacade(ctx.event).json()
+    let json = toFacade(ctx.event).json()
 
-    if (
-      ctx.event.type === 'track' || ctx.event.type === 'identify'
-    ) {
-      delete _json.type
-      delete _json.traits
-      delete _json.anonymousId
-      delete _json.sentAt
-      // delete _json.context
+    delete json.type
+    delete json.messageId
+
+    if (ctx.event.type === 'track') {
+      delete json.traits
+      delete json.writeKey
+      delete json.sentAt
     }
 
     /*
@@ -114,13 +105,10 @@ export function tronic(
     }
      */
 
-    const json = _json;
-    // {"userId":"2XWyaIZf7Tm2uQqa8fYH6GC0oYl","event":"event0","properties":{"test":"property"},"channelId":"2XWyaIasy88a5SJMoLKpkDuDt2O","timestamp":"2023-10-31T18:28:57.818Z"};
-
     return client
       .dispatch(
         `${remote}/${path}`,
-        json, // normalize(receiver, json, settings, integrations)
+        normalize(receiver, json, settings)
       )
       .then(() => ctx)
       .catch(() => {

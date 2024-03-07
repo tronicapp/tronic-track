@@ -1,19 +1,18 @@
 import { getCDN, setGlobalCDNUrl } from '../lib/parse-cdn'
 
-import { fetch } from '../lib/fetch'
-import { Receiver, ReceiverSettings, InitOptions } from '../core/receiver'
+// import { fetch } from '../lib/fetch'
+import { Receiver, /* ReceiverSettings, */ InitOptions } from '../core/receiver'
 import { Context } from '../core/context'
 import { Plugin } from '../core/plugin'
-import { MetricsOptions } from '../core/stats/remote-metrics'
-import { mergedOptions } from '../lib/merged-options'
+// import { MetricsOptions } from '../core/stats/remote-metrics'
+// import { mergedOptions } from '../lib/merged-options'
 import { createDeferred } from '../lib/create-deferred'
 import { envEnrichment } from '../plugins/env-enrichment'
 import {
   PluginFactory,
   remoteLoader,
-  RemotePlugin,
+  // RemotePlugin,
 } from '../plugins/remote-loader'
-import type { RoutingRule } from '../plugins/routing-middleware'
 import { tronic, TronicSettings } from '../plugins/tronic'
 import { validation } from '../plugins/validation'
 import {
@@ -24,13 +23,13 @@ import {
   // flushSetAnonymousID,
   flushOn,
 } from '../core/buffer'
-// import { ClassicIntegrationSource } from '../plugins/ajs-destination/types'
 import { attachInspector } from '../core/inspector'
 import { Stats } from '../core/stats'
 import { setGlobalReceiverKey } from '../lib/global-receiver-helper'
 
+/*
 export interface LegacyIntegrationConfiguration {
-  /* @deprecated - This does not indicate browser types anymore */
+// @deprecated - This does not indicate browser types anymore
   type?: string
 
   versionSettings?: {
@@ -41,69 +40,58 @@ export interface LegacyIntegrationConfiguration {
 
   bundlingStatus?: string
 
-  /**
-   * Consent settings for the integration
-   */
+ // Consent settings for the integration
   consentSettings?: {
-    /**
-     * Consent categories for the integration
-     * @example ["Receiver", "Advertising", "CAT001"]
-     */
+  // Consent categories for the integration
+  // @example ["Receiver", "Advertising", "CAT001"]
     categories: string[]
   }
 
   // Tronic.com specific
-  retryQueue?: boolean
+  // retryQueue?: boolean
 
   // any extra unknown settings
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
 }
+*/
 
-export interface LegacySettings {
-  integrations: {
-    [name: string]: LegacyIntegrationConfiguration
-  }
+/*
+export interface ExternalSettings {
 
-  middlewareSettings?: {
-    routingRules: RoutingRule[]
-  }
-
-  enabledMiddleware?: Record<string, boolean>
   metrics?: MetricsOptions
 
   remotePlugins?: RemotePlugin[]
 
-  /**
-   * Top level consent settings
-   */
+  // Top level consent settings
   consentSettings?: {
-    /**
-     * All unique consent categories.
-     * There can be categories in this array that are important for consent that are not included in any integration  (e.g. 2 cloud mode categories).
-     * @example ["Receiver", "Advertising", "CAT001"]
-     */
+
+     // All unique consent categories.
+     // There can be categories in this array that are important for consent that are not included in any integration  (e.g. 2 cloud mode categories).
+     // @example ["Receiver", "Advertising", "CAT001"]
+
     allCategories: string[]
   }
 }
 
 export interface ReceiverBrowserSettings extends ReceiverSettings {
-  /**
-   * The settings for the Tronic Source.
-   * If provided, `ReceiverBrowser` will not fetch remote settings
-   * for the source.
-   */
-  cdnSettings?: LegacySettings & Record<string, unknown>
-  /**
-   * If provided, will override the default CDN.
-   */
+
+  // The settings for the Tronic Source.
+  // If provided, `ReceiverBrowser` will not fetch remote settings
+  // for the source.
+
+  cdnSettings?: ExternalSettings & Record<string, unknown>
+    // If provided, will override the default CDN.
+
   cdnURL?: string
 }
+  */
 
-export function loadLegacySettings(
+/*
+export function fetchSettings(
   writeKey: string,
   cdnURL?: string
-): Promise<LegacySettings> {
+): Promise<ExternalSettings> {
   const baseUrl = cdnURL ?? getCDN()
 
   return fetch(`${baseUrl}/v1/projects/${writeKey}/settings`)
@@ -120,15 +108,14 @@ export function loadLegacySettings(
       throw err
     })
 }
-
-/**
- * With AJS classic, we allow users to call setAnonymousId before the library initialization.
- * This is important because some of the destinations will use the anonymousId during the initialization,
- * and if we set anonId afterwards, that wouldn’t impact the destination.
- *
- * Also Ensures events can be registered before library initialization.
- * This is important so users can register to 'initialize' and any events that may fire early during setup.
  */
+
+// With AJS classic, we allow users to call setAnonymousId before the library initialization.
+// This is important because some of the destinations will use the anonymousId during the initialization,
+// and if we set anonId afterwards, that wouldn’t impact the destination.
+//
+// Also Ensures events can be registered before library initialization.
+// This is important so users can register to 'initialize' and any events that may fire early during setup.
 function flushPreBuffer(
   receiver: Receiver,
   buffer: PreInitMethodCallBuffer
@@ -137,9 +124,7 @@ function flushPreBuffer(
   flushOn(receiver, buffer)
 }
 
-/**
- * Finish flushing buffer and cleanup.
- */
+// Finish flushing buffer and cleanup.
 async function flushFinalBuffer(
   receiver: Receiver,
   buffer: PreInitMethodCallBuffer
@@ -153,14 +138,13 @@ async function flushFinalBuffer(
 }
 
 async function registerPlugins(
-  writeKey: string,
-  legacySettings: LegacySettings,
   receiver: Receiver,
-  opts: InitOptions,
+  // writeKey: string,
+  // externalSettings: ExternalSettings,
   options: InitOptions,
   pluginLikes: (Plugin | PluginFactory)[] = [],
-  // legacyIntegrationSources: ClassicIntegrationSource[]
 ): Promise<Context> {
+
   const plugins = pluginLikes?.filter(
     (pluginLike) => typeof pluginLike === 'object'
   ) as Plugin[]
@@ -171,13 +155,13 @@ async function registerPlugins(
       typeof pluginLike.pluginName === 'string'
   ) as PluginFactory[]
 
-  const mergedSettings = mergedOptions(legacySettings, options)
+  // const mergedSettings = mergedOptions(externalSettings, options)
+
   const remotePlugins = await remoteLoader(
-    legacySettings,
-    receiver.integrations,
-    mergedSettings,
-    options.obfuscate,
-    undefined,
+    options, // externalSettings,
+    // { All: true }, // receiver.integrations,
+    // mergedSettings,
+    // options.obfuscate,
     pluginSources
   ).catch(() => [])
 
@@ -188,89 +172,80 @@ async function registerPlugins(
     ...remotePlugins,
     await tronic(
       receiver,
-      mergedSettings['Tronic'] as TronicSettings,
-      /*
-      {
-        protocol: 'http',
-        apiHost: ,
-        apiKey: writeKey,
-      },
-        */
-      legacySettings.integrations
+      // mergedSettings['Tronic'] as TronicSettings,
+      options.pluginSettings?.['Tronic'] as TronicSettings,
     ),
   ]
 
   const ctx = await receiver.register(...toRegister)
 
-  if (
-    Object.entries(legacySettings.enabledMiddleware ?? {}).some(
-      ([, enabled]) => enabled
+  /*
+if (
+  Object.entries(externalSettings.enabledMiddleware ?? {}).some(
+    ([, enabled]) => enabled
+  )
+) {
+  await import(
+  //// webpackChunkName: "remoteMiddleware" //// '../plugins/remote-middleware'
+  ).then(async ({ remoteMiddlewares }) => {
+    const middleware = await remoteMiddlewares(
+      ctx,
+      externalSettings,
+      options.obfuscate
     )
-  ) {
-    await import(
-      /* webpackChunkName: "remoteMiddleware" */ '../plugins/remote-middleware'
-    ).then(async ({ remoteMiddlewares }) => {
-      const middleware = await remoteMiddlewares(
-        ctx,
-        legacySettings,
-        options.obfuscate
-      )
-      const promises = middleware.map((mdw) =>
-        receiver.addSourceMiddleware(mdw)
-      )
-      return Promise.all(promises)
-    })
-  }
+    const promises = middleware.map((mdw) =>
+      receiver.addSourceMiddleware(mdw)
+    )
+    return Promise.all(promises)
+  })
+}
+*/
 
   return ctx
 }
 
 async function loadReceiver(
-  settings: ReceiverBrowserSettings,
-  options: InitOptions = {},
+  // settings: ReceiverBrowserSettings,
+  options: InitOptions,
   preInitBuffer: PreInitMethodCallBuffer
 ): Promise<[Receiver, Context]> {
-  if (options.globalReceiverKey)
+
+  if (options.globalReceiverKey) {
     setGlobalReceiverKey(options.globalReceiverKey)
-  // this is an ugly side-effect, but it's for the benefits of the plugins that get their cdn via getCDN()
-  if (settings.cdnURL) setGlobalCDNUrl(settings.cdnURL)
-
-  let legacySettings = {
-    integrations: options.integrations,
-  } as LegacySettings/*
-    settings.cdnSettings ??
-    (await loadLegacySettings(settings.writeKey, settings.cdnURL))
-                           */
-
-  if (options.updateCDNSettings) {
-    legacySettings = options.updateCDNSettings(legacySettings)
   }
 
-  const retryQueue: boolean =
-    legacySettings?.integrations?.['Tronic']?.retryQueue ?? true
+  // this is an ugly side-effect, but it's for the benefits of the plugins that get their cdn via getCDN()
+  if (options.cdnURL) {
+    setGlobalCDNUrl(options.cdnURL)
+  }
 
-  const opts: InitOptions = { retryQueue, ...options }
-  const receiver = new Receiver(settings, opts)
+  /*
+let externalOptions = options.cdnOptions ?? (await fetchOptions(options.writeKey, options.cdnURL))
+
+if (options.updateCDNOptions) {
+  externalOptions = options.updateCDNOptions(externalOptions)
+}
+   */
+
+  // const retryQueue: boolean =
+  // externalOptions?.integrations?.['Tronic']?.retryQueue ?? true
+
+  // const opts: InitOptions = { retryQueue, ...options }
+  const receiver = new Receiver(options)
 
   attachInspector(receiver)
 
-  const plugins = settings.plugins ?? []
+  const plugins = options.plugins ?? []
 
-  // const classicIntegrations = settings.classicIntegrations ?? []
-
-  Stats.initRemoteMetrics(legacySettings.metrics)
+  Stats.initRemoteMetrics(options.metrics)
 
   // needs to be flushed before plugins are registered
   flushPreBuffer(receiver, preInitBuffer)
 
   const ctx = await registerPlugins(
-    settings.writeKey,
-    legacySettings,
     receiver,
-    opts,
     options,
     plugins,
-    // classicIntegrations
   )
 
   const search = window.location.search ?? ''
@@ -278,12 +253,12 @@ async function loadReceiver(
 
   const term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '')
 
-  if (term.includes('ajs_')) {
+  if (term.includes('rjs_')) {
     await receiver.queryString(term).catch(console.error)
   }
 
   receiver.initialized = true
-  receiver.emit('initialize', settings, options)
+  receiver.emit('initialize', options)
 
   /*
 if (options.initialPageview) {
@@ -296,19 +271,9 @@ if (options.initialPageview) {
   return [receiver, ctx]
 }
 
-/**
- * The public browser interface for Tronic Receiver
- *
- * @example
- * ```ts
- *  export const receiver = new ReceiverBrowser()
- *  receiver.load({ writeKey: 'foo' })
- * ```
- * @link https://github.com/tronic/tronic-receiver/#readme
- */
 export class ReceiverBrowser extends ReceiverBuffered {
   private _resolveLoadStart: (
-    settings: ReceiverBrowserSettings,
+    // settings: ReceiverBrowserSettings,
     options: InitOptions
   ) => void
 
@@ -317,61 +282,43 @@ export class ReceiverBrowser extends ReceiverBuffered {
       createDeferred<Parameters<ReceiverBrowser['load']>>()
 
     super((buffer) =>
-      loadStart.then(([settings, options]) =>
-        loadReceiver(settings, options, buffer)
+      loadStart.then(([options]) =>
+        loadReceiver(options, buffer)
       )
     )
 
-    this._resolveLoadStart = (settings, options) =>
-      resolveLoadStart([settings, options])
+    this._resolveLoadStart = (options) =>
+      resolveLoadStart([options])
   }
 
-  /**
-   * Fully initialize an receiver instance, including:
-   *
-   * * Fetching settings from the Tronic CDN (by default).
-   * * Fetching all remote destinations configured by the user (if applicable).
-   * * Flushing buffered receiver events.
-   * * Loading all middleware.
-   *
-   * Note:️  This method should only be called *once* in your application.
-   *
-   * @example
-   * ```ts
-   * export const receiver = new ReceiverBrowser()
-   * receiver.load({ writeKey: 'foo' })
-   * ```
-   */
+  //
+  // Fully initialize an receiver instance, including:
+  // Fetching settings from the Tronic CDN (by default).
+  // Fetching all remote destinations configured by the user (if applicable).
+  // Flushing buffered receiver events.
+  // Loading all middleware.
+  //
+  // Note:️  This method should only be called *once* in your application.
   load(
-    settings: ReceiverBrowserSettings,
-    options: InitOptions = {}
+    options: InitOptions,
   ): ReceiverBrowser {
-    this._resolveLoadStart(settings, options)
+    this._resolveLoadStart(options)
     return this
   }
 
-  /**
-   * Instantiates an object exposing Receiver methods.
-   *
-   * @example
-   * ```ts
-   * const ajs = ReceiverBrowser.load({ writeKey: '<YOUR_WRITE_KEY>' })
-   *
-   * ajs.track("foo")
-   * ...
-   * ```
-   */
+  // Instantiates an object exposing Receiver methods.
+
   static load(
-    settings: ReceiverBrowserSettings,
-    options: InitOptions = {}
+    options: InitOptions,
   ): ReceiverBrowser {
-    return new ReceiverBrowser().load(settings, options)
+    return new ReceiverBrowser().load(options)
   }
 
   static standalone(
     writeKey: string,
     options?: InitOptions
   ): Promise<Receiver> {
-    return ReceiverBrowser.load({ writeKey }, options).then((res) => res[0])
+    return ReceiverBrowser.load({ ...options, writeKey }).then((res) => res[0])
   }
+
 }

@@ -81,6 +81,7 @@ import { PersistedPriorityQueue } from '../../lib/priority-queue/persisted';
 import { version } from '../../generated/version';
 import { PriorityQueue } from '../../lib/priority-queue';
 import { getGlobal } from '../../lib/get-global';
+// import type { ExternalSettings } from '../../browser'
 import { MemoryStorage, UniversalStorage, StoreType, applyCookieOptions, initializeStorages, isArrayOfStoreType, } from '../storage';
 // import { setGlobalReceiver } from '../../lib/global-receiver-helper'
 import { popPageContext } from '../buffer';
@@ -99,8 +100,10 @@ function createDefaultQueue(name, retryQueue, disablePersistance) {
 }
 var Receiver = /** @class */ (function (_super) {
     __extends(Receiver, _super);
-    function Receiver(settings, options, queue, user, group) {
-        var _a, _b, _c;
+    function Receiver(
+    // settings: ReceiverSettings,
+    options, queue, user, group) {
+        var _a;
         var _this = _super.call(this) || this;
         _this._debug = false;
         _this.initialized = false;
@@ -109,10 +112,10 @@ var Receiver = /** @class */ (function (_super) {
         };
         var cookieOptions = options === null || options === void 0 ? void 0 : options.cookie;
         var disablePersistance = (_a = options === null || options === void 0 ? void 0 : options.disableClientPersistence) !== null && _a !== void 0 ? _a : false;
-        _this.settings = settings;
-        _this.settings.timeout = (_b = _this.settings.timeout) !== null && _b !== void 0 ? _b : 300;
+        // this.settings = settings
+        // this.settings.timeout = this.settings.timeout ?? 300
         _this.queue =
-            queue !== null && queue !== void 0 ? queue : createDefaultQueue("".concat(settings.writeKey, ":event-queue"), options === null || options === void 0 ? void 0 : options.retryQueue, disablePersistance);
+            queue !== null && queue !== void 0 ? queue : createDefaultQueue("".concat(options.writeKey, ":event-queue"), options === null || options === void 0 ? void 0 : options.retryQueue, disablePersistance);
         var storageSetting = options === null || options === void 0 ? void 0 : options.storage;
         _this._universalStorage = _this.createStore(disablePersistance, storageSetting, cookieOptions);
         _this._user =
@@ -120,15 +123,12 @@ var Receiver = /** @class */ (function (_super) {
         _this._group =
             group !== null && group !== void 0 ? group : new Group(__assign({ persist: !disablePersistance, storage: options === null || options === void 0 ? void 0 : options.storage }, options === null || options === void 0 ? void 0 : options.group), cookieOptions).load();
         _this.eventFactory = new EventFactory(_this._user);
-        _this.integrations = (_c = options === null || options === void 0 ? void 0 : options.integrations) !== null && _c !== void 0 ? _c : {};
-        _this.options = options !== null && options !== void 0 ? options : {};
+        // this.integrations = options?.integrations ?? {}
+        _this.options = options; // ?? {}
         autoBind(_this);
         return _this;
     }
-    /**
-     * Creates the storage system based on the settings received
-     * @returns Storage
-     */
+    // Creates the storage system based on the settings received
     Receiver.prototype.createStore = function (disablePersistance, storageSetting, cookieOptions) {
         // DisablePersistance option overrides all, no storage will be used outside of memory even if specified
         if (disablePersistance) {
@@ -165,17 +165,14 @@ var Receiver = /** @class */ (function (_super) {
             args[_i] = arguments[_i];
         }
         return __awaiter(this, void 0, void 0, function () {
-            var pageCtx, _a, channelId, userId, name, data, opts, cb, tronicEvent;
+            var pageCtx, _a, name, channelId, data, opts, cb, tronicEvent;
             var _this = this;
             return __generator(this, function (_b) {
                 pageCtx = popPageContext(args);
-                _a = resolveArguments.apply(void 0, args), channelId = _a[0], userId = _a[1], name = _a[2], data = _a[3], opts = _a[4], cb = _a[5];
-                tronicEvent = this.eventFactory.track(channelId, userId, name, data, 
-                // opts,
-                // this.integrations,
-                pageCtx);
+                _a = resolveArguments.apply(void 0, args), name = _a[0], channelId = _a[1], data = _a[2], opts = _a[3], cb = _a[4];
+                tronicEvent = this.eventFactory.track(name, channelId, data, opts, pageCtx);
                 return [2 /*return*/, this._dispatch(tronicEvent, cb).then(function (ctx) {
-                        _this.emit('track', name, ctx.event.properties); // , ctx.event.options)
+                        _this.emit('track', name, ctx.event.properties, ctx.event.options);
                         return ctx;
                     })];
             });
@@ -187,17 +184,15 @@ var Receiver = /** @class */ (function (_super) {
             args[_i] = arguments[_i];
         }
         return __awaiter(this, void 0, void 0, function () {
-            var pageCtx, _a, channelId, userId, traits, options, callback, tronicEvent;
+            var pageCtx, _a, channelId, id, _traits, options, callback, tronicEvent;
             var _this = this;
             return __generator(this, function (_b) {
                 pageCtx = popPageContext(args);
-                _a = resolveUserArguments(this._user).apply(void 0, args), channelId = _a[0], userId = _a[1], traits = _a[2], options = _a[3], callback = _a[4];
-                tronicEvent = this.eventFactory.identify(channelId, userId, traits, // this._user.traits(),
-                options, 
-                // this.integrations,
-                pageCtx);
+                _a = resolveUserArguments(this._user).apply(void 0, args), channelId = _a[0], id = _a[1], _traits = _a[2], options = _a[3], callback = _a[4];
+                this._user.identify(id, _traits);
+                tronicEvent = this.eventFactory.identify(this._user.id(), channelId, this._user.traits(), options, pageCtx);
                 return [2 /*return*/, this._dispatch(tronicEvent, callback).then(function (ctx) {
-                        _this.emit('identify', ctx.event.userId, ctx.event.traits);
+                        _this.emit('identify', ctx.event.userId, ctx.event.traits, ctx.event.options);
                         return ctx;
                     })];
             });
@@ -345,7 +340,7 @@ var Receiver = /** @class */ (function (_super) {
         this.emit('reset');
     };
     Receiver.prototype.timeout = function (timeout) {
-        this.settings.timeout = timeout;
+        this.options.timeout = timeout;
     };
     Receiver.prototype._dispatch = function (event, callback) {
         return __awaiter(this, void 0, void 0, function () {
@@ -358,7 +353,7 @@ var Receiver = /** @class */ (function (_super) {
                 return [2 /*return*/, dispatch(ctx, this.queue, this, {
                         callback: callback,
                         debug: this._debug,
-                        timeout: this.settings.timeout,
+                        timeout: this.options.timeout,
                     })];
             });
         });
@@ -369,14 +364,22 @@ var Receiver = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.queue.criticalTasks.run(function () { return __awaiter(_this, void 0, void 0, function () {
-                            var sourceMiddlewarePlugin, integrations, plugin;
+                            var sourceMiddlewarePlugin, plugin;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0: return [4 /*yield*/, import(
-                                        /* webpackChunkName: "middleware" */ '../../plugins/middleware')];
+                                        /* webpackChunkName: "middleware" */ '../../plugins/middleware')
+                                        /*
+                                        const integrations: Record<string, boolean> = {}
+                                      this.queue.plugins.forEach((plugin) => {
+                                        if (plugin.type === 'destination') {
+                                          return (integrations[plugin.name] = true)
+                                        }
+                                      })
+                                         */
+                                    ];
                                     case 1:
                                         sourceMiddlewarePlugin = (_a.sent()).sourceMiddlewarePlugin;
-                                        integrations = {};
                                         plugin = sourceMiddlewarePlugin(fn) //, integrations)
                                         ;
                                         return [4 /*yield*/, this.register(plugin)];
@@ -393,7 +396,7 @@ var Receiver = /** @class */ (function (_super) {
             });
         });
     };
-    /* TODO: This does not have to return a promise? */
+    // TODO: This does not have to return a promise?
     Receiver.prototype.addDestinationMiddleware = function (integrationName) {
         var middlewares = [];
         for (var _i = 1; _i < arguments.length; _i++) {

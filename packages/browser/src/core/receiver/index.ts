@@ -12,7 +12,7 @@ import { dispatch, Emitter } from '@tronic/receiver-core'
 import {
   Callback,
   EventFactory,
-  Integrations,
+  // Integrations,
   Plan,
   EventProperties,
   TronicEvent,
@@ -22,13 +22,6 @@ import { EventQueue } from '../queue/event-queue'
 import { Group, ID, User, UserOptions } from '../user'
 import autoBind from '../../lib/bind-all'
 import { PersistedPriorityQueue } from '../../lib/priority-queue/persisted'
-/*
-import type { LegacyDestination } from '../../plugins/ajs-destination'
-import type {
-  LegacyIntegration,
-  ClassicIntegrationSource,
-  } from '../../plugins/ajs-destination/types'
- */
 import type {
   DestinationMiddlewareFunction,
   MiddlewareFunction,
@@ -38,7 +31,7 @@ import { PriorityQueue } from '../../lib/priority-queue'
 import { getGlobal } from '../../lib/get-global'
 import { ReceiverCore } from './interfaces'
 import { HighEntropyHint } from '../../lib/client-hints/interfaces'
-import type { LegacySettings } from '../../browser'
+// import type { ExternalSettings } from '../../browser'
 import {
   CookieOptions,
   MemoryStorage,
@@ -52,6 +45,7 @@ import {
 import { PluginFactory } from '../../plugins/remote-loader'
 // import { setGlobalReceiver } from '../../lib/global-receiver-helper'
 import { popPageContext } from '../buffer'
+import { MetricsOptions } from 'core/stats/remote-metrics'
 
 type LegacyDestination = any;
 
@@ -74,65 +68,87 @@ function createDefaultQueue(
   return new EventQueue(priorityQueue)
 }
 
+/*
 export interface ReceiverSettings {
   writeKey: string
   timeout?: number
   plugins?: (Plugin | PluginFactory)[]
-  // classicIntegrations?: ClassicIntegrationSource[]
 }
+*/
 
 export interface InitOptions {
-  /**
-   * Disables storing any data on the client-side via cookies or localstorage.
-   * Defaults to `false`.
-   *
-   */
+
+  // export interface ReceiverSettings {
+  writeKey?: string
+  timeout?: number
+  plugins?: (Plugin | PluginFactory)[]
+  pluginSettings?: Record<string, any>
+
+  // export interface ExternalSettings {
+  metrics?: MetricsOptions
+
+  remotePlugins?: any[] // RemotePlugin[]
+
+  // Top level consent settings
+  consentSettings?: {
+
+    // All unique consent categories.
+    // There can be categories in this array that are important for consent that are not included in any integration  (e.g. 2 cloud mode categories).
+    // @example ["Receiver", "Advertising", "CAT001"]
+
+    allCategories: string[]
+  }
+
+  // The settings for the Tronic Source.
+  // If provided, `ReceiverBrowser` will not fetch remote settings
+  // for the source.
+
+  cdnSettings?: /* ExternalSettings & */ Record<string, unknown>
+    // If provided, will override the default CDN.
+
+  cdnURL?: string
+
+  // Disables storing any data on the client-side via cookies or localstorage.
+  // Defaults to `false`.
   disableClientPersistence?: boolean
-  /**
-   * Disables automatically converting ISO string event properties into Dates.
-   * ISO string to Date conversions occur right before sending events to a classic device mode integration,
-   * after any destination middleware have been ran.
-   * Defaults to `false`.
-   */
+
+  // Disables automatically converting ISO string event properties into Dates.
+  // ISO string to Date conversions occur right before sending events to a classic device mode integration,
+  // after any destination middleware have been ran.
+  // Defaults to `false`.
   disableAutoISOConversion?: boolean
   initialPageview?: boolean
   cookie?: CookieOptions
   storage?: StorageSettings
   user?: UserOptions
   group?: UserOptions
-  integrations?: Integrations
+
   plan?: Plan
   retryQueue?: boolean
   obfuscate?: boolean
-  /**
-   * This callback allows you to update/mutate CDN Settings.
-   * This is called directly after settings are fetched from the CDN.
-   */
-  updateCDNSettings?: (settings: LegacySettings) => LegacySettings
-  /**
-   * Disables or sets constraints on processing of query string parameters
-   */
+
+  // This callback allows you to update/mutate CDN Settings.
+  // This is called directly after settings are fetched from the CDN.
+  // updateCDNSettings?: (settings: ExternalSettings) => ExternalSettings
+
+  // Disables or sets constraints on processing of query string parameters
   useQueryString?:
   | boolean
   | {
     aid?: RegExp
     uid?: RegExp
   }
-  /**
-   * Array of high entropy Client Hints to request. These may be rejected by the user agent - only required hints should be requested.
-   */
+  // Array of high entropy Client Hints to request. These may be rejected by the user agent - only required hints should be requested.
   highEntropyValuesClientHints?: HighEntropyHint[]
-  /**
-   * When using the snippet, this is the key that points to the global receiver instance (e.g. window.receiver).
-   * default: receiver
-   */
+  // When using the snippet, this is the key that points to the global receiver instance (e.g. window.receiver).
+  // default: receiver
   globalReceiverKey?: string
 }
 
 export class Receiver
   extends Emitter
-  implements ReceiverCore { // , ReceiverClassic {
-  protected settings: ReceiverSettings
+  implements ReceiverCore {
+  // protected settings: ReceiverSettings
   private _user: User
   private _group: Group
   private eventFactory: EventFactory
@@ -140,13 +156,12 @@ export class Receiver
   private _universalStorage: UniversalStorage
 
   initialized = false
-  integrations: Integrations
   options: InitOptions
   queue: EventQueue
 
   constructor(
-    settings: ReceiverSettings,
-    options?: InitOptions,
+    // settings: ReceiverSettings,
+    options: InitOptions,
     queue?: EventQueue,
     user?: User,
     group?: Group
@@ -154,12 +169,12 @@ export class Receiver
     super()
     const cookieOptions = options?.cookie
     const disablePersistance = options?.disableClientPersistence ?? false
-    this.settings = settings
-    this.settings.timeout = this.settings.timeout ?? 300
+    // this.settings = settings
+    // this.settings.timeout = this.settings.timeout ?? 300
     this.queue =
       queue ??
       createDefaultQueue(
-        `${settings.writeKey}:event-queue`,
+        `${options.writeKey}:event-queue`,
         options?.retryQueue,
         disablePersistance
       )
@@ -194,8 +209,8 @@ export class Receiver
         cookieOptions
       ).load()
     this.eventFactory = new EventFactory(this._user)
-    this.integrations = options?.integrations ?? {}
-    this.options = options ?? {}
+    // this.integrations = options?.integrations ?? {}
+    this.options = options; // ?? {}
     autoBind(this)
   }
 
@@ -203,10 +218,7 @@ export class Receiver
     return this._user
   }
 
-  /**
-   * Creates the storage system based on the settings received
-   * @returns Storage
-   */
+  // Creates the storage system based on the settings received
   private createStore(
     disablePersistance: boolean,
     storageSetting: InitOptions['storage'],
@@ -246,37 +258,35 @@ export class Receiver
 
   async track(...args: EventParams): Promise<DispatchedEvent> {
     const pageCtx = popPageContext(args)
-    const [channelId, userId, name, data, opts, cb] = resolveArguments(...args)
+    const [name, channelId, data, opts, cb] = resolveArguments(...args)
 
-    const tronicEvent = this.eventFactory.track(
-      channelId,
-      userId,
+    const tronicEvent: any = this.eventFactory.track(
       name,
+      channelId,
       data as EventProperties,
-      // opts,
-      // this.integrations,
+      opts,
       pageCtx
     )
 
     return this._dispatch(tronicEvent, cb).then((ctx) => {
-      this.emit('track', name, ctx.event.properties) // , ctx.event.options)
+      this.emit('track', name, ctx.event.properties, ctx.event.options)
       return ctx
     })
   }
 
   async identify(...args: IdentifyParams): Promise<DispatchedEvent> {
     const pageCtx = popPageContext(args)
-    const [channelId, userId, traits, options, callback] = resolveUserArguments(this._user)(
+    const [channelId, id, _traits, options, callback] = resolveUserArguments(this._user)(
       ...args
     )
 
-    // this._user.identify(id, _traits)
+    this._user.identify(id, _traits)
+
     const tronicEvent = this.eventFactory.identify(
+      this._user.id(),
       channelId,
-      userId,
-      traits, // this._user.traits(),
+      this._user.traits(),
       options,
-      // this.integrations,
       pageCtx
     )
 
@@ -285,7 +295,7 @@ export class Receiver
         'identify',
         ctx.event.userId,
         ctx.event.traits,
-        // ctx.event.options
+        ctx.event.options
       )
       return ctx
     })
@@ -363,7 +373,7 @@ export class Receiver
   }
 
   timeout(timeout: number): void {
-    this.settings.timeout = timeout
+    this.options.timeout = timeout
   }
 
   private async _dispatch(
@@ -377,7 +387,7 @@ export class Receiver
     return dispatch(ctx, this.queue, this, {
       callback,
       debug: this._debug,
-      timeout: this.settings.timeout,
+      timeout: this.options.timeout,
     })
   }
 
@@ -387,8 +397,8 @@ export class Receiver
         /* webpackChunkName: "middleware" */ '../../plugins/middleware'
       )
 
-      const integrations: Record<string, boolean> = {}
       /*
+      const integrations: Record<string, boolean> = {}
     this.queue.plugins.forEach((plugin) => {
       if (plugin.type === 'destination') {
         return (integrations[plugin.name] = true)
@@ -402,7 +412,7 @@ export class Receiver
     return this
   }
 
-  /* TODO: This does not have to return a promise? */
+  // TODO: This does not have to return a promise?
   addDestinationMiddleware(
     integrationName: string,
     ...middlewares: DestinationMiddlewareFunction[]

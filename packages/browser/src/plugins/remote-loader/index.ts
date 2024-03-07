@@ -1,5 +1,4 @@
-import type { Integrations } from '../../core/events/interfaces'
-import { LegacySettings } from '../../browser'
+// import { ExternalSettings } from '../../browser'
 import { JSONObject, JSONValue } from '../../core/events'
 import { DestinationPlugin, Plugin } from '../../core/plugin'
 import { loadScript } from '../../lib/load-script'
@@ -9,22 +8,22 @@ import {
   DestinationMiddlewareFunction,
 } from '../middleware'
 import { Context, ContextCancelation } from '../../core/context'
-import { Receiver } from '../../core/receiver'
+import { InitOptions, Receiver } from '../../core/receiver'
 
-export interface RemotePlugin {
-  /** The name of the remote plugin */
+export interface RemotePluginConfig {
+  // The name of the remote plugin
   name: string
-  /** The creation name of the remote plugin */
+  // The creation name of the remote plugin
   creationName: string
-  /** The url of the javascript file to load */
+  // The url of the javascript file to load
   url: string
-  /** The UMD/global name the plugin uses. Plugins are expected to exist here with the `PluginFactory` method signature */
+  // The UMD/global name the plugin uses. Plugins are expected to exist here with the `PluginFactory` method signature
   libraryName: string
-  /** The settings related to this plugin. */
+  // The settings related to this plugin.
   settings: JSONObject
 }
 
-export class ActionDestination implements DestinationPlugin {
+export class RemoteDestinationPlugin implements DestinationPlugin {
   name: string // destination name
   version = '1.0.0'
   type: Plugin['type']
@@ -88,7 +87,7 @@ export class ActionDestination implements DestinationPlugin {
   identify = this._createMethod('identify')
   track = this._createMethod('track')
 
-  /* --- PASSTHROUGH METHODS --- */
+  // --- PASSTHROUGH METHODS ---
   isLoaded(): boolean {
     return this.action.isLoaded()
   }
@@ -133,9 +132,10 @@ function validate(pluginLike: unknown): pluginLike is Plugin[] {
 }
 
 function isPluginDisabled(
-  userIntegrations: Integrations,
-  remotePlugin: RemotePlugin
+  // userIntegrations: Integrations,
+  // remotePlugin: RemotePluginConfig
 ) {
+  /*
   const creationNameEnabled = userIntegrations[remotePlugin.creationName]
   const currentNameEnabled = userIntegrations[remotePlugin.name]
 
@@ -152,12 +152,12 @@ function isPluginDisabled(
   if (creationNameEnabled === false || currentNameEnabled === false) {
     return true
   }
-
+   */
   return false
 }
 
 async function loadPluginFactory(
-  remotePlugin: RemotePlugin,
+  remotePlugin: RemotePluginConfig,
   obfuscate?: boolean
 ): Promise<void | PluginFactory> {
   const defaultCdn = new RegExp('https://cdn.tronic.(com|build)')
@@ -189,54 +189,36 @@ async function loadPluginFactory(
 }
 
 export async function remoteLoader(
-  settings: LegacySettings,
-  userIntegrations: Integrations,
-  mergedIntegrations: Record<string, JSONObject>,
-  obfuscate?: boolean,
-  routingMiddleware?: DestinationMiddlewareFunction,
+  // settings: ExternalSettings,
+  // obfuscate?: boolean,
+  options: InitOptions,
   pluginSources?: PluginFactory[]
 ): Promise<Plugin[]> {
   const allPlugins: Plugin[] = []
 
-  const routingRules = settings.middlewareSettings?.routingRules ?? []
-
-  const pluginPromises = (settings.remotePlugins ?? []).map(
+  const pluginPromises = (options.remotePlugins ?? []).map(
     async (remotePlugin) => {
-      if (isPluginDisabled(userIntegrations, remotePlugin)) return
+      if (isPluginDisabled(/* userIntegrations, remotePlugin */)) return
 
       try {
         const pluginFactory =
           pluginSources?.find(
             ({ pluginName }) => pluginName === remotePlugin.name
-          ) || (await loadPluginFactory(remotePlugin, obfuscate))
+          ) || (await loadPluginFactory(remotePlugin, options.obfuscate))
 
         if (pluginFactory) {
           const plugin = await pluginFactory({
             ...remotePlugin.settings,
-            ...mergedIntegrations[remotePlugin.name],
           })
           const plugins = Array.isArray(plugin) ? plugin : [plugin]
 
           validate(plugins)
 
-          const routing = routingRules.filter(
-            (rule) => rule.destinationName === remotePlugin.creationName
-          )
-
           plugins.forEach((plugin) => {
-            const wrapper = new ActionDestination(
+            const wrapper = new RemoteDestinationPlugin(
               remotePlugin.creationName,
               plugin
             )
-
-            /** Make sure we only apply destination filters to actions of the "destination" type to avoid causing issues for hybrid destinations */
-            if (
-              routing.length &&
-              routingMiddleware &&
-              plugin.type === 'destination'
-            ) {
-              wrapper.addMiddleware(routingMiddleware)
-            }
 
             allPlugins.push(wrapper)
           })

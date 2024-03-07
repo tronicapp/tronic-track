@@ -20,30 +20,21 @@ import { ID, User } from '../user'
  * Helper for the track method
  */
 export function resolveArguments(
-  channelId: string,
-  userId: string,
-  eventName: string | TronicEvent,
+  eventOrEventName: string | TronicEvent,
+  channelId?: string,
   properties?: EventProperties | Callback,
   options?: Options | Callback,
   callback?: Callback
-): [string, string, string, EventProperties | Callback, Options, Callback | undefined] {
-  const args = [channelId, userId, eventName, properties, options, callback]
+): [string, string | undefined, EventProperties | Callback, Options, Callback | undefined] {
+  const args = [eventOrEventName, channelId, properties, options, callback]
 
-  if (!channelId || !isString(channelId)) {
-    throw new Error('ChannelId missing')
-  }
-
-  if (!userId || !isString(userId)) {
-    throw new Error('UserId missing')
-  }
-
-  const name = isPlainObject(eventName) ? eventName.event : eventName
+  const name = isPlainObject(eventOrEventName) ? eventOrEventName.event : eventOrEventName
   if (!name || !isString(name)) {
     throw new Error('Event missing')
   }
 
-  const data = isPlainObject(eventName)
-    ? eventName.properties ?? {}
+  const data = isPlainObject(eventOrEventName)
+    ? eventOrEventName.properties ?? {}
     : isPlainObject(properties)
       ? properties
       : {}
@@ -53,12 +44,12 @@ export function resolveArguments(
     opts = options ?? {}
   }
 
-  if (isPlainObject(eventName) && !isFunction(properties)) {
+  if (isPlainObject(eventOrEventName) && !isFunction(properties)) {
     opts = properties ?? {}
   }
 
   const cb = args.find(isFunction) as Callback | undefined
-  return [channelId, userId, name, data, opts, cb]
+  return [name, channelId, data, opts, cb]
 }
 
 /**
@@ -67,18 +58,25 @@ export function resolveArguments(
 export const resolveUserArguments = <T extends Traits, U extends User>(
   user: U
 ): ResolveUser<T> => {
-  return (channelId,
-    id,
-    traits,
-    options,
-    callback): ReturnType<ResolveUser<T>> => {
+  return (...args): ReturnType<ResolveUser<T>> => {
+
+    /*
+    const values: {
+      id?: ID
+      traits?: T | null
+      options?: Options
+      callback?: Callback
+      } = {}
+     */
+
+    const x = args[1]
 
     return [
-      channelId,
-      id,
-      traits,
-      options,
-      callback,
+      args[0],
+      (args[1] ?? user.id()) as ID,
+      (args[2] ?? {}) as T ,
+      args[3] ?? {},
+      args[4],
     ];
 
     /*
@@ -142,11 +140,11 @@ export const resolveUserArguments = <T extends Traits, U extends User>(
 
 type ResolveUser<T extends Record<string, string>> = (
   channelId: string,
-  id: string, // ID | object,
-  traits: T, // | null, // Callback | null,
-  options?: Options, // | Callback,
+  id?: ID | object,
+  traits?: T | Callback | null,
+  options?: Options | Callback,
   callback?: Callback
-) => [string, string, T, Options | undefined, Callback | undefined]
+) => [string, ID, T, Options | undefined, Callback | undefined]
 
 export type IdentifyParams = Parameters<ResolveUser<UserTraits>>
 export type EventParams = Parameters<typeof resolveArguments>

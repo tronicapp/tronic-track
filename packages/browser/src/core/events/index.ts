@@ -3,7 +3,6 @@ import { dset } from 'dset'
 import { ID, User } from '../user'
 import {
   Options,
-  // Integrations,
   EventProperties,
   Traits,
   TronicEvent,
@@ -17,58 +16,56 @@ export class EventFactory {
   constructor(public user: User) {}
 
   track(
-    channelId: string,
-    userId: string,
-    event: string,
+    eventName: string,
+    channelId?: string,
     properties?: EventProperties,
-    // options?: Options,
-    // globalIntegrations?: Integrations,
+    options?: Options,
     pageCtx?: PageContext
   ): TronicEvent {
-    return this.normalize(
+    const event = this.normalize(
       {
         ...this.baseEvent(),
-        channelId,
-        userId,
-        event,
         type: 'track' as const,
-        properties,
-        // options: { ...options },
-        // integrations: { ...globalIntegrations },
+        event: eventName,
+        properties: properties ?? {}, // TODO: why is this not a shallow copy like everywhere else?
+        options: { ...options },
       },
       pageCtx
     )
+    if (channelId) {
+      event.channelId = channelId;
+    }
+    return event;
   }
 
   identify(
-    channelId: string,
-    userId: string,
-    traits?: Record<string, string>,
+    userId: ID,
+    channelId?: string,
+    traits?: Traits,
     options?: Options,
-    // globalIntegrations?: Integrations,
     pageCtx?: PageContext
   ): TronicEvent {
-    return this.normalize(
+    const event = this.normalize(
       {
-        channelId,
         ...this.baseEvent(),
         type: 'identify' as const,
         userId,
         traits,
-        // options: { ...options },
-        // integrations: { ...globalIntegrations },
+        options: { ...options },
       },
       pageCtx
     )
+    if (channelId) {
+      event.channelId = channelId;
+    }
+    return event;
   }
 
   private baseEvent(): Partial<TronicEvent> {
     const base: Partial<TronicEvent> = {
-      // integrations: {},
-      // options: {},
+      options: {},
     }
 
-      /*
     const user = this.user
 
     if (user.id()) {
@@ -78,7 +75,6 @@ export class EventFactory {
     if (user.anonymousId()) {
       base.anonymousId = user.anonymousId()
     }
-      */
 
     return base
   }
@@ -88,14 +84,13 @@ export class EventFactory {
    * are provided in the `Options` parameter for an Event
    */
   private context(event: TronicEvent): [object, object] {
-    const optionsKeys = ['integrations', 'anonymousId', 'timestamp', 'userId']
+    const optionsKeys = ['anonymousId', 'timestamp', 'userId']
 
-    const options: Record<string, any> = /* event.options ?? */ {}
-    // delete options['integrations']
+    const options: Record<string, any> = event.options ?? {}
 
     const providedOptionsKeys = Object.keys(options)
 
-    const context = /* event.options?.context ?? */ {}
+    const context = event.options?.context ?? {}
     const overrides: Record<string, any> = {}
 
     providedOptionsKeys.forEach((key) => {
@@ -114,45 +109,21 @@ export class EventFactory {
   }
 
   public normalize(event: TronicEvent, pageCtx?: PageContext): TronicEvent {
-    /*
+
     // set anonymousId globally if we encounter an override
 
     event.options?.anonymousId &&
       this.user.anonymousId(event.options.anonymousId)
 
-    const integrationBooleans = Object.keys(event.integrations ?? {}).reduce(
-      (integrationNames, name) => {
-        return {
-          ...integrationNames,
-          [name]: Boolean(event.integrations?.[name]),
-        }
-      },
-      {} as Record<string, boolean>
-    )
-
-    // This is pretty trippy, but here's what's going on:
-    // - a) We don't pass initial integration options as part of the event, only if they're true or false
-    // - b) We do accept per integration overrides (like integrations.Amplitude.sessionId) at the event level
-    // Hence the need to convert base integration options to booleans, but maintain per event integration overrides
-    const allIntegrations = {
-      // Base config integrations object as booleans
-      ...integrationBooleans,
-
-      // Per event overrides, for things like amplitude sessionId, for example
-      ...event.options?.integrations,
-    }
-     */
-
     const [context, overrides] = this.context(event)
-    const { /* options, */ ...rest } = event
+    const { options, ...rest } = event
 
     const newEvent: TronicEvent = {
       timestamp: new Date(),
       ...rest,
       context,
-      // integrations: allIntegrations,
       ...overrides,
-      // messageId: 'ajs-next-' + md5.hash(JSON.stringify(event) + uuid()),
+      messageId: 'tjs-' + md5.hash(JSON.stringify(event) + uuid()),
     }
     addPageContext(newEvent, pageCtx)
 

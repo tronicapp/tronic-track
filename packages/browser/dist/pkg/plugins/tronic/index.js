@@ -40,19 +40,22 @@ import { PersistedPriorityQueue } from '../../lib/priority-queue/persisted';
 import { toFacade } from '../../lib/to-facade';
 import batch from './batched-dispatcher';
 import standard from './fetch-dispatcher';
+import { normalize } from './normalize';
 import { scheduleFlush } from './schedule-flush';
 import { TRONIC_API_HOST } from '../../core/constants';
-function onAlias(receiver, json) {
-    var _a, _b, _c, _d;
-    var user = receiver.user();
-    json.previousId =
-        (_c = (_b = (_a = json.previousId) !== null && _a !== void 0 ? _a : json.from) !== null && _b !== void 0 ? _b : user.id()) !== null && _c !== void 0 ? _c : user.anonymousId();
-    json.userId = (_d = json.userId) !== null && _d !== void 0 ? _d : json.to;
-    delete json.from;
-    delete json.to;
-    return json;
+/*
+type JSON = ReturnType<Facade['json']>
+function onAlias(receiver: Receiver, json: JSON): JSON {
+  const user = receiver.user()
+  json.previousId =
+    json.previousId ?? json.from ?? user.id() ?? user.anonymousId()
+  json.userId = json.userId ?? json.to
+  delete json.from
+  delete json.to
+  return json
 }
-export function tronic(receiver, settings, integrations) {
+  */
+export function tronic(receiver, settings) {
     var _a, _b, _c;
     // Attach `pagehide` before buffer is created so that inflight events are added
     // to the buffer before the buffer persists events in its own `pagehide` handler.
@@ -75,7 +78,7 @@ export function tronic(receiver, settings, integrations) {
         : standard(writeKey, deliveryStrategy === null || deliveryStrategy === void 0 ? void 0 : deliveryStrategy.config);
     function send(ctx) {
         return __awaiter(this, void 0, void 0, function () {
-            var path, _json, json;
+            var path, json;
             return __generator(this, function (_a) {
                 if (isOffline()) {
                     buffer.push(ctx);
@@ -85,18 +88,21 @@ export function tronic(receiver, settings, integrations) {
                 }
                 inflightEvents.add(ctx);
                 path = 'external/' + ctx.event.type;
-                _json = toFacade(ctx.event).json();
-                if (ctx.event.type === 'track' || ctx.event.type === 'identify') {
-                    delete _json.type;
-                    delete _json.traits;
-                    delete _json.anonymousId;
-                    delete _json.sentAt;
-                    // delete _json.context
+                json = toFacade(ctx.event).json();
+                delete json.type;
+                delete json.messageId;
+                if (ctx.event.type === 'track') {
+                    delete json.traits;
+                    delete json.writeKey;
+                    delete json.sentAt;
                 }
-                json = _json;
-                // {"userId":"2XWyaIZf7Tm2uQqa8fYH6GC0oYl","event":"event0","properties":{"test":"property"},"channelId":"2XWyaIasy88a5SJMoLKpkDuDt2O","timestamp":"2023-10-31T18:28:57.818Z"};
+                /*
+                if (ctx.event.type === 'alias') {
+                  json = onAlias(receiver, json)
+                }
+                 */
                 return [2 /*return*/, client
-                        .dispatch("".concat(remote, "/").concat(path), json)
+                        .dispatch("".concat(remote, "/").concat(path), normalize(receiver, json, settings))
                         .then(function () { return ctx; })
                         .catch(function () {
                         buffer.pushWithBackoff(ctx);

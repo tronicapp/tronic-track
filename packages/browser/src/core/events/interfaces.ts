@@ -2,7 +2,7 @@ import {
   CoreOptions,
   CoreEvent,
   Callback,
-  Integrations,
+  // Integrations,
   Plan,
   TrackPlan,
   PlanEvent,
@@ -24,7 +24,7 @@ export type EventProperties = Record<string, any>
 export interface TronicEvent extends CoreEvent {}
 
 export type {
-  Integrations,
+  // Integrations,
   Plan,
   TrackPlan,
   PlanEvent,

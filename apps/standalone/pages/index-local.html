@@ -1,5 +1,4 @@
 <html>
-
 <head>
   <style>
     body {
@@ -17,10 +16,11 @@
       min-height: 200px;
       min-width: 700px;
     }
+
   </style>
 
   <form method="get">
-     <input type="text" name="writeKey" value="" placeholder="Writekey" />
+    <input type="text" name="writeKey" value="" placeholder="Writekey" />
     <button>Load</button>
   </form>
 
@@ -30,8 +30,6 @@
     document.querySelector("input").value = writeKey;
 
     if (writeKey) {
-      console.profile('snippet')
-      console.time('snippet')
       !(function () {
         var receiver = (window.receiver = window.receiver || [])
         if (!receiver.initialize)
@@ -80,7 +78,7 @@
             receiver.SNIPPET_VERSION = '0.0.1'
             receiver._writeKey = writeKey
             receiver.load('', {
-              integrations: {
+              pluginSettings: {
                 'Tronic': {
                   apiKey: writeKey,
                   apiHost: 'dev-api.tronic.app',
@@ -100,7 +98,6 @@
         <textarea name="trackEvent" id="trackEvent">
 {
   "channelId": "2YUflBOLovgzw89JNtkxup30q5T",
-  "userId": "2WffqQkUnMk5qM5y90fGlzcPDAv",
   "name": "event0",
   "properties": { "test": "yes" },
   "options": { }
@@ -129,38 +126,46 @@
   <pre id="logs"></pre>
 
   <script type="text/javascript">
+
+    function writeToLog(str) {
+      document.querySelector('#logs').textContent = str;
+    }
+
     if (window.receiver) {
       window.receiver.ready(function onReady() {
-        console.profileEnd('snippet')
-        console.timeEnd('snippet')
         document.querySelector('#ready-logs').textContent = 'ready!'
       })
 
-      document.querySelector('#track').addEventListener('click', function (e) {
+      document.querySelector('#track').addEventListener('click', async function (e) {
+
         e.preventDefault()
+
         var contents = document.querySelector('#trackEvent').value
         var evt = JSON.parse(contents)
-        console.profile('track')
-        console.time('track')
-        var promise = window.receiver.track(
-          evt.channelId || '',
-          evt.userId || '',
-          evt.name || '',
-          evt.properties || {},
-        )
 
-        promise &&
-          promise.then &&
-          promise.then(function (ctx) {
-            console.timeEnd('track')
-            console.profileEnd('track')
-            ctx.flush()
-            document.querySelector('#logs').textContent = JSON.stringify(
-              ctx.event,
-              null,
-              '  '
-            )
-          })
+        try {
+
+          var ctx = await window.receiver.track(
+            evt.name,
+            evt.channelId,
+            evt.properties || {},
+          )
+
+          ctx.flush()
+
+          writeToLog(JSON.stringify(
+            ctx.event,
+            null,
+            '  '
+          ))
+
+        } catch (err) {
+
+          writeToLog(err);
+
+        } finally {
+        }
+
       })
 
       document
@@ -169,7 +174,6 @@
           e.preventDefault()
           var contents = document.querySelector('#identifyEvent').value
           var evt = JSON.parse(contents)
-          console.time('identify')
           var promise = window.receiver.identify(
             evt.channelId || '',
             evt.userId || '',
@@ -180,7 +184,6 @@
           promise &&
             promise.then &&
             promise.then(function (ctx) {
-              console.timeEnd('identify')
               ctx.flush()
               document.querySelector('#logs').textContent = JSON.stringify(
                 ctx.event,

@@ -1,5 +1,4 @@
 import { Receiver } from '../../core/receiver';
-import { LegacySettings } from '../../browser';
 import { Plugin } from '../../core/plugin';
 import { BatchingDispatchConfig } from './batched-dispatcher';
 import { StandardDispatcherConfig } from './fetch-dispatcher';
@@ -14,13 +13,8 @@ export type TronicSettings = {
     apiKey: string;
     apiHost?: string;
     protocol?: 'http' | 'https';
-    addBundledMetadata?: boolean;
-    unbundledIntegrations?: string[];
-    bundledConfigIds?: string[];
-    unbundledConfigIds?: string[];
-    maybeBundledConfigIds?: Record<string, string[]>;
     deliveryStrategy?: DeliveryStrategy;
 };
-export declare function tronic(receiver: Receiver, settings?: TronicSettings, integrations?: LegacySettings['integrations']): Plugin;
+export declare function tronic(receiver: Receiver, settings?: TronicSettings): Plugin;
 export {};
 //# sourceMappingURL=index.d.ts.map
