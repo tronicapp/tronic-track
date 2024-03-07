@@ -14,7 +14,10 @@ export function normalize(
   // json.writeKey = settings?.apiKey
 
   json.userId = json.userId || user.id()
-  json.anonymousId = json.anonymousId || user.anonymousId()
+  if (json.userId) {
+    delete json.anonymousId
+    json.anonymousId = json.anonymousId || user.anonymousId()
+  }
 
   // json.sentAt = new Date()
 

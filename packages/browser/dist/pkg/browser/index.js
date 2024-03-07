@@ -289,7 +289,7 @@ options, preInitBuffer) {
                     search = (_b = window.location.search) !== null && _b !== void 0 ? _b : '';
                     hash = (_c = window.location.hash) !== null && _c !== void 0 ? _c : '';
                     term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '');
-                    if (!term.includes('ajs_')) return [3 /*break*/, 3];
+                    if (!term.includes('rjs_')) return [3 /*break*/, 3];
                     return [4 /*yield*/, receiver.queryString(term).catch(console.error)];
                 case 2:
                     _d.sent();

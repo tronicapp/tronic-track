@@ -313,7 +313,7 @@ export class ReceiverBuffered
   }
 
   // trackSubmit = this._createMethod('trackSubmit')
-  // trackClick = this._createMethod('trackClick')
+    // trackClick = this._createMethod('trackClick')
   // trackLink = this._createMethod('trackLink')
   // pageView = this._createMethod('pageview')
   identify = this._createMethod('identify')

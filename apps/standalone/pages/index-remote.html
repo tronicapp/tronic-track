@@ -1,5 +1,4 @@
 <html>
-
 <head>
   <style>
     body {
@@ -21,7 +20,7 @@
   </style>
 
   <form method="get">
-    <input type="text" name="writeKey" placeholder="Writekey" />
+    <input type="text" name="writeKey" value="" placeholder="Writekey" />
     <button>Load</button>
   </form>
 
@@ -31,18 +30,19 @@
     document.querySelector("input").value = writeKey;
 
     if (writeKey) {
-      console.profile('snippet')
-      console.time('snippet')
       !(function () {
         var receiver = (window.receiver = window.receiver || [])
         if (!receiver.initialize)
           if (receiver.invoked)
             window.console &&
               console.error &&
-              console.error('Tronic receiver included twice.')
+              console.error('Tronic snippet included twice.')
           else {
             receiver.invoked = !0
             receiver.methods = [
+              'screen',
+              'register',
+              'deregister',
               'trackSubmit',
               'trackClick',
               'trackLink',
@@ -66,13 +66,11 @@
               receiver[key] = receiver.factory(key)
             }
             receiver.load = function (key, e) {
+              // key was used in t.src...
               var t = document.createElement('script')
               t.type = 'text/javascript'
               t.async = !0
               t.src = 'https://cdn.jsdelivr.net/gh/tronicapp/tronic-track@latest/packages/browser/dist/umd/standalone.js'
-              // 'https://cdn.tronic.com/receiver.js/v1/' +
-              // writeKey +
-              // '/receiver.min.js'
               var n = document.getElementsByTagName('script')[0]
               n.parentNode.insertBefore(t, n)
               receiver._loadOptions = e
@@ -80,7 +78,7 @@
             receiver.SNIPPET_VERSION = '0.0.1'
             receiver._writeKey = writeKey
             receiver.load('', {
-              integrations: {
+              pluginSettings: {
                 'Tronic': {
                   apiKey: writeKey,
                   apiHost: 'dev-api.tronic.app',
@@ -100,7 +98,6 @@
         <textarea name="trackEvent" id="trackEvent">
 {
   "channelId": "2YUflBOLovgzw89JNtkxup30q5T",
-  "userId": "2WffqQkUnMk5qM5y90fGlzcPDAv",
   "name": "event0",
   "properties": { "test": "yes" },
   "options": { }
@@ -129,56 +126,71 @@
   <pre id="logs"></pre>
 
   <script type="text/javascript">
+
+    function writeToLog(str) {
+      document.querySelector('#logs').textContent = str;
+    }
+
     if (window.receiver) {
       window.receiver.ready(function onReady() {
-        console.profileEnd('snippet')
-        console.timeEnd('snippet')
         document.querySelector('#ready-logs').textContent = 'ready!'
       })
 
-      document.querySelector('#track').addEventListener('click', async (e) => {
-        e.preventDefault()
-        const contents = document.querySelector('#trackEvent').value
-        const evt = JSON.parse(contents)
-        const promise = window.receiver.track(
-          evt.channelId || '',
-          evt.userId || '',
-          evt.name ?? '',
-          evt.properties ?? {},
-          evt.options ?? {}
-        )
+      document.querySelector('#track').addEventListener('click', async function (e) {
 
-        promise?.then((ctx) => {
+        e.preventDefault()
+
+        var contents = document.querySelector('#trackEvent').value
+        var evt = JSON.parse(contents)
+
+        try {
+
+          var ctx = await window.receiver.track(
+            evt.name,
+            evt.channelId,
+            evt.properties || {},
+          )
+
           ctx.flush()
-          document.querySelector('#logs').textContent = JSON.stringify(
+
+          writeToLog(JSON.stringify(
             ctx.event,
             null,
             '  '
-          )
-        })
+          ))
+
+        } catch (err) {
+
+          writeToLog(err);
+
+        } finally {
+        }
+
       })
 
       document
         .querySelector('#identify')
-        .addEventListener('click', async (e) => {
+        .addEventListener('click', function (e) {
           e.preventDefault()
-          const contents = document.querySelector('#identifyEvent').value
-          const evt = JSON.parse(contents)
-          const promise = window.receiver.identify(
+          var contents = document.querySelector('#identifyEvent').value
+          var evt = JSON.parse(contents)
+          var promise = window.receiver.identify(
             evt.channelId || '',
             evt.userId || '',
             evt.traits || {},
             evt.options || {},
           )
 
-          promise?.then((ctx) => {
-            ctx.flush()
-            document.querySelector('#logs').textContent = JSON.stringify(
-              ctx.event,
-              null,
-              '  '
-            )
-          })
+          promise &&
+            promise.then &&
+            promise.then(function (ctx) {
+              ctx.flush()
+              document.querySelector('#logs').textContent = JSON.stringify(
+                ctx.event,
+                null,
+                '  '
+              )
+            })
         })
     }
   </script>

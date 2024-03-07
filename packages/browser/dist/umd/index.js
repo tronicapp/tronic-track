@@ -2904,7 +2904,7 @@ function dset(obj, keys, val) {
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = function(chunkId) {
 /******/ 			// return url for filenames based on template
-/******/ 			return "" + {"96":"queryString","119":"auto-track"}[chunkId] + ".bundle." + {"96":"35511edd91b384c499b3","119":"551b24328bb3e8c917f0"}[chunkId] + ".js";
+/******/ 			return "" + {"96":"queryString","119":"auto-track"}[chunkId] + ".bundle." + {"96":"09943f895fe69bb55f77","119":"551b24328bb3e8c917f0"}[chunkId] + ".js";
 /******/ 		};
 /******/ 	}();
 /******/ 	
@@ -5390,11 +5390,11 @@ var user_assign = (undefined && undefined.__assign) || function () {
 var defaults = {
     persist: true,
     cookie: {
-        key: 'ajs_user_id',
-        oldKey: 'ajs_user',
+        key: 'rjs_user_id',
+        oldKey: 'rjs_user',
     },
     localStorage: {
-        key: 'ajs_user_traits',
+        key: 'rjs_user_traits',
     },
 };
 var User = /** @class */ (function () {
@@ -5456,7 +5456,7 @@ var User = /** @class */ (function () {
         this.cookieOptions = cookieOptions;
         this.idKey = (_b = (_a = options.cookie) === null || _a === void 0 ? void 0 : _a.key) !== null && _b !== void 0 ? _b : defaults.cookie.key;
         this.traitsKey = (_d = (_c = options.localStorage) === null || _c === void 0 ? void 0 : _c.key) !== null && _d !== void 0 ? _d : defaults.localStorage.key;
-        this.anonKey = 'ajs_anonymous_id';
+        this.anonKey = 'rjs_anonymous_id';
         this.identityStore = this.createStorage(this.options, cookieOptions);
         // using only cookies for legacy user store
         this.legacyUserStore = this.createStorage(this.options, cookieOptions, function (s) { return s === StoreType.Cookie; });
@@ -5552,10 +5552,10 @@ var User = /** @class */ (function () {
 var groupDefaults = {
     persist: true,
     cookie: {
-        key: 'ajs_group_id',
+        key: 'rjs_group_id',
     },
     localStorage: {
-        key: 'ajs_group_properties',
+        key: 'rjs_group_properties',
     },
 };
 var Group = /** @class */ (function (_super) {
@@ -7230,7 +7230,10 @@ function normalize(receiver, json, settings) {
     delete json.options;
     // json.writeKey = settings?.apiKey
     json.userId = json.userId || user.id();
-    json.anonymousId = json.anonymousId || user.anonymousId();
+    if (json.userId) {
+        delete json.anonymousId;
+        json.anonymousId = json.anonymousId || user.anonymousId();
+    }
     // json.sentAt = new Date()
     /*
   const failed = receiver.queue.failedInitializations || []
@@ -7498,9 +7501,9 @@ function tronic(receiver, settings) {
                 inflightEvents.add(ctx);
                 path = 'external/' + ctx.event.type;
                 json = (0,to_facade/* toFacade */.D)(ctx.event).json();
+                delete json.type;
+                delete json.messageId;
                 if (ctx.event.type === 'track') {
-                    delete json.type;
-                    delete json.messageId;
                     delete json.traits;
                     delete json.writeKey;
                     delete json.sentAt;
@@ -7954,7 +7957,7 @@ options, preInitBuffer) {
                     search = (_b = window.location.search) !== null && _b !== void 0 ? _b : '';
                     hash = (_c = window.location.hash) !== null && _c !== void 0 ? _c : '';
                     term = search.length ? search : hash.replace(/(?=#).*(?=\?)/, '');
-                    if (!term.includes('ajs_')) return [3 /*break*/, 3];
+                    if (!term.includes('rjs_')) return [3 /*break*/, 3];
                     return [4 /*yield*/, receiver.queryString(term).catch(console.error)];
                 case 2:
                     _d.sent();

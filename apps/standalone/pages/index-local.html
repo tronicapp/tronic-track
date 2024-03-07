@@ -1,5 +1,4 @@
 <html>
-
 <head>
   <style>
     body {
@@ -31,8 +30,6 @@
     document.querySelector("input").value = writeKey;
 
     if (writeKey) {
-      console.profile('snippet')
-      console.time('snippet')
       !(function () {
         var receiver = (window.receiver = window.receiver || [])
         if (!receiver.initialize)
@@ -101,7 +98,6 @@
         <textarea name="trackEvent" id="trackEvent">
 {
   "channelId": "2YUflBOLovgzw89JNtkxup30q5T",
-  "userId": "2WffqQkUnMk5qM5y90fGlzcPDAv",
   "name": "event0",
   "properties": { "test": "yes" },
   "options": { }
@@ -137,8 +133,6 @@
 
     if (window.receiver) {
       window.receiver.ready(function onReady() {
-        console.profileEnd('snippet')
-        console.timeEnd('snippet')
         document.querySelector('#ready-logs').textContent = 'ready!'
       })
 
@@ -148,9 +142,6 @@
 
         var contents = document.querySelector('#trackEvent').value
         var evt = JSON.parse(contents)
-
-        // console.profile('track')
-        // console.time('track')
 
         try {
 
@@ -173,8 +164,6 @@
           writeToLog(err);
 
         } finally {
-          // console.timeEnd('track')
-          // console.profileEnd('track')
         }
 
       })
@@ -185,7 +174,6 @@
           e.preventDefault()
           var contents = document.querySelector('#identifyEvent').value
           var evt = JSON.parse(contents)
-          console.time('identify')
           var promise = window.receiver.identify(
             evt.channelId || '',
             evt.userId || '',
@@ -196,7 +184,6 @@
           promise &&
             promise.then &&
             promise.then(function (ctx) {
-              console.timeEnd('identify')
               ctx.flush()
               document.querySelector('#logs').textContent = JSON.stringify(
                 ctx.event,
