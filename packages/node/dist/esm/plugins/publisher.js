@@ -6,9 +6,7 @@ function sleep(timeoutInMs) {
     return new Promise((resolve) => setTimeout(resolve, timeoutInMs));
 }
 function noop() { }
-/**
- * The Publisher is responsible for batching events and sending them to the Tronic API.
- */
+// The Publisher is responsible for batching events and sending them to the Tronic API.
 export class Publisher {
     constructor({ host, path, maxRetries, maxEventsInBatch, flushInterval, writeKey, httpRequestTimeout, httpClient, disable, }, emitter) {
         this._emitter = emitter;

@@ -68,15 +68,13 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
     return version
   }
 
-  /**
-   * Call this method to stop collecting new events and flush all existing events.
-   * This method also waits for any event method-specific callbacks to be triggered,
-   * and any of their subsequent promises to be resolved/rejected.
-   */
+  // Call this method to stop collecting new events and flush all existing events.
+  // This method also waits for any event method-specific callbacks to be triggered,
+  // and any of their subsequent promises to be resolved/rejected.
   public closeAndFlush({
     timeout = this._closeAndFlushDefaultTimeout,
   }: {
-    /** Set a maximum time permitted to wait before resolving. */
+    // Set a maximum time permitted to wait before resolving.
     timeout?: number
   } = {}): Promise<void> {
     this._publisher.flushAfterClose(this._pendingEvents)
@@ -110,9 +108,7 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
       })
   }
 
-  /**
-   * Includes a unique userId and (maybe anonymousId) and any optional traits you know about them.
-   */
+  // Includes a unique userId and (maybe anonymousId) and any optional traits you know about them.
   identify(
     {
       channelId,
@@ -121,51 +117,46 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
       traits = {},
       context,
       timestamp,
-      integrations,
+      // integrations,
     }: IdentifyParams,
     callback?: Callback
   ): void {
-    const tronicEvent = this._eventFactory.identify(channelId, userId, traits, /* {
+    const tronicEvent = this._eventFactory.identify(channelId, userId, traits, {
       context,
       anonymousId,
       userId,
       timestamp,
-      integrations,
-      }*/)
+      // integrations,
+    })
     this._dispatch(tronicEvent, callback)
   }
 
-  /**
-   * Records actions your users perform.
-   */
+  // Records actions your users perform.
   track(
     {
       channelId,
       userId,
-      // anonymousId,
+      anonymousId,
       event,
       properties,
-      // context,
-      // timestamp,
+      context,
+      timestamp,
       // integrations,
     }: TrackParams,
     callback?: Callback
   ): void {
-    const tronicEvent = this._eventFactory.track(channelId, userId, event, properties, /* {
+    const tronicEvent = this._eventFactory.track(channelId, event, properties, {
       context,
       userId,
-      // anonymousId,
+      anonymousId,
       timestamp,
       // integrations,
-      }*/)
+      })
 
     this._dispatch(tronicEvent, callback)
   }
 
-  /**
-   * Registers one or more plugins to augment Receiver functionality.
-   * @param plugins
-   */
+  // Registers one or more plugins to augment Receiver functionality.
   register(...plugins: Plugin[]): Promise<void> {
     return this._queue.criticalTasks.run(async () => {
       const ctx = Context.system()
@@ -181,10 +172,7 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
     })
   }
 
-  /**
-   * Deregisters one or more plugins based on their names.
-   * @param pluginNames - The names of one or more plugins to deregister.
-   */
+  // Deregisters one or more plugins based on their names.
   async deregister(...pluginNames: string[]): Promise<void> {
     const ctx = Context.system()
 

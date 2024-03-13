@@ -39,11 +39,9 @@ export class Receiver extends NodeEmitter {
     get VERSION() {
         return version;
     }
-    /**
-     * Call this method to stop collecting new events and flush all existing events.
-     * This method also waits for any event method-specific callbacks to be triggered,
-     * and any of their subsequent promises to be resolved/rejected.
-     */
+    // Call this method to stop collecting new events and flush all existing events.
+    // This method also waits for any event method-specific callbacks to be triggered,
+    // and any of their subsequent promises to be resolved/rejected.
     closeAndFlush({ timeout = this._closeAndFlushDefaultTimeout, } = {}) {
         this._publisher.flushAfterClose(this._pendingEvents);
         this._isClosed = true;
@@ -72,30 +70,33 @@ export class Receiver extends NodeEmitter {
             }
         });
     }
-    /**
-     * Includes a unique userId and (maybe anonymousId) and any optional traits you know about them.
-     */
-    identify({ channelId, userId, anonymousId, traits = {}, context, timestamp, integrations, }, callback) {
-        const tronicEvent = this._eventFactory.identify(channelId, userId, traits);
-        this._dispatch(tronicEvent, callback);
-    }
-    /**
-     * Records actions your users perform.
-     */
-    track({ channelId, userId, 
-    // anonymousId,
-    event, properties,
-    // context,
-    // timestamp,
+    // Includes a unique userId and (maybe anonymousId) and any optional traits you know about them.
+    identify({ channelId, userId, anonymousId, traits = {}, context, timestamp,
     // integrations,
      }, callback) {
-        const tronicEvent = this._eventFactory.track(channelId, userId, event, properties);
+        const tronicEvent = this._eventFactory.identify(channelId, userId, traits, {
+            context,
+            anonymousId,
+            userId,
+            timestamp,
+            // integrations,
+        });
         this._dispatch(tronicEvent, callback);
     }
-    /**
-     * Registers one or more plugins to augment Receiver functionality.
-     * @param plugins
-     */
+    // Records actions your users perform.
+    track({ channelId, userId, anonymousId, event, properties, context, timestamp,
+    // integrations,
+     }, callback) {
+        const tronicEvent = this._eventFactory.track(channelId, event, properties, {
+            context,
+            userId,
+            anonymousId,
+            timestamp,
+            // integrations,
+        });
+        this._dispatch(tronicEvent, callback);
+    }
+    // Registers one or more plugins to augment Receiver functionality.
     register(...plugins) {
         return this._queue.criticalTasks.run(async () => {
             const ctx = Context.system();
@@ -104,10 +105,7 @@ export class Receiver extends NodeEmitter {
             this.emit('register', plugins.map((el) => el.name));
         });
     }
-    /**
-     * Deregisters one or more plugins based on their names.
-     * @param pluginNames - The names of one or more plugins to deregister.
-     */
+    // Deregisters one or more plugins based on their names.
     async deregister(...pluginNames) {
         const ctx = Context.system();
         const deregistrations = pluginNames.map((pl) => {

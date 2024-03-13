@@ -3227,9 +3227,7 @@ function resolveArguments(eventOrEventName, channelId, properties, options, call
     var cb = args.find(helpers/* isFunction */.mf);
     return [name, channelId, data, opts, cb];
 }
-/**
- * Helper for group, identify methods
- */
+// Helper for group, identify methods
 var resolveUserArguments = function (user) {
     return function () {
         /*

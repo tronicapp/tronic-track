@@ -11,7 +11,7 @@ const normalizeDispatchCb = (cb: Callback) => (ctx: Context) => {
   return failedDelivery ? cb(failedDelivery.reason, ctx) : cb(undefined, ctx)
 }
 
-/* Dispatch function, but swallow promise rejections and use event emitter instead */
+// Dispatch function, but swallow promise rejections and use event emitter instead
 export const dispatchAndEmit = async (
   event: TronicEvent,
   queue: NodeEventQueue,

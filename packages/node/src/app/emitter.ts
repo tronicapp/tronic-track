@@ -3,9 +3,7 @@ import { Context } from './context'
 import type { ReceiverSettings } from './settings'
 import { TronicEvent } from './types'
 
-/**
- * Map of emitter event names to method args.
- */
+// Map of emitter event names to method args.
 export type NodeEmitterEvents = CoreEmitterContract<Context> & {
   initialize: [ReceiverSettings]
   call_after_close: [TronicEvent] // any event that did not get dispatched due to close

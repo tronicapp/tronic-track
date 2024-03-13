@@ -12,9 +12,6 @@ export interface PublisherProps {
     disable?: boolean;
     httpClient: HTTPClient;
 }
-/**
- * The Publisher is responsible for batching events and sending them to the Tronic API.
- */
 export declare class Publisher {
     private pendingFlushTimeout?;
     private _batch?;
