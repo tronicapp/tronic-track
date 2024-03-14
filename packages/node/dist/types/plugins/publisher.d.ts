@@ -29,11 +29,6 @@ export declare class Publisher {
     private createBatch;
     private clearBatch;
     flushAfterClose(pendingItemsCount: number): void;
-    /**
-     * Enqueues the context for future delivery.
-     * @param ctx - Context containing a Tronic event.
-     * @returns a promise that resolves with the context after the event has been delivered.
-     */
     enqueue(ctx: Context): Promise<Context>;
     private send;
 }

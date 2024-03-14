@@ -19,7 +19,7 @@ class Receiver extends emitter_1.NodeEmitter {
         (0, settings_1.validateSettings)(settings);
         this._eventFactory = new event_factory_1.NodeEventFactory();
         this._queue = new event_queue_1.NodeEventQueue();
-        console.log('rn0::0');
+        // console.log('rn0::0');
         const flushInterval = settings.flushInterval ?? 10000;
         this._closeAndFlushDefaultTimeout = flushInterval * 1.25; // add arbitrary multiplier in case an event is in a plugin.
         const { plugin, publisher } = (0, plugins_1.createConfiguredNodePlugin)({
@@ -35,12 +35,12 @@ class Receiver extends emitter_1.NodeEmitter {
                 ? new http_client_1.FetchHTTPClient(settings.httpClient)
                 : settings.httpClient ?? new http_client_1.FetchHTTPClient(),
         }, this);
-        console.log('rn0::1');
+        // console.log('rn0::1');
         this._publisher = publisher;
         this.ready = this.register(plugin).then(() => undefined);
-        console.log('rn0::2');
+        // console.log('rn0::2');
         this.emit('initialize', settings);
-        console.log('rn0::3');
+        // console.log('rn0::3');
         (0, receiver_core_1.bindAll)(this);
     }
     get VERSION() {
@@ -78,31 +78,25 @@ class Receiver extends emitter_1.NodeEmitter {
         });
     }
     // Includes a unique userId and (maybe anonymousId) and any optional traits you know about them.
-    identify({ channelId, userId, anonymousId, traits = {}, context, timestamp,
-    // integrations,
-     }, callback) {
+    identify({ channelId, userId, anonymousId, traits = {}, context, timestamp, }, callback) {
         const tronicEvent = this._eventFactory.identify(channelId, userId, traits, {
             context,
             anonymousId,
             userId,
             timestamp,
-            // integrations,
         });
         this._dispatch(tronicEvent, callback);
     }
     // Records actions your users perform.
-    track({ channelId, userId, anonymousId, event, properties, context, timestamp,
-    // integrations,
-     }, callback) {
-        console.log('rn::track');
+    track({ channelId, userId, anonymousId, event, properties, context, timestamp, }, callback) {
+        // console.log('rn::track');
         const tronicEvent = this._eventFactory.track(channelId, event, properties, {
             context,
             userId,
             anonymousId,
             timestamp,
-            // integrations,
         });
-        console.log('rn::track::0', tronicEvent);
+        // console.log('rn::track::0', tronicEvent);
         this._dispatch(tronicEvent, callback);
     }
     // Registers one or more plugins to augment Receiver functionality.

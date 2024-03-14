@@ -45,7 +45,6 @@ var assertions_1 = require("../validation/assertions");
 // Unfortunately, there are some differences in the way the two environments handle events, so this is not currently shared.
 var EventFactory = /** @class */ (function () {
     function EventFactory(settings) {
-        console.log('xxx0');
         this.user = settings.user;
         this.createMessageId = settings.createMessageId;
     }
@@ -99,44 +98,20 @@ var EventFactory = /** @class */ (function () {
         return [context, eventOverrides];
     };
     EventFactory.prototype.normalize = function (event) {
-        console.log('normalize0', event);
-        /*
-        const integrationBooleans = Object.keys(event.integrations ?? {}).reduce(
-          (integrationNames, name) => {
-            return {
-              ...integrationNames,
-              [name]: Boolean(event.integrations?.[name]),
-            }
-          },
-          {} as Record<string, boolean>
-        )
-         */
+        // console.log('normalize0', event);
         // filter out any undefined options
         event.options = (0, pick_1.pickBy)(event.options || {}, function (_, value) {
             return value !== undefined;
         });
-        /*
-      // This is pretty trippy, but here's what's going on:
-      // - a) We don't pass initial integration options as part of the event, only if they're true or false
-      // - b) We do accept per integration overrides (like integrations.Amplitude.sessionId) at the event level
-      // Hence the need to convert base integration options to booleans, but maintain per event integration overrides
-      const allIntegrations = {
-        // Base config integrations object as booleans
-        ...integrationBooleans,
-    
-        // Per event overrides, for things like amplitude sessionId, for example
-        ...event.options?.integrations,
-      }
-       */
         var _a = event.options
             ? this.context(event.options)
             : [], context = _a[0], overrides = _a[1];
-        var options = event.options, rest = __rest(event, ["options"]);
-        console.log('normalize1', context, overrides, options, rest);
-        var body = __assign(__assign(__assign(__assign(__assign({}, event), { timestamp: new Date().toISOString() }), rest), { 
-            // integrations: allIntegrations,
-            context: context }), overrides);
-        console.log('normalize2', body);
+        var options = event.options, rest = __rest(event
+        // console.log('normalize1', context, overrides, options, rest);
+        , ["options"]);
+        // console.log('normalize1', context, overrides, options, rest);
+        var body = __assign(__assign(__assign(__assign(__assign({}, event), { timestamp: new Date().toISOString() }), rest), { context: context }), overrides);
+        // console.log('normalize2', body);
         var evt = __assign({}, body);
         (0, assertions_1.validateEvent)(evt);
         return evt;

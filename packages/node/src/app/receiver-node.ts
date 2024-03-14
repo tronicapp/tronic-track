@@ -126,7 +126,6 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
       traits = {},
       context,
       timestamp,
-      // integrations,
     }: IdentifyParams,
     callback?: Callback
   ): void {
@@ -135,7 +134,6 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
       anonymousId,
       userId,
       timestamp,
-      // integrations,
     })
     this._dispatch(tronicEvent, callback)
   }
@@ -150,7 +148,6 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
       properties,
       context,
       timestamp,
-      // integrations,
     }: TrackParams,
     callback?: Callback
   ): void {
@@ -160,7 +157,6 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
       userId,
       anonymousId,
       timestamp,
-      // integrations,
       })
     // console.log('rn::track::0', tronicEvent);
     this._dispatch(tronicEvent, callback)

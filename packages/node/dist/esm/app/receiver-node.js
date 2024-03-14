@@ -16,7 +16,7 @@ export class Receiver extends NodeEmitter {
         validateSettings(settings);
         this._eventFactory = new NodeEventFactory();
         this._queue = new NodeEventQueue();
-        console.log('rn0::0');
+        // console.log('rn0::0');
         const flushInterval = settings.flushInterval ?? 10000;
         this._closeAndFlushDefaultTimeout = flushInterval * 1.25; // add arbitrary multiplier in case an event is in a plugin.
         const { plugin, publisher } = createConfiguredNodePlugin({
@@ -32,12 +32,12 @@ export class Receiver extends NodeEmitter {
                 ? new FetchHTTPClient(settings.httpClient)
                 : settings.httpClient ?? new FetchHTTPClient(),
         }, this);
-        console.log('rn0::1');
+        // console.log('rn0::1');
         this._publisher = publisher;
         this.ready = this.register(plugin).then(() => undefined);
-        console.log('rn0::2');
+        // console.log('rn0::2');
         this.emit('initialize', settings);
-        console.log('rn0::3');
+        // console.log('rn0::3');
         bindAll(this);
     }
     get VERSION() {
@@ -75,31 +75,25 @@ export class Receiver extends NodeEmitter {
         });
     }
     // Includes a unique userId and (maybe anonymousId) and any optional traits you know about them.
-    identify({ channelId, userId, anonymousId, traits = {}, context, timestamp,
-    // integrations,
-     }, callback) {
+    identify({ channelId, userId, anonymousId, traits = {}, context, timestamp, }, callback) {
         const tronicEvent = this._eventFactory.identify(channelId, userId, traits, {
             context,
             anonymousId,
             userId,
             timestamp,
-            // integrations,
         });
         this._dispatch(tronicEvent, callback);
     }
     // Records actions your users perform.
-    track({ channelId, userId, anonymousId, event, properties, context, timestamp,
-    // integrations,
-     }, callback) {
-        console.log('rn::track');
+    track({ channelId, userId, anonymousId, event, properties, context, timestamp, }, callback) {
+        // console.log('rn::track');
         const tronicEvent = this._eventFactory.track(channelId, event, properties, {
             context,
             userId,
             anonymousId,
             timestamp,
-            // integrations,
         });
-        console.log('rn::track::0', tronicEvent);
+        // console.log('rn::track::0', tronicEvent);
         this._dispatch(tronicEvent, callback);
     }
     // Registers one or more plugins to augment Receiver functionality.
