@@ -35,42 +35,45 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventFactory = void 0;
+var uuid_1 = require("@lukeed/uuid");
 var dset_1 = require("dset");
+var spark_md5_1 = __importDefault(require("spark-md5"));
 var page_1 = require("../page");
 __exportStar(require("./interfaces"), exports);
 var EventFactory = /** @class */ (function () {
     function EventFactory(user) {
         this.user = user;
     }
-    EventFactory.prototype.track = function (channelId, userId, event, properties, 
-    // options?: Options,
-    // globalIntegrations?: Integrations,
-    pageCtx) {
-        return this.normalize(__assign(__assign({}, this.baseEvent()), { channelId: channelId, userId: userId, event: event, type: 'track', properties: properties }), pageCtx);
+    EventFactory.prototype.track = function (eventName, channelId, properties, options, pageCtx) {
+        var event = this.normalize(__assign(__assign({}, this.baseEvent()), { type: 'track', event: eventName, properties: properties !== null && properties !== void 0 ? properties : {}, options: __assign({}, options) }), pageCtx);
+        if (channelId) {
+            event.channelId = channelId;
+        }
+        return event;
     };
-    EventFactory.prototype.identify = function (channelId, userId, traits, options, 
-    // globalIntegrations?: Integrations,
-    pageCtx) {
-        return this.normalize(__assign(__assign({ channelId: channelId }, this.baseEvent()), { type: 'identify', userId: userId, traits: traits }), pageCtx);
+    EventFactory.prototype.identify = function (userId, channelId, traits, options, pageCtx) {
+        var event = this.normalize(__assign(__assign({}, this.baseEvent()), { type: 'identify', userId: userId, traits: traits, options: __assign({}, options) }), pageCtx);
+        if (channelId) {
+            event.channelId = channelId;
+        }
+        return event;
     };
     EventFactory.prototype.baseEvent = function () {
         var base = {
-        // integrations: {},
-        // options: {},
+            options: {},
         };
-        /*
-      const user = this.user
-  
-      if (user.id()) {
-        base.userId = user.id()
-      }
-  
-      if (user.anonymousId()) {
-        base.anonymousId = user.anonymousId()
-      }
-        */
+        var user = this.user;
+        if (user.id()) {
+            base.userId = user.id();
+        }
+        if (user.anonymousId()) {
+            base.anonymousId = user.anonymousId();
+        }
         return base;
     };
     /**
@@ -78,11 +81,11 @@ var EventFactory = /** @class */ (function () {
      * are provided in the `Options` parameter for an Event
      */
     EventFactory.prototype.context = function (event) {
-        var optionsKeys = ['integrations', 'anonymousId', 'timestamp', 'userId'];
-        var options = /* event.options ?? */ {};
-        // delete options['integrations']
+        var _a, _b, _c;
+        var optionsKeys = ['anonymousId', 'timestamp', 'userId'];
+        var options = (_a = event.options) !== null && _a !== void 0 ? _a : {};
         var providedOptionsKeys = Object.keys(options);
-        var context = /* event.options?.context ?? */ {};
+        var context = (_c = (_b = event.options) === null || _b === void 0 ? void 0 : _b.context) !== null && _c !== void 0 ? _c : {};
         var overrides = {};
         providedOptionsKeys.forEach(function (key) {
             if (key === 'context') {
@@ -98,37 +101,13 @@ var EventFactory = /** @class */ (function () {
         return [context, overrides];
     };
     EventFactory.prototype.normalize = function (event, pageCtx) {
-        /*
         // set anonymousId globally if we encounter an override
-    
-        event.options?.anonymousId &&
-          this.user.anonymousId(event.options.anonymousId)
-    
-        const integrationBooleans = Object.keys(event.integrations ?? {}).reduce(
-          (integrationNames, name) => {
-            return {
-              ...integrationNames,
-              [name]: Boolean(event.integrations?.[name]),
-            }
-          },
-          {} as Record<string, boolean>
-        )
-    
-        // This is pretty trippy, but here's what's going on:
-        // - a) We don't pass initial integration options as part of the event, only if they're true or false
-        // - b) We do accept per integration overrides (like integrations.Amplitude.sessionId) at the event level
-        // Hence the need to convert base integration options to booleans, but maintain per event integration overrides
-        const allIntegrations = {
-          // Base config integrations object as booleans
-          ...integrationBooleans,
-    
-          // Per event overrides, for things like amplitude sessionId, for example
-          ...event.options?.integrations,
-        }
-         */
-        var _a = this.context(event), context = _a[0], overrides = _a[1];
-        var /* options, */ rest = __rest(event, []);
-        var newEvent = __assign(__assign(__assign({ timestamp: new Date() }, rest), { context: context }), overrides);
+        var _a;
+        ((_a = event.options) === null || _a === void 0 ? void 0 : _a.anonymousId) &&
+            this.user.anonymousId(event.options.anonymousId);
+        var _b = this.context(event), context = _b[0], overrides = _b[1];
+        var options = event.options, rest = __rest(event, ["options"]);
+        var newEvent = __assign(__assign(__assign(__assign({ timestamp: new Date() }, rest), { context: context }), overrides), { messageId: 'tjs-' + spark_md5_1.default.hash(JSON.stringify(event) + (0, uuid_1.v4)()) });
         (0, page_1.addPageContext)(newEvent, pageCtx);
         return newEvent;
     };

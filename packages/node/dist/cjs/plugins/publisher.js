@@ -9,9 +9,7 @@ function sleep(timeoutInMs) {
     return new Promise((resolve) => setTimeout(resolve, timeoutInMs));
 }
 function noop() { }
-/**
- * The Publisher is responsible for batching events and sending them to the Tronic API.
- */
+// The Publisher is responsible for batching events and sending them to the Tronic API.
 class Publisher {
     constructor({ host, path, maxRetries, maxEventsInBatch, flushInterval, writeKey, httpRequestTimeout, httpClient, disable, }, emitter) {
         this._emitter = emitter;
@@ -132,8 +130,12 @@ class Publisher {
                 }
                 const event = { ...events[0] };
                 const data = { ...event };
+                console.log('publisher::data::0', data);
                 delete data['type'];
+                delete data['options'];
                 delete data['_metadata'];
+                console.log('publisher::data::1', data);
+                console.log('publisher::url', this._url + `/${event.type}`, data, this._auth);
                 const request = {
                     url: this._url + `/${event.type}`,
                     method: 'POST',

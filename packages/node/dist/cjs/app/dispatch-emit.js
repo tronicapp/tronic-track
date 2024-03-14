@@ -7,7 +7,7 @@ const normalizeDispatchCb = (cb) => (ctx) => {
     const failedDelivery = ctx.failedDelivery();
     return failedDelivery ? cb(failedDelivery.reason, ctx) : cb(undefined, ctx);
 };
-/* Dispatch function, but swallow promise rejections and use event emitter instead */
+// Dispatch function, but swallow promise rejections and use event emitter instead
 const dispatchAndEmit = async (event, queue, emitter, callback) => {
     try {
         const context = new context_1.Context(event);

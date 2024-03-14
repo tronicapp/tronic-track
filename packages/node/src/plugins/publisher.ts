@@ -4,7 +4,7 @@ import { tryCreateFormattedUrl } from '../lib/create-url'
 import { extractPromiseParts } from '../lib/extract-promise-parts'
 import { ContextBatch } from './context-batch'
 import { NodeEmitter } from '../app/emitter'
-import { b64encode } from '../lib/base-64-encode'
+// import { b64encode } from '../lib/base-64-encode'
 import { HTTPClient, HTTPClientRequest } from '../lib/http-client'
 
 function sleep(timeoutInMs: number): Promise<void> {
@@ -199,8 +199,16 @@ export class Publisher {
         const event = {...events[0]};
 
         const data: any = {...event};
+
+        // console.log('publisher::data::0', data);
+
         delete data['type'];
+        delete data['options'];
         delete data['_metadata'];
+
+        // console.log('publisher::data::1', data);
+
+        // console.log('publisher::url', this._url + `/${event.type}`, data, this._auth);
 
         const request: HTTPClientRequest = {
           url: this._url + `/${event.type}`,

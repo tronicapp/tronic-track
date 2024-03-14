@@ -47,13 +47,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.remoteLoader = exports.ActionDestination = void 0;
+exports.remoteLoader = exports.RemoteDestinationPlugin = void 0;
 var load_script_1 = require("../../lib/load-script");
 var parse_cdn_1 = require("../../lib/parse-cdn");
 var middleware_1 = require("../middleware");
 var context_1 = require("../../core/context");
-var ActionDestination = /** @class */ (function () {
-    function ActionDestination(name, action) {
+var RemoteDestinationPlugin = /** @class */ (function () {
+    function RemoteDestinationPlugin(name, action) {
         this.version = '1.0.0';
         this.alternativeNames = [];
         this.middleware = [];
@@ -64,7 +64,7 @@ var ActionDestination = /** @class */ (function () {
         this.type = action.type;
         this.alternativeNames.push(action.name);
     }
-    ActionDestination.prototype.addMiddleware = function () {
+    RemoteDestinationPlugin.prototype.addMiddleware = function () {
         var _a;
         var fn = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -74,7 +74,7 @@ var ActionDestination = /** @class */ (function () {
             (_a = this.middleware).push.apply(_a, fn);
         }
     };
-    ActionDestination.prototype.transform = function (ctx) {
+    RemoteDestinationPlugin.prototype.transform = function (ctx) {
         return __awaiter(this, void 0, void 0, function () {
             var modifiedEvent;
             return __generator(this, function (_a) {
@@ -93,7 +93,7 @@ var ActionDestination = /** @class */ (function () {
             });
         });
     };
-    ActionDestination.prototype._createMethod = function (methodName) {
+    RemoteDestinationPlugin.prototype._createMethod = function (methodName) {
         var _this = this;
         return function (ctx) { return __awaiter(_this, void 0, void 0, function () {
             var transformedContext;
@@ -116,23 +116,23 @@ var ActionDestination = /** @class */ (function () {
             });
         }); };
     };
-    /* --- PASSTHROUGH METHODS --- */
-    ActionDestination.prototype.isLoaded = function () {
+    // --- PASSTHROUGH METHODS ---
+    RemoteDestinationPlugin.prototype.isLoaded = function () {
         return this.action.isLoaded();
     };
-    ActionDestination.prototype.ready = function () {
+    RemoteDestinationPlugin.prototype.ready = function () {
         return this.action.ready ? this.action.ready() : Promise.resolve();
     };
-    ActionDestination.prototype.load = function (ctx, receiver) {
+    RemoteDestinationPlugin.prototype.load = function (ctx, receiver) {
         return this.action.load(ctx, receiver);
     };
-    ActionDestination.prototype.unload = function (ctx, receiver) {
+    RemoteDestinationPlugin.prototype.unload = function (ctx, receiver) {
         var _a, _b;
         return (_b = (_a = this.action).unload) === null || _b === void 0 ? void 0 : _b.call(_a, ctx, receiver);
     };
-    return ActionDestination;
+    return RemoteDestinationPlugin;
 }());
-exports.ActionDestination = ActionDestination;
+exports.RemoteDestinationPlugin = RemoteDestinationPlugin;
 function validate(pluginLike) {
     if (!Array.isArray(pluginLike)) {
         throw new Error('Not a valid list of plugins');
@@ -148,19 +148,28 @@ function validate(pluginLike) {
     });
     return true;
 }
-function isPluginDisabled(userIntegrations, remotePlugin) {
-    var creationNameEnabled = userIntegrations[remotePlugin.creationName];
-    var currentNameEnabled = userIntegrations[remotePlugin.name];
+function isPluginDisabled(
+// userIntegrations: Integrations,
+// remotePlugin: RemotePluginConfig
+) {
+    /*
+    const creationNameEnabled = userIntegrations[remotePlugin.creationName]
+    const currentNameEnabled = userIntegrations[remotePlugin.name]
+  
     // Check that the plugin isn't explicitly enabled when All: false
-    if (userIntegrations.All === false &&
-        !creationNameEnabled &&
-        !currentNameEnabled) {
-        return true;
+    if (
+      userIntegrations.All === false &&
+      !creationNameEnabled &&
+      !currentNameEnabled
+    ) {
+      return true
     }
+  
     // Check that the plugin isn't explicitly disabled
     if (creationNameEnabled === false || currentNameEnabled === false) {
-        return true;
+      return true
     }
+     */
     return false;
 }
 function loadPluginFactory(remotePlugin, obfuscate) {
@@ -208,22 +217,24 @@ function loadPluginFactory(remotePlugin, obfuscate) {
         });
     });
 }
-function remoteLoader(settings, userIntegrations, mergedIntegrations, obfuscate, routingMiddleware, pluginSources) {
-    var _a, _b, _c;
+function remoteLoader(
+// settings: ExternalSettings,
+// obfuscate?: boolean,
+options, pluginSources) {
+    var _a;
     return __awaiter(this, void 0, void 0, function () {
-        var allPlugins, routingRules, pluginPromises;
+        var allPlugins, pluginPromises;
         var _this = this;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     allPlugins = [];
-                    routingRules = (_b = (_a = settings.middlewareSettings) === null || _a === void 0 ? void 0 : _a.routingRules) !== null && _b !== void 0 ? _b : [];
-                    pluginPromises = ((_c = settings.remotePlugins) !== null && _c !== void 0 ? _c : []).map(function (remotePlugin) { return __awaiter(_this, void 0, void 0, function () {
-                        var pluginFactory, _a, plugin, plugins, routing_1, error_2;
+                    pluginPromises = ((_a = options.remotePlugins) !== null && _a !== void 0 ? _a : []).map(function (remotePlugin) { return __awaiter(_this, void 0, void 0, function () {
+                        var pluginFactory, _a, plugin, plugins, error_2;
                         return __generator(this, function (_b) {
                             switch (_b.label) {
                                 case 0:
-                                    if (isPluginDisabled(userIntegrations, remotePlugin))
+                                    if (isPluginDisabled( /* userIntegrations, remotePlugin */))
                                         return [2 /*return*/];
                                     _b.label = 1;
                                 case 1:
@@ -233,27 +244,20 @@ function remoteLoader(settings, userIntegrations, mergedIntegrations, obfuscate,
                                         return pluginName === remotePlugin.name;
                                     }));
                                     if (_a) return [3 /*break*/, 3];
-                                    return [4 /*yield*/, loadPluginFactory(remotePlugin, obfuscate)];
+                                    return [4 /*yield*/, loadPluginFactory(remotePlugin, options.obfuscate)];
                                 case 2:
                                     _a = (_b.sent());
                                     _b.label = 3;
                                 case 3:
                                     pluginFactory = _a;
                                     if (!pluginFactory) return [3 /*break*/, 5];
-                                    return [4 /*yield*/, pluginFactory(__assign(__assign({}, remotePlugin.settings), mergedIntegrations[remotePlugin.name]))];
+                                    return [4 /*yield*/, pluginFactory(__assign({}, remotePlugin.settings))];
                                 case 4:
                                     plugin = _b.sent();
                                     plugins = Array.isArray(plugin) ? plugin : [plugin];
                                     validate(plugins);
-                                    routing_1 = routingRules.filter(function (rule) { return rule.destinationName === remotePlugin.creationName; });
                                     plugins.forEach(function (plugin) {
-                                        var wrapper = new ActionDestination(remotePlugin.creationName, plugin);
-                                        /** Make sure we only apply destination filters to actions of the "destination" type to avoid causing issues for hybrid destinations */
-                                        if (routing_1.length &&
-                                            routingMiddleware &&
-                                            plugin.type === 'destination') {
-                                            wrapper.addMiddleware(routingMiddleware);
-                                        }
+                                        var wrapper = new RemoteDestinationPlugin(remotePlugin.creationName, plugin);
                                         allPlugins.push(wrapper);
                                     });
                                     _b.label = 5;
@@ -268,7 +272,7 @@ function remoteLoader(settings, userIntegrations, mergedIntegrations, obfuscate,
                     }); });
                     return [4 /*yield*/, Promise.all(pluginPromises)];
                 case 1:
-                    _d.sent();
+                    _b.sent();
                     return [2 /*return*/, allPlugins.filter(Boolean)];
             }
         });

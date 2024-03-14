@@ -28,6 +28,7 @@ import { validateEvent } from '../validation/assertions';
 // Unfortunately, there are some differences in the way the two environments handle events, so this is not currently shared.
 var EventFactory = /** @class */ (function () {
     function EventFactory(settings) {
+        console.log('xxx0');
         this.user = settings.user;
         this.createMessageId = settings.createMessageId;
     }
@@ -81,6 +82,7 @@ var EventFactory = /** @class */ (function () {
         return [context, eventOverrides];
     };
     EventFactory.prototype.normalize = function (event) {
+        console.log('normalize0', event);
         /*
         const integrationBooleans = Object.keys(event.integrations ?? {}).reduce(
           (integrationNames, name) => {
@@ -113,9 +115,11 @@ var EventFactory = /** @class */ (function () {
             ? this.context(event.options)
             : [], context = _a[0], overrides = _a[1];
         var options = event.options, rest = __rest(event, ["options"]);
+        console.log('normalize1', context, overrides, options, rest);
         var body = __assign(__assign(__assign(__assign(__assign({}, event), { timestamp: new Date().toISOString() }), rest), { 
             // integrations: allIntegrations,
             context: context }), overrides);
+        console.log('normalize2', body);
         var evt = __assign({}, body);
         validateEvent(evt);
         return evt;

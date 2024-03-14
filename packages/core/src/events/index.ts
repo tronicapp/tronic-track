@@ -36,7 +36,6 @@ export class EventFactory {
     event: string,
     properties?: EventProperties,
     options?: CoreOptions,
-    // globalIntegrations?: Integrations
   ) {
     return this.normalize({
       ...this.baseEvent(),
@@ -45,7 +44,6 @@ export class EventFactory {
       event,
       properties: properties ?? {}, // TODO: why is this not a shallow copy like everywhere else?
       options: { ...options },
-      // integrations: { ...globalIntegrations },
     })
   }
 
@@ -54,7 +52,6 @@ export class EventFactory {
     userId: ID,
     traits?: UserTraits,
     options?: CoreOptions,
-    // globalIntegrations?: Integrations
   ): CoreEvent {
     return this.normalize({
       ...this.baseEvent(),
@@ -63,7 +60,6 @@ export class EventFactory {
       userId,
       traits: traits ?? {},
       options: { ...options },
-      // integrations: globalIntegrations,
     })
   }
 
@@ -131,36 +127,12 @@ export class EventFactory {
 
   public normalize(event: CoreEvent): CoreEvent {
 
-    /*
-    const integrationBooleans = Object.keys(event.integrations ?? {}).reduce(
-      (integrationNames, name) => {
-        return {
-          ...integrationNames,
-          [name]: Boolean(event.integrations?.[name]),
-        }
-      },
-      {} as Record<string, boolean>
-    )
-     */
+    // console.log('normalize0', event);
 
     // filter out any undefined options
     event.options = pickBy(event.options || {}, (_, value) => {
       return value !== undefined
     })
-
-    /*
-  // This is pretty trippy, but here's what's going on:
-  // - a) We don't pass initial integration options as part of the event, only if they're true or false
-  // - b) We do accept per integration overrides (like integrations.Amplitude.sessionId) at the event level
-  // Hence the need to convert base integration options to booleans, but maintain per event integration overrides
-  const allIntegrations = {
-    // Base config integrations object as booleans
-    ...integrationBooleans,
-
-    // Per event overrides, for things like amplitude sessionId, for example
-    ...event.options?.integrations,
-  }
-   */
 
     const [context, overrides] = event.options
       ? this.context(event.options)
@@ -168,14 +140,17 @@ export class EventFactory {
 
     const { options, ...rest } = event
 
+    // console.log('normalize1', context, overrides, options, rest);
+
     const body = {
       ...event,
       timestamp: new Date().toISOString(),
       ...rest,
-      // integrations: allIntegrations,
       context,
       ...overrides,
     }
+
+    // console.log('normalize2', body);
 
     const evt: CoreEvent = {
       ...body,
