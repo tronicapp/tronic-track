@@ -3,7 +3,7 @@ import type {
   UserTraits,
   CoreExtraContext,
   EventProperties,
-  Integrations,
+  // Integrations,
   Timestamp,
 } from '@tronic/receiver-core'
 
@@ -31,7 +31,7 @@ export type IdentifyParams = {
   traits?: UserTraits
   context?: ExtraContext
   timestamp?: Timestamp
-  integrations?: Integrations
+  // integrations?: Integrations
 } & IdentityOptions
 
 export type TrackParams = {
@@ -42,4 +42,4 @@ export type TrackParams = {
   context?: ExtraContext
   timestamp?: Timestamp
   // integrations?: Integrations
-}// & IdentityOptions
+} & IdentityOptions

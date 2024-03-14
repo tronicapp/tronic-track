@@ -35,6 +35,8 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
     this._eventFactory = new NodeEventFactory()
     this._queue = new NodeEventQueue()
 
+    // console.log('rn0::0');
+
     const flushInterval = settings.flushInterval ?? 10000
 
     this._closeAndFlushDefaultTimeout = flushInterval * 1.25 // add arbitrary multiplier in case an event is in a plugin.
@@ -56,10 +58,17 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
       },
       this as NodeEmitter
     )
+
+    // console.log('rn0::1');
+
     this._publisher = publisher
     this.ready = this.register(plugin).then(() => undefined)
 
+    // console.log('rn0::2');
+
     this.emit('initialize', settings)
+
+    // console.log('rn0::3');
 
     bindAll(this)
   }
@@ -68,15 +77,13 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
     return version
   }
 
-  /**
-   * Call this method to stop collecting new events and flush all existing events.
-   * This method also waits for any event method-specific callbacks to be triggered,
-   * and any of their subsequent promises to be resolved/rejected.
-   */
+  // Call this method to stop collecting new events and flush all existing events.
+  // This method also waits for any event method-specific callbacks to be triggered,
+  // and any of their subsequent promises to be resolved/rejected.
   public closeAndFlush({
     timeout = this._closeAndFlushDefaultTimeout,
   }: {
-    /** Set a maximum time permitted to wait before resolving. */
+    // Set a maximum time permitted to wait before resolving.
     timeout?: number
   } = {}): Promise<void> {
     this._publisher.flushAfterClose(this._pendingEvents)
@@ -110,9 +117,7 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
       })
   }
 
-  /**
-   * Includes a unique userId and (maybe anonymousId) and any optional traits you know about them.
-   */
+  // Includes a unique userId and (maybe anonymousId) and any optional traits you know about them.
   identify(
     {
       channelId,
@@ -121,51 +126,43 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
       traits = {},
       context,
       timestamp,
-      integrations,
     }: IdentifyParams,
     callback?: Callback
   ): void {
-    const tronicEvent = this._eventFactory.identify(channelId, userId, traits, /* {
+    const tronicEvent = this._eventFactory.identify(channelId, userId, traits, {
       context,
       anonymousId,
       userId,
       timestamp,
-      integrations,
-      }*/)
+    })
     this._dispatch(tronicEvent, callback)
   }
 
-  /**
-   * Records actions your users perform.
-   */
+  // Records actions your users perform.
   track(
     {
       channelId,
       userId,
-      // anonymousId,
+      anonymousId,
       event,
       properties,
-      // context,
-      // timestamp,
-      // integrations,
+      context,
+      timestamp,
     }: TrackParams,
     callback?: Callback
   ): void {
-    const tronicEvent = this._eventFactory.track(channelId, userId, event, properties, /* {
+    // console.log('rn::track');
+    const tronicEvent = this._eventFactory.track(channelId, event, properties, {
       context,
       userId,
-      // anonymousId,
+      anonymousId,
       timestamp,
-      // integrations,
-      }*/)
-
+      })
+    // console.log('rn::track::0', tronicEvent);
     this._dispatch(tronicEvent, callback)
   }
 
-  /**
-   * Registers one or more plugins to augment Receiver functionality.
-   * @param plugins
-   */
+  // Registers one or more plugins to augment Receiver functionality.
   register(...plugins: Plugin[]): Promise<void> {
     return this._queue.criticalTasks.run(async () => {
       const ctx = Context.system()
@@ -181,10 +178,7 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
     })
   }
 
-  /**
-   * Deregisters one or more plugins based on their names.
-   * @param pluginNames - The names of one or more plugins to deregister.
-   */
+  // Deregisters one or more plugins based on their names.
   async deregister(...pluginNames: string[]): Promise<void> {
     const ctx = Context.system()
 

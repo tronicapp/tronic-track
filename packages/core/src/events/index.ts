@@ -2,7 +2,7 @@ export * from './interfaces'
 import { dset } from 'dset'
 import { ID, User } from '../user'
 import {
-  Integrations,
+  // Integrations,
   EventProperties,
   CoreEvent,
   CoreOptions,
@@ -19,6 +19,9 @@ interface EventFactorySettings {
   user?: User
 }
 
+// This is currently only used by node.js, but the original idea was to have something that could be shared between browser and node.
+// Unfortunately, there are some differences in the way the two environments handle events, so this is not currently shared.
+
 export class EventFactory {
   createMessageId: EventFactorySettings['createMessageId']
   user?: User
@@ -30,21 +33,17 @@ export class EventFactory {
 
   track(
     channelId: string,
-    userId: string,
     event: string,
     properties?: EventProperties,
-    // options?: CoreOptions,
-    // globalIntegrations?: Integrations
+    options?: CoreOptions,
   ) {
     return this.normalize({
       ...this.baseEvent(),
       type: 'track',
       channelId,
-      userId,
       event,
       properties: properties ?? {}, // TODO: why is this not a shallow copy like everywhere else?
-      // options: { ...options },
-      // integrations: { ...globalIntegrations },
+      options: { ...options },
     })
   }
 
@@ -52,8 +51,7 @@ export class EventFactory {
     channelId: string,
     userId: ID,
     traits?: UserTraits,
-    // options?: CoreOptions,
-    // globalIntegrations?: Integrations
+    options?: CoreOptions,
   ): CoreEvent {
     return this.normalize({
       ...this.baseEvent(),
@@ -61,15 +59,13 @@ export class EventFactory {
       channelId,
       userId,
       traits: traits ?? {},
-      // options: { ...options },
-      // integrations: globalIntegrations,
+      options: { ...options },
     })
   }
 
   private baseEvent(): Partial<CoreEvent> {
     const base: Partial<CoreEvent> = {
-      // integrations: {},
-      // options: {},
+      options: {},
     }
 
     if (!this.user) return base
@@ -87,25 +83,25 @@ export class EventFactory {
     return base
   }
 
-  /**
-   * Builds the context part of an event based on "foreign" keys that
-   * are provided in the `Options` parameter for an Event
-   */
+  // Builds the context part of an event based on "foreign" keys that
+  // are provided in the `Options` parameter for an Event
+
   private context(
     options: CoreOptions
   ): [CoreExtraContext, Partial<CoreEvent>] {
     type CoreOptionKeys = keyof RemoveIndexSignature<CoreOptions>
-    /**
-     * If the event options are known keys from this list, we move them to the top level of the event.
-     * Any other options are moved to context.
-     */
+
+    // If the event options are known keys from this list, we move them to the top level of the event.
+    // Any other options are moved to context.
+
     const eventOverrideKeys: CoreOptionKeys[] = [
       'userId',
       'anonymousId',
       'timestamp',
     ]
 
-    delete options['integrations']
+    // delete options['integrations']
+
     const providedOptionsKeys = Object.keys(options) as Exclude<
       CoreOptionKeys,
       'integrations'
@@ -130,49 +126,31 @@ export class EventFactory {
   }
 
   public normalize(event: CoreEvent): CoreEvent {
-    /*
-    const integrationBooleans = Object.keys(event.integrations ?? {}).reduce(
-      (integrationNames, name) => {
-        return {
-          ...integrationNames,
-          [name]: Boolean(event.integrations?.[name]),
-        }
-      },
-      {} as Record<string, boolean>
-    )
+
+    // console.log('normalize0', event);
 
     // filter out any undefined options
     event.options = pickBy(event.options || {}, (_, value) => {
       return value !== undefined
     })
 
-    // This is pretty trippy, but here's what's going on:
-    // - a) We don't pass initial integration options as part of the event, only if they're true or false
-    // - b) We do accept per integration overrides (like integrations.Amplitude.sessionId) at the event level
-    // Hence the need to convert base integration options to booleans, but maintain per event integration overrides
-    const allIntegrations = {
-      // Base config integrations object as booleans
-      ...integrationBooleans,
-
-      // Per event overrides, for things like amplitude sessionId, for example
-      ...event.options?.integrations,
-    }
-
     const [context, overrides] = event.options
       ? this.context(event.options)
       : []
 
     const { options, ...rest } = event
-     */
+
+    // console.log('normalize1', context, overrides, options, rest);
 
     const body = {
       ...event,
-     timestamp: new Date().toISOString(),
-      // ...rest,
-      // integrations: allIntegrations,
-      // context,
-      // ...overrides,
+      timestamp: new Date().toISOString(),
+      ...rest,
+      context,
+      ...overrides,
     }
+
+    // console.log('normalize2', body);
 
     const evt: CoreEvent = {
       ...body,

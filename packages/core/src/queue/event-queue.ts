@@ -4,7 +4,7 @@ import { ON_REMOVE_FROM_FUTURE, PriorityQueue } from '../priority-queue'
 
 import { CoreContext, ContextCancelation } from '../context'
 import { Emitter } from '../emitter'
-import { Integrations, JSONObject } from '../events/interfaces'
+import { JSONObject } from '../events/interfaces'
 import { CorePlugin } from '../plugins'
 import { createTaskGroup, TaskGroup } from '../task/task-group'
 import { attempt, ensure } from './delivery'
@@ -223,7 +223,7 @@ export abstract class CoreEventQueue<
     return true
   }
 
-  private availableExtensions(denyList: Integrations) {
+  private availableExtensions(denyList: any) { // Integrations) {
     const available = this.plugins.filter((p) => {
       // Only filter out destination plugins or the Tronic plugin
       if (p.type !== 'destination' && p.name !== 'Tronic') {

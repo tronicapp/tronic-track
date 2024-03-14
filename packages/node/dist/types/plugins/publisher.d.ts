@@ -12,9 +12,6 @@ export interface PublisherProps {
     disable?: boolean;
     httpClient: HTTPClient;
 }
-/**
- * The Publisher is responsible for batching events and sending them to the Tronic API.
- */
 export declare class Publisher {
     private pendingFlushTimeout?;
     private _batch?;
@@ -32,11 +29,6 @@ export declare class Publisher {
     private createBatch;
     private clearBatch;
     flushAfterClose(pendingItemsCount: number): void;
-    /**
-     * Enqueues the context for future delivery.
-     * @param ctx - Context containing a Tronic event.
-     * @returns a promise that resolves with the context after the event has been delivered.
-     */
     enqueue(ctx: Context): Promise<Context>;
     private send;
 }

@@ -6,9 +6,7 @@ function sleep(timeoutInMs) {
     return new Promise((resolve) => setTimeout(resolve, timeoutInMs));
 }
 function noop() { }
-/**
- * The Publisher is responsible for batching events and sending them to the Tronic API.
- */
+// The Publisher is responsible for batching events and sending them to the Tronic API.
 export class Publisher {
     constructor({ host, path, maxRetries, maxEventsInBatch, flushInterval, writeKey, httpRequestTimeout, httpClient, disable, }, emitter) {
         this._emitter = emitter;
@@ -57,11 +55,7 @@ export class Publisher {
             this.clearBatch();
         }
     }
-    /**
-     * Enqueues the context for future delivery.
-     * @param ctx - Context containing a Tronic event.
-     * @returns a promise that resolves with the context after the event has been delivered.
-     */
+    // Enqueues the context for future delivery.
     enqueue(ctx) {
         const batch = this._batch ?? this.createBatch();
         const { promise: ctxPromise, resolve } = extractPromiseParts();
@@ -69,17 +63,14 @@ export class Publisher {
             context: ctx,
             resolver: resolve,
         };
-        /*
-          The following logic ensures that a batch is never orphaned,
-          and is always sent before a new batch is created.
-    
-          Add an event to the existing batch.
-            Success: Check if batch is full or no more items are expected to come in (i.e. closing). If so, send batch.
-            Failure: Assume event is too big to fit in current batch - send existing batch.
-              Add an event to the new batch.
-                Success: Check if batch is full and send if it is.
-                Failure: Event exceeds maximum size (it will never fit), fail the event.
-        */
+        // The following logic ensures that a batch is never orphaned,
+        // and is always sent before a new batch is created.
+        // Add an event to the existing batch.
+        // Success: Check if batch is full or no more items are expected to come in (i.e. closing). If so, send batch.
+        // Failure: Assume event is too big to fit in current batch - send existing batch.
+        // Add an event to the new batch.
+        // Success: Check if batch is full and send if it is.
+        // Failure: Event exceeds maximum size (it will never fit), fail the event.
         const addStatus = batch.tryAdd(pendingItem);
         if (addStatus.success) {
             const isExpectingNoMoreItems = batch.length === this._closeAndFlushPendingItemsCount;
@@ -129,8 +120,12 @@ export class Publisher {
                 }
                 const event = { ...events[0] };
                 const data = { ...event };
+                // console.log('publisher::data::0', data);
                 delete data['type'];
+                delete data['options'];
                 delete data['_metadata'];
+                // console.log('publisher::data::1', data);
+                // console.log('publisher::url', this._url + `/${event.type}`, data, this._auth);
                 const request = {
                     url: this._url + `/${event.type}`,
                     method: 'POST',

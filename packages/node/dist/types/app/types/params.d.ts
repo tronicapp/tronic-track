@@ -1,4 +1,4 @@
-import type { GroupTraits, UserTraits, CoreExtraContext, EventProperties, Integrations, Timestamp } from '@tronic/receiver-core';
+import type { GroupTraits, UserTraits, CoreExtraContext, EventProperties, Timestamp } from '@tronic/receiver-core';
 export type { GroupTraits, UserTraits };
 /**
  * A dictionary of extra context to attach to the call.
@@ -25,7 +25,6 @@ export type IdentifyParams = {
     traits?: UserTraits;
     context?: ExtraContext;
     timestamp?: Timestamp;
-    integrations?: Integrations;
 } & IdentityOptions;
 export type TrackParams = {
     userId: string;
@@ -34,5 +33,5 @@ export type TrackParams = {
     properties?: EventProperties;
     context?: ExtraContext;
     timestamp?: Timestamp;
-};
+} & IdentityOptions;
 //# sourceMappingURL=params.d.ts.map

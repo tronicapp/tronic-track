@@ -24,9 +24,7 @@ export function resolveArguments(eventOrEventName, channelId, properties, option
     var cb = args.find(isFunction);
     return [name, channelId, data, opts, cb];
 }
-/**
- * Helper for group, identify methods
- */
+// Helper for group, identify methods
 export var resolveUserArguments = function (user) {
     return function () {
         /*

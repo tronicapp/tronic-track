@@ -52,9 +52,7 @@ export function resolveArguments(
   return [name, channelId, data, opts, cb]
 }
 
-/**
- * Helper for group, identify methods
- */
+// Helper for group, identify methods
 export const resolveUserArguments = <T extends Traits, U extends User>(
   user: U
 ): ResolveUser<T> => {

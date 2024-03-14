@@ -17,7 +17,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UniversalStorage = exports.getGlobalReceiver = void 0;
 __exportStar(require("./core/receiver"), exports);
 __exportStar(require("./browser"), exports);
-__exportStar(require("./node"), exports);
 __exportStar(require("./core/context"), exports);
 __exportStar(require("./core/events"), exports);
 __exportStar(require("./core/plugin"), exports);
