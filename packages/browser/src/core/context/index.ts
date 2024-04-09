@@ -10,7 +10,7 @@ import { Stats } from '../stats'
 
 export class Context extends CoreContext<TronicEvent> {
   static override system() {
-    return new this({ type: 'track', event: 'system', channelId: '' })
+    return new this({ type: 'track', event: 'system' })
   }
   constructor(event: TronicEvent, id?: string) {
     super(event, id, new Stats())

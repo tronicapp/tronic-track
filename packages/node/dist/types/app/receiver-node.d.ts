@@ -17,8 +17,8 @@ export declare class Receiver extends NodeEmitter implements CoreReceiver {
         timeout?: number;
     }): Promise<void>;
     private _dispatch;
-    identify({ channelId, userId, anonymousId, traits, context, timestamp, }: IdentifyParams, callback?: Callback): void;
-    track({ channelId, userId, anonymousId, event, properties, context, timestamp, }: TrackParams, callback?: Callback): void;
+    identify({ userId, anonymousId, traits, context, timestamp, }: IdentifyParams, callback?: Callback): void;
+    track({ userId, anonymousId, event, properties, context, timestamp, }: TrackParams, callback?: Callback): void;
     register(...plugins: Plugin[]): Promise<void>;
     deregister(...pluginNames: string[]): Promise<void>;
 }

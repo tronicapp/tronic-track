@@ -86,7 +86,7 @@ export function tronic(
 
     inflightEvents.add(ctx)
 
-    const path = 'external/' + ctx.event.type; // ctx.event.type.charAt(0)
+    const path = ctx.event.type; // ctx.event.type.charAt(0)
 
     let json = toFacade(ctx.event).json()
 

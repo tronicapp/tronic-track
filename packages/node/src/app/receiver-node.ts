@@ -120,7 +120,7 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
   // Includes a unique userId and (maybe anonymousId) and any optional traits you know about them.
   identify(
     {
-      channelId,
+      // channelId,
       userId,
       anonymousId,
       traits = {},
@@ -129,7 +129,7 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
     }: IdentifyParams,
     callback?: Callback
   ): void {
-    const tronicEvent = this._eventFactory.identify(channelId, userId, traits, {
+    const tronicEvent = this._eventFactory.identify(/* channelId, */ userId, traits, {
       context,
       anonymousId,
       userId,
@@ -141,7 +141,7 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
   // Records actions your users perform.
   track(
     {
-      channelId,
+      // channelId,
       userId,
       anonymousId,
       event,
@@ -152,7 +152,7 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
     callback?: Callback
   ): void {
     // console.log('rn::track');
-    const tronicEvent = this._eventFactory.track(channelId, event, properties, {
+    const tronicEvent = this._eventFactory.track(/* channelId, */ event, properties, {
       context,
       userId,
       anonymousId,

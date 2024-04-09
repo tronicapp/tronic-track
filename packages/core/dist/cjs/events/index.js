@@ -48,11 +48,19 @@ var EventFactory = /** @class */ (function () {
         this.user = settings.user;
         this.createMessageId = settings.createMessageId;
     }
-    EventFactory.prototype.track = function (channelId, event, properties, options) {
-        return this.normalize(__assign(__assign({}, this.baseEvent()), { type: 'track', channelId: channelId, event: event, properties: properties !== null && properties !== void 0 ? properties : {}, options: __assign({}, options) }));
+    EventFactory.prototype.track = function (
+    // channelId: string,
+    event, properties, options) {
+        return this.normalize(__assign(__assign({}, this.baseEvent()), { type: 'track', 
+            // channelId,
+            event: event, properties: properties !== null && properties !== void 0 ? properties : {}, options: __assign({}, options) }));
     };
-    EventFactory.prototype.identify = function (channelId, userId, traits, options) {
-        return this.normalize(__assign(__assign({}, this.baseEvent()), { type: 'identify', channelId: channelId, userId: userId, traits: traits !== null && traits !== void 0 ? traits : {}, options: __assign({}, options) }));
+    EventFactory.prototype.identify = function (
+    // channelId: string,
+    userId, traits, options) {
+        return this.normalize(__assign(__assign({}, this.baseEvent()), { type: 'identify', 
+            // channelId,
+            userId: userId, traits: traits !== null && traits !== void 0 ? traits : {}, options: __assign({}, options) }));
     };
     EventFactory.prototype.baseEvent = function () {
         var base = {

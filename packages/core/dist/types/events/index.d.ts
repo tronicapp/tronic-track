@@ -9,8 +9,8 @@ export declare class EventFactory {
     createMessageId: EventFactorySettings['createMessageId'];
     user?: User;
     constructor(settings: EventFactorySettings);
-    track(channelId: string, event: string, properties?: EventProperties, options?: CoreOptions): CoreEvent;
-    identify(channelId: string, userId: ID, traits?: UserTraits, options?: CoreOptions): CoreEvent;
+    track(event: string, properties?: EventProperties, options?: CoreOptions): CoreEvent;
+    identify(userId: ID, traits?: UserTraits, options?: CoreOptions): CoreEvent;
     private baseEvent;
     private context;
     normalize(event: CoreEvent): CoreEvent;

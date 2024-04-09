@@ -21,12 +21,12 @@ import { ID, User } from '../user'
  */
 export function resolveArguments(
   eventOrEventName: string | TronicEvent,
-  channelId?: string,
+  // channelId?: string,
   properties?: EventProperties | Callback,
   options?: Options | Callback,
   callback?: Callback
-): [string, string | undefined, EventProperties | Callback, Options, Callback | undefined] {
-  const args = [eventOrEventName, channelId, properties, options, callback]
+): [string, /* string | undefined, */ EventProperties | Callback, Options, Callback | undefined] {
+  const args = [eventOrEventName, /* channelId, */ properties, options, callback]
 
   const name = isPlainObject(eventOrEventName) ? eventOrEventName.event : eventOrEventName
   if (!name || !isString(name)) {
@@ -49,7 +49,7 @@ export function resolveArguments(
   }
 
   const cb = args.find(isFunction) as Callback | undefined
-  return [name, channelId, data, opts, cb]
+  return [name, /* channelId, */ data, opts, cb]
 }
 
 // Helper for group, identify methods
@@ -70,11 +70,11 @@ export const resolveUserArguments = <T extends Traits, U extends User>(
     const x = args[1]
 
     return [
-      args[0],
-      (args[1] ?? user.id()) as ID,
-      (args[2] ?? {}) as T ,
-      args[3] ?? {},
-      args[4],
+      // args[0],
+      (args[0] ?? user.id()) as ID,
+      (args[1] ?? {}) as T ,
+      args[2] ?? {},
+      args[3],
     ];
 
     /*
@@ -137,12 +137,12 @@ export const resolveUserArguments = <T extends Traits, U extends User>(
 }
 
 type ResolveUser<T extends Record<string, string>> = (
-  channelId: string,
+  // channelId: string,
   id?: ID | object,
   traits?: T | Callback | null,
   options?: Options | Callback,
   callback?: Callback
-) => [string, ID, T, Options | undefined, Callback | undefined]
+) => [/* string, */ ID, T, Options | undefined, Callback | undefined]
 
 export type IdentifyParams = Parameters<ResolveUser<UserTraits>>
 export type EventParams = Parameters<typeof resolveArguments>

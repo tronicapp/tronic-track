@@ -5,8 +5,8 @@ export * from './interfaces';
 export declare class EventFactory {
     user: User;
     constructor(user: User);
-    track(eventName: string, channelId?: string, properties?: EventProperties, options?: Options, pageCtx?: PageContext): TronicEvent;
-    identify(userId: ID, channelId?: string, traits?: Traits, options?: Options, pageCtx?: PageContext): TronicEvent;
+    track(eventName: string, properties?: EventProperties, options?: Options, pageCtx?: PageContext): TronicEvent;
+    identify(userId: ID, traits?: Traits, options?: Options, pageCtx?: PageContext): TronicEvent;
     private baseEvent;
     /**
      * Builds the context part of an event based on "foreign" keys that

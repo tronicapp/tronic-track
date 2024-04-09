@@ -34,9 +34,11 @@ export function queryString(receiver, query) {
         }
     }
     if (rjs_event) {
-        var channelId = Array.isArray(params.rjs_channel_id)
-            ? params.rjs_channel_id[0]
-            : params.rjs_channel_id;
+        /*
+        const channelId = Array.isArray(params.rjs_channel_id)
+          ? params.rjs_channel_id[0]
+          : params.rjs_channel_id
+         */
         var userId = Array.isArray(params.rjs_user_id)
             ? params.rjs_user_id[0]
             : params.rjs_user_id;
@@ -44,7 +46,7 @@ export function queryString(receiver, query) {
             ? params.rjs_event[0]
             : params.rjs_event;
         var props = pickPrefix('rjs_prop_', params);
-        calls.push(receiver.track(channelId, userId, event_1, props));
+        calls.push(receiver.track(/* channelId ,*/ userId, event_1, props));
     }
     return Promise.all(calls);
 }

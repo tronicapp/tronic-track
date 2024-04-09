@@ -168,7 +168,6 @@ export interface CoreEvent {
     traits?: Traits;
     context?: CoreExtraContext;
     options?: CoreOptions;
-    channelId?: string;
     userId?: ID;
     anonymousId?: ID;
     groupId?: ID;

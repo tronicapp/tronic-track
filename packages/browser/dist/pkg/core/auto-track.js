@@ -1,5 +1,5 @@
 import { pTimeout } from './callback';
-var channelId = '';
+// const channelId = '';
 // Check if a user is opening the link in a new tab
 function userNewTab(event) {
     var typedEvent = event;
@@ -43,7 +43,7 @@ export function link(links, event, properties, options) {
                 el.getAttributeNS('http://www.w3.org/1999/xlink', 'href') ||
                 el.getAttribute('xlink:href') ||
                 ((_a = el.getElementsByTagName('a')[0]) === null || _a === void 0 ? void 0 : _a.getAttribute('href'));
-            var trackEvent = pTimeout(_this.track(channelId, ev, props, options !== null && options !== void 0 ? options : {}), (_b = _this.options.timeout) !== null && _b !== void 0 ? _b : 500);
+            var trackEvent = pTimeout(_this.track(/* channelId, */ ev, props, options !== null && options !== void 0 ? options : {}), (_b = _this.options.timeout) !== null && _b !== void 0 ? _b : 500);
             if (!linkNewTab(el, href) &&
                 !userNewTab(elementEvent)) {
                 if (href) {
@@ -80,7 +80,7 @@ export function form(forms, event, properties, options) {
                 : (elementEvent.returnValue = false);
             var ev = event instanceof Function ? event(el) : event;
             var props = properties instanceof Function ? properties(el) : properties;
-            var trackEvent = pTimeout(_this.track(channelId, ev, props, options !== null && options !== void 0 ? options : {}), (_a = _this.options.timeout) !== null && _a !== void 0 ? _a : 500);
+            var trackEvent = pTimeout(_this.track(/* channelId, */ ev, props, options !== null && options !== void 0 ? options : {}), (_a = _this.options.timeout) !== null && _a !== void 0 ? _a : 500);
             trackEvent
                 .catch(console.error)
                 .then(function () {

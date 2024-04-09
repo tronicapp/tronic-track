@@ -75,8 +75,10 @@ export class Receiver extends NodeEmitter {
         });
     }
     // Includes a unique userId and (maybe anonymousId) and any optional traits you know about them.
-    identify({ channelId, userId, anonymousId, traits = {}, context, timestamp, }, callback) {
-        const tronicEvent = this._eventFactory.identify(channelId, userId, traits, {
+    identify({ 
+    // channelId,
+    userId, anonymousId, traits = {}, context, timestamp, }, callback) {
+        const tronicEvent = this._eventFactory.identify(/* channelId, */ userId, traits, {
             context,
             anonymousId,
             userId,
@@ -85,9 +87,11 @@ export class Receiver extends NodeEmitter {
         this._dispatch(tronicEvent, callback);
     }
     // Records actions your users perform.
-    track({ channelId, userId, anonymousId, event, properties, context, timestamp, }, callback) {
+    track({ 
+    // channelId,
+    userId, anonymousId, event, properties, context, timestamp, }, callback) {
         // console.log('rn::track');
-        const tronicEvent = this._eventFactory.track(channelId, event, properties, {
+        const tronicEvent = this._eventFactory.track(/* channelId, */ event, properties, {
             context,
             userId,
             anonymousId,

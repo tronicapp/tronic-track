@@ -21,7 +21,7 @@ var Context = /** @class */ (function (_super) {
         return _super.call(this, event, id, new Stats()) || this;
     }
     Context.system = function () {
-        return new this({ type: 'track', event: 'system', channelId: '' });
+        return new this({ type: 'track', event: 'system' });
     };
     return Context;
 }(CoreContext));
