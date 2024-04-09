@@ -2,9 +2,11 @@ import { isFunction, isPlainObject, isString, } from '@tronic/receiver-core';
 /**
  * Helper for the track method
  */
-export function resolveArguments(eventOrEventName, channelId, properties, options, callback) {
+export function resolveArguments(eventOrEventName, 
+// channelId?: string,
+properties, options, callback) {
     var _a;
-    var args = [eventOrEventName, channelId, properties, options, callback];
+    var args = [eventOrEventName, /* channelId, */ properties, options, callback];
     var name = isPlainObject(eventOrEventName) ? eventOrEventName.event : eventOrEventName;
     if (!name || !isString(name)) {
         throw new Error('Event missing');
@@ -22,7 +24,7 @@ export function resolveArguments(eventOrEventName, channelId, properties, option
         opts = properties !== null && properties !== void 0 ? properties : {};
     }
     var cb = args.find(isFunction);
-    return [name, channelId, data, opts, cb];
+    return [name, /* channelId, */ data, opts, cb];
 }
 // Helper for group, identify methods
 export var resolveUserArguments = function (user) {
@@ -42,11 +44,11 @@ export var resolveUserArguments = function (user) {
         }
         var x = args[1];
         return [
-            args[0],
-            ((_a = args[1]) !== null && _a !== void 0 ? _a : user.id()),
-            ((_b = args[2]) !== null && _b !== void 0 ? _b : {}),
-            (_c = args[3]) !== null && _c !== void 0 ? _c : {},
-            args[4],
+            // args[0],
+            ((_a = args[0]) !== null && _a !== void 0 ? _a : user.id()),
+            ((_b = args[1]) !== null && _b !== void 0 ? _b : {}),
+            (_c = args[2]) !== null && _c !== void 0 ? _c : {},
+            args[3],
         ];
         /*
             const values: {

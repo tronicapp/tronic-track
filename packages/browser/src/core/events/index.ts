@@ -17,7 +17,7 @@ export class EventFactory {
 
   track(
     eventName: string,
-    channelId?: string,
+    // channelId?: string,
     properties?: EventProperties,
     options?: Options,
     pageCtx?: PageContext
@@ -32,15 +32,17 @@ export class EventFactory {
       },
       pageCtx
     )
+    /*
     if (channelId) {
       event.channelId = channelId;
-    }
+      }
+     */
     return event;
   }
 
   identify(
     userId: ID,
-    channelId?: string,
+    // channelId?: string,
     traits?: Traits,
     options?: Options,
     pageCtx?: PageContext
@@ -55,9 +57,11 @@ export class EventFactory {
       },
       pageCtx
     )
+    /*
     if (channelId) {
-      event.channelId = channelId;
+    event.channelId = channelId;
     }
+     */
     return event;
   }
 

@@ -2894,7 +2894,7 @@ function dset(obj, keys, val) {
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = function(chunkId) {
 /******/ 			// return url for filenames based on template
-/******/ 			return "" + {"96":"queryString","119":"auto-track"}[chunkId] + ".bundle." + {"96":"09943f895fe69bb55f77","119":"551b24328bb3e8c917f0"}[chunkId] + ".js";
+/******/ 			return "" + {"96":"queryString","119":"auto-track"}[chunkId] + ".bundle." + {"96":"b5427e64df95e24342e1","119":"26cb9f24f62c78e9f94a"}[chunkId] + ".js";
 /******/ 		};
 /******/ 	}();
 /******/ 	
@@ -3205,9 +3205,11 @@ var helpers = __webpack_require__(595);
 /**
  * Helper for the track method
  */
-function resolveArguments(eventOrEventName, channelId, properties, options, callback) {
+function resolveArguments(eventOrEventName, 
+// channelId?: string,
+properties, options, callback) {
     var _a;
-    var args = [eventOrEventName, channelId, properties, options, callback];
+    var args = [eventOrEventName, /* channelId, */ properties, options, callback];
     var name = (0,helpers/* isPlainObject */.PO)(eventOrEventName) ? eventOrEventName.event : eventOrEventName;
     if (!name || !(0,helpers/* isString */.HD)(name)) {
         throw new Error('Event missing');
@@ -3225,7 +3227,7 @@ function resolveArguments(eventOrEventName, channelId, properties, options, call
         opts = properties !== null && properties !== void 0 ? properties : {};
     }
     var cb = args.find(helpers/* isFunction */.mf);
-    return [name, channelId, data, opts, cb];
+    return [name, /* channelId, */ data, opts, cb];
 }
 // Helper for group, identify methods
 var resolveUserArguments = function (user) {
@@ -3245,11 +3247,11 @@ var resolveUserArguments = function (user) {
         }
         var x = args[1];
         return [
-            args[0],
-            ((_a = args[1]) !== null && _a !== void 0 ? _a : user.id()),
-            ((_b = args[2]) !== null && _b !== void 0 ? _b : {}),
-            (_c = args[3]) !== null && _c !== void 0 ? _c : {},
-            args[4],
+            // args[0],
+            ((_a = args[0]) !== null && _a !== void 0 ? _a : user.id()),
+            ((_b = args[1]) !== null && _b !== void 0 ? _b : {}),
+            (_c = args[2]) !== null && _c !== void 0 ? _c : {},
+            args[3],
         ];
         /*
             const values: {
@@ -3591,7 +3593,7 @@ var Context = /** @class */ (function (_super) {
         return _super.call(this, event, id, new Stats()) || this;
     }
     Context.system = function () {
-        return new this({ type: 'track', event: 'system', channelId: '' });
+        return new this({ type: 'track', event: 'system' });
     };
     return Context;
 }(context/* CoreContext */._));
@@ -3910,18 +3912,26 @@ var EventFactory = /** @class */ (function () {
     function EventFactory(user) {
         this.user = user;
     }
-    EventFactory.prototype.track = function (eventName, channelId, properties, options, pageCtx) {
+    EventFactory.prototype.track = function (eventName, 
+    // channelId?: string,
+    properties, options, pageCtx) {
         var event = this.normalize(events_assign(events_assign({}, this.baseEvent()), { type: 'track', event: eventName, properties: properties !== null && properties !== void 0 ? properties : {}, options: events_assign({}, options) }), pageCtx);
+        /*
         if (channelId) {
-            event.channelId = channelId;
-        }
+          event.channelId = channelId;
+          }
+         */
         return event;
     };
-    EventFactory.prototype.identify = function (userId, channelId, traits, options, pageCtx) {
+    EventFactory.prototype.identify = function (userId, 
+    // channelId?: string,
+    traits, options, pageCtx) {
         var event = this.normalize(events_assign(events_assign({}, this.baseEvent()), { type: 'identify', userId: userId, traits: traits, options: events_assign({}, options) }), pageCtx);
+        /*
         if (channelId) {
-            event.channelId = channelId;
+        event.channelId = channelId;
         }
+         */
         return event;
     };
     EventFactory.prototype.baseEvent = function () {
@@ -6100,12 +6110,14 @@ var Receiver = /** @class */ (function (_super) {
             args[_i] = arguments[_i];
         }
         return receiver_awaiter(this, void 0, Promise, function () {
-            var pageCtx, _a, name, channelId, data, opts, cb, tronicEvent;
+            var pageCtx, _a, name, data, opts, cb, tronicEvent;
             var _this = this;
             return receiver_generator(this, function (_b) {
                 pageCtx = popPageContext(args);
-                _a = resolveArguments.apply(void 0, args), name = _a[0], channelId = _a[1], data = _a[2], opts = _a[3], cb = _a[4];
-                tronicEvent = this.eventFactory.track(name, channelId, data, opts, pageCtx);
+                _a = resolveArguments.apply(void 0, args), name = _a[0], data = _a[1], opts = _a[2], cb = _a[3];
+                tronicEvent = this.eventFactory.track(name, 
+                // channelId,
+                data, opts, pageCtx);
                 return [2 /*return*/, this._dispatch(tronicEvent, cb).then(function (ctx) {
                         _this.emit('track', name, ctx.event.properties, ctx.event.options);
                         return ctx;
@@ -6119,13 +6131,15 @@ var Receiver = /** @class */ (function (_super) {
             args[_i] = arguments[_i];
         }
         return receiver_awaiter(this, void 0, Promise, function () {
-            var pageCtx, _a, channelId, id, _traits, options, callback, tronicEvent;
+            var pageCtx, _a, id, _traits, options, callback, tronicEvent;
             var _this = this;
             return receiver_generator(this, function (_b) {
                 pageCtx = popPageContext(args);
-                _a = resolveUserArguments(this._user).apply(void 0, args), channelId = _a[0], id = _a[1], _traits = _a[2], options = _a[3], callback = _a[4];
+                _a = resolveUserArguments(this._user).apply(void 0, args), id = _a[0], _traits = _a[1], options = _a[2], callback = _a[3];
                 this._user.identify(id, _traits);
-                tronicEvent = this.eventFactory.identify(this._user.id(), channelId, this._user.traits(), options, pageCtx);
+                tronicEvent = this.eventFactory.identify(this._user.id(), 
+                // channelId,
+                this._user.traits(), options, pageCtx);
                 return [2 /*return*/, this._dispatch(tronicEvent, callback).then(function (ctx) {
                         _this.emit('identify', ctx.event.userId, ctx.event.traits, ctx.event.options);
                         return ctx;

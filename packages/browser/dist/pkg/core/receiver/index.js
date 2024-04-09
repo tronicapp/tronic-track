@@ -165,12 +165,14 @@ var Receiver = /** @class */ (function (_super) {
             args[_i] = arguments[_i];
         }
         return __awaiter(this, void 0, void 0, function () {
-            var pageCtx, _a, name, channelId, data, opts, cb, tronicEvent;
+            var pageCtx, _a, name, data, opts, cb, tronicEvent;
             var _this = this;
             return __generator(this, function (_b) {
                 pageCtx = popPageContext(args);
-                _a = resolveArguments.apply(void 0, args), name = _a[0], channelId = _a[1], data = _a[2], opts = _a[3], cb = _a[4];
-                tronicEvent = this.eventFactory.track(name, channelId, data, opts, pageCtx);
+                _a = resolveArguments.apply(void 0, args), name = _a[0], data = _a[1], opts = _a[2], cb = _a[3];
+                tronicEvent = this.eventFactory.track(name, 
+                // channelId,
+                data, opts, pageCtx);
                 return [2 /*return*/, this._dispatch(tronicEvent, cb).then(function (ctx) {
                         _this.emit('track', name, ctx.event.properties, ctx.event.options);
                         return ctx;
@@ -184,13 +186,15 @@ var Receiver = /** @class */ (function (_super) {
             args[_i] = arguments[_i];
         }
         return __awaiter(this, void 0, void 0, function () {
-            var pageCtx, _a, channelId, id, _traits, options, callback, tronicEvent;
+            var pageCtx, _a, id, _traits, options, callback, tronicEvent;
             var _this = this;
             return __generator(this, function (_b) {
                 pageCtx = popPageContext(args);
-                _a = resolveUserArguments(this._user).apply(void 0, args), channelId = _a[0], id = _a[1], _traits = _a[2], options = _a[3], callback = _a[4];
+                _a = resolveUserArguments(this._user).apply(void 0, args), id = _a[0], _traits = _a[1], options = _a[2], callback = _a[3];
                 this._user.identify(id, _traits);
-                tronicEvent = this.eventFactory.identify(this._user.id(), channelId, this._user.traits(), options, pageCtx);
+                tronicEvent = this.eventFactory.identify(this._user.id(), 
+                // channelId,
+                this._user.traits(), options, pageCtx);
                 return [2 /*return*/, this._dispatch(tronicEvent, callback).then(function (ctx) {
                         _this.emit('identify', ctx.event.userId, ctx.event.traits, ctx.event.options);
                         return ctx;

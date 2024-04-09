@@ -258,11 +258,11 @@ export class Receiver
 
   async track(...args: EventParams): Promise<DispatchedEvent> {
     const pageCtx = popPageContext(args)
-    const [name, channelId, data, opts, cb] = resolveArguments(...args)
+    const [name, /* channelId, */ data, opts, cb] = resolveArguments(...args)
 
     const tronicEvent: any = this.eventFactory.track(
       name,
-      channelId,
+      // channelId,
       data as EventProperties,
       opts,
       pageCtx
@@ -276,7 +276,7 @@ export class Receiver
 
   async identify(...args: IdentifyParams): Promise<DispatchedEvent> {
     const pageCtx = popPageContext(args)
-    const [channelId, id, _traits, options, callback] = resolveUserArguments(this._user)(
+    const [/* channelId, */ id, _traits, options, callback] = resolveUserArguments(this._user)(
       ...args
     )
 
@@ -284,7 +284,7 @@ export class Receiver
 
     const tronicEvent = this.eventFactory.identify(
       this._user.id(),
-      channelId,
+      // channelId,
       this._user.traits(),
       options,
       pageCtx

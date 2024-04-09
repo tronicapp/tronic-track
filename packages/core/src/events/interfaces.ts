@@ -204,7 +204,7 @@ export interface CoreEvent {
   context?: CoreExtraContext
   options?: CoreOptions
 
-  channelId?: string
+  // channelId?: string
 
   userId?: ID
   anonymousId?: ID

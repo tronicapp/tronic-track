@@ -27,7 +27,7 @@ export type IdentifyParams = {
    * Traits are pieces of information you know about a group.
    * This interface represents standardized reserved traits.
    */
-  channelId: string;
+  // channelId: string;
   traits?: UserTraits
   context?: ExtraContext
   timestamp?: Timestamp
@@ -36,7 +36,7 @@ export type IdentifyParams = {
 
 export type TrackParams = {
   userId: string
-  channelId: string
+  // channelId: string
   event: string
   properties?: EventProperties
   context?: ExtraContext

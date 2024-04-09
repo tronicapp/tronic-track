@@ -14,7 +14,7 @@ export class Publisher {
         this._maxEventsInBatch = Math.max(maxEventsInBatch, 1);
         this._flushInterval = flushInterval;
         this._auth = writeKey; // b64encode(`${writeKey}:`)
-        this._url = tryCreateFormattedUrl(host ?? 'http://localhost:3000', path ?? '/external');
+        this._url = tryCreateFormattedUrl(host ?? 'http://localhost:3000', path ?? '/');
         this._httpRequestTimeout = httpRequestTimeout ?? 10000;
         this._disable = Boolean(disable);
         this._httpClient = httpClient;

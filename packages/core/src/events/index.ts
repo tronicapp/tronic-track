@@ -32,7 +32,7 @@ export class EventFactory {
   }
 
   track(
-    channelId: string,
+    // channelId: string,
     event: string,
     properties?: EventProperties,
     options?: CoreOptions,
@@ -40,7 +40,7 @@ export class EventFactory {
     return this.normalize({
       ...this.baseEvent(),
       type: 'track',
-      channelId,
+      // channelId,
       event,
       properties: properties ?? {}, // TODO: why is this not a shallow copy like everywhere else?
       options: { ...options },
@@ -48,7 +48,7 @@ export class EventFactory {
   }
 
   identify(
-    channelId: string,
+    // channelId: string,
     userId: ID,
     traits?: UserTraits,
     options?: CoreOptions,
@@ -56,7 +56,7 @@ export class EventFactory {
     return this.normalize({
       ...this.baseEvent(),
       type: 'identify',
-      channelId,
+      // channelId,
       userId,
       traits: traits ?? {},
       options: { ...options },

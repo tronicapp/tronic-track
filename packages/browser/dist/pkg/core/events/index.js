@@ -29,18 +29,26 @@ var EventFactory = /** @class */ (function () {
     function EventFactory(user) {
         this.user = user;
     }
-    EventFactory.prototype.track = function (eventName, channelId, properties, options, pageCtx) {
+    EventFactory.prototype.track = function (eventName, 
+    // channelId?: string,
+    properties, options, pageCtx) {
         var event = this.normalize(__assign(__assign({}, this.baseEvent()), { type: 'track', event: eventName, properties: properties !== null && properties !== void 0 ? properties : {}, options: __assign({}, options) }), pageCtx);
+        /*
         if (channelId) {
-            event.channelId = channelId;
-        }
+          event.channelId = channelId;
+          }
+         */
         return event;
     };
-    EventFactory.prototype.identify = function (userId, channelId, traits, options, pageCtx) {
+    EventFactory.prototype.identify = function (userId, 
+    // channelId?: string,
+    traits, options, pageCtx) {
         var event = this.normalize(__assign(__assign({}, this.baseEvent()), { type: 'identify', userId: userId, traits: traits, options: __assign({}, options) }), pageCtx);
+        /*
         if (channelId) {
-            event.channelId = channelId;
+        event.channelId = channelId;
         }
+         */
         return event;
     };
     EventFactory.prototype.baseEvent = function () {

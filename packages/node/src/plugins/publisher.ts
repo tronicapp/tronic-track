@@ -66,7 +66,7 @@ export class Publisher {
     this._auth = writeKey; // b64encode(`${writeKey}:`)
     this._url = tryCreateFormattedUrl(
       host ?? 'http://localhost:3000',
-      path ?? '/external'
+      path ?? '/'
     )
     this._httpRequestTimeout = httpRequestTimeout ?? 10000
     this._disable = Boolean(disable)

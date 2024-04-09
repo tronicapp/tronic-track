@@ -63,7 +63,6 @@
       <div>
         <textarea name="identifyEvent" id="identifyEvent">
 {
-  "channelId": "2YUflBOLovgzw89JNtkxup30q5T",
   "userId": "2WffqQkUnMk5qM5y90fGlzcPDAv",
   "traits": {
      "email": "hello@example.com"
@@ -135,7 +134,6 @@
           var evt = JSON.parse(contents)
           console.time('identify')
           var promise = window.analytics.identify(
-            evt.channelId || '',
             evt.userId || '',
             evt.traits || {},
             evt.options || {},

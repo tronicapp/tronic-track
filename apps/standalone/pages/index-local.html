@@ -97,7 +97,6 @@
       <div>
         <textarea name="trackEvent" id="trackEvent">
 {
-  "channelId": "2YUflBOLovgzw89JNtkxup30q5T",
   "name": "event0",
   "properties": { "test": "yes" },
   "options": { }
@@ -110,7 +109,6 @@
       <div>
         <textarea name="identifyEvent" id="identifyEvent">
 {
-  "channelId": "2YUflBOLovgzw89JNtkxup30q5T",
   "userId": "2WffqQkUnMk5qM5y90fGlzcPDAv",
   "traits": {
      "email": "hello@example.com"
@@ -147,7 +145,6 @@
 
           var ctx = await window.receiver.track(
             evt.name,
-            evt.channelId,
             evt.properties || {},
           )
 
@@ -175,7 +172,6 @@
           var contents = document.querySelector('#identifyEvent').value
           var evt = JSON.parse(contents)
           var promise = window.receiver.identify(
-            evt.channelId || '',
             evt.userId || '',
             evt.traits || {},
             evt.options || {},
