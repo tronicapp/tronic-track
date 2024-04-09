@@ -1,1 +1,0 @@
-{"version":3,"file":"get-message-id.js","sourceRoot":"","sources":["get-message-id.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,IAAI,EAAE,MAAM,QAAQ,CAAA;AAE7B,8DAA8D;AAC9D,6EAA6E;AAC7E,MAAM,CAAC,MAAM,eAAe,GAAG,GAAW,EAAE;IAC1C,OAAO,QAAQ,IAAI,CAAC,GAAG,EAAE,IAAI,IAAI,EAAE,EAAE,CAAA;AACvC,CAAC,CAAA"}

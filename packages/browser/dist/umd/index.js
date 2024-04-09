@@ -7511,7 +7511,7 @@ function tronic(receiver, settings) {
                     return [2 /*return*/, ctx];
                 }
                 inflightEvents.add(ctx);
-                path = 'external/' + ctx.event.type;
+                path = ctx.event.type;
                 json = (0,to_facade/* toFacade */.D)(ctx.event).json();
                 delete json.type;
                 delete json.messageId;
