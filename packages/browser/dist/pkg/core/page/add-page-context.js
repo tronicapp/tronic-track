@@ -9,6 +9,7 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+import { pick } from '../../lib/pick';
 import { getDefaultPageContext } from './get-page-context';
 /**
  * Augments a Tronic event with information about the current page.
@@ -20,18 +21,11 @@ export var addPageContext = function (event, pageCtx) {
     if (pageCtx === void 0) { pageCtx = getDefaultPageContext(); }
     var evtCtx = event.context; // Context should be set earlier in the flow
     var pageContextFromEventProps;
-    /*
-    if (event.type === 'page') {
-      pageContextFromEventProps =
-        event.properties && pick(event.properties, Object.keys(pageCtx))
-  
-      event.properties = {
-        ...pageCtx,
-        ...event.properties,
-        ...(event.name ? { name: event.name } : {}),
-      }
+    if (event.type === 'track' && event.event === 'pageview') {
+        pageContextFromEventProps =
+            event.properties && pick(event.properties, Object.keys(pageCtx));
+        event.properties = __assign(__assign(__assign({}, pageCtx), event.properties), (event.name ? { name: event.name } : {}));
     }
-     */
     evtCtx.page = __assign(__assign(__assign({}, pageCtx), pageContextFromEventProps), evtCtx.page);
 };
 //# sourceMappingURL=add-page-context.js.map

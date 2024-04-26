@@ -4,6 +4,8 @@ import {
   resolveArguments,
   resolveUserArguments,
   IdentifyParams,
+  resolvePageArguments,
+  PageParams,
 } from '../arguments-resolver'
 import type { FormArgs, LinkArgs } from '../auto-track'
 import { isOffline } from '../connection'
@@ -256,6 +258,25 @@ export class Receiver
     return this._universalStorage
   }
 
+  async page(...args: PageParams): Promise<DispatchedEvent> {
+    const pageCtx = popPageContext(args)
+    const [category, page, properties, options, callback] =
+      resolvePageArguments(...args)
+
+    const segmentEvent = this.eventFactory.page(
+      category,
+      page,
+      properties,
+      options,
+      pageCtx
+    )
+
+    return this._dispatch(segmentEvent, callback).then((ctx) => {
+      this.emit('page', category, page, ctx.event.properties, ctx.event.options)
+      return ctx
+    })
+  }
+
   async track(...args: EventParams): Promise<DispatchedEvent> {
     const pageCtx = popPageContext(args)
     const [name, /* channelId, */ data, opts, cb] = resolveArguments(...args)
@@ -451,6 +472,12 @@ export class Receiver
       callback(res)
       return res
     })
+  }
+
+  async pageview(url: string): Promise<Receiver> {
+    // console.warn(deprecationWarning)
+    await this.page({ path: url })
+    return this
   }
 
   get VERSION(): string {

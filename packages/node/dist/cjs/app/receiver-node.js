@@ -77,6 +77,10 @@ class Receiver extends emitter_1.NodeEmitter {
             }
         });
     }
+    page({ userId, anonymousId, category, name, properties, context, timestamp, messageId, }, callback) {
+        const tronicEvent = this._eventFactory.page(category ?? null, name ?? null, properties, { context, anonymousId, userId, timestamp, messageId });
+        this._dispatch(tronicEvent, callback);
+    }
     // Includes a unique userId and (maybe anonymousId) and any optional traits you know about them.
     identify({ 
     // channelId,

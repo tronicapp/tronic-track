@@ -69,7 +69,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-import { resolveArguments, resolveUserArguments, } from '../arguments-resolver';
+import { resolveArguments, resolveUserArguments, resolvePageArguments, } from '../arguments-resolver';
 import { isOffline } from '../connection';
 import { Context } from '../context';
 import { dispatch, Emitter } from '@tronic/receiver-core';
@@ -159,6 +159,25 @@ var Receiver = /** @class */ (function (_super) {
         enumerable: false,
         configurable: true
     });
+    Receiver.prototype.page = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return __awaiter(this, void 0, void 0, function () {
+            var pageCtx, _a, category, page, properties, options, callback, segmentEvent;
+            var _this = this;
+            return __generator(this, function (_b) {
+                pageCtx = popPageContext(args);
+                _a = resolvePageArguments.apply(void 0, args), category = _a[0], page = _a[1], properties = _a[2], options = _a[3], callback = _a[4];
+                segmentEvent = this.eventFactory.page(category, page, properties, options, pageCtx);
+                return [2 /*return*/, this._dispatch(segmentEvent, callback).then(function (ctx) {
+                        _this.emit('page', category, page, ctx.event.properties, ctx.event.options);
+                        return ctx;
+                    })];
+            });
+        });
+    };
     Receiver.prototype.track = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -441,6 +460,21 @@ var Receiver = /** @class */ (function (_super) {
                         callback(res);
                         return res;
                     })];
+            });
+        });
+    };
+    Receiver.prototype.pageview = function (url) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: 
+                    // console.warn(deprecationWarning)
+                    return [4 /*yield*/, this.page({ path: url })];
+                    case 1:
+                        // console.warn(deprecationWarning)
+                        _a.sent();
+                        return [2 /*return*/, this];
+                }
             });
         });
     };

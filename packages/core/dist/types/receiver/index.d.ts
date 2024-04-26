@@ -1,4 +1,5 @@
 export interface CoreReceiver {
+    page(...args: unknown[]): unknown;
     track(...args: unknown[]): unknown;
     identify(...args: unknown[]): unknown;
     register(...plugins: unknown[]): Promise<unknown>;

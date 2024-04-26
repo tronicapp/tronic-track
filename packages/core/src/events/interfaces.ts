@@ -7,6 +7,7 @@ export type Callback<Ctx extends CoreContext = CoreContext> = (
 ) => Promise<unknown> | unknown
 
 export type EventType =
+  | 'page'
   | 'track'
   | 'identify'
 

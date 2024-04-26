@@ -15,6 +15,39 @@ export * from './interfaces'
 export class EventFactory {
   constructor(public user: User) {}
 
+  page(
+    category: string | null,
+    page: string | null,
+    properties?: EventProperties,
+    options?: Options,
+    pageCtx?: PageContext
+  ): TronicEvent {
+    const event: Partial<TronicEvent> = {
+      type: 'track' as const,
+      event: 'pageview',
+      properties: { ...properties },
+      options: { ...options },
+    }
+
+    if (category !== null) {
+      event.category = category
+      event.properties = event.properties ?? {}
+      event.properties.category = category
+    }
+
+    if (page !== null) {
+      event.name = page
+    }
+
+    return this.normalize(
+      {
+        ...this.baseEvent(),
+        ...event,
+      } as TronicEvent,
+      pageCtx
+    )
+  }
+
   track(
     eventName: string,
     // channelId?: string,

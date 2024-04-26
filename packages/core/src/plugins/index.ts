@@ -34,6 +34,7 @@ export interface CorePlugin<
 
   unload?: (ctx: Ctx, instance: Receiver) => Promise<unknown> | unknown
   ready?: () => Promise<unknown>
+  page?: (ctx: Ctx) => Promise<Ctx> | Ctx
   identify?: (ctx: Ctx) => Promise<Ctx> | Ctx
   track?: (ctx: Ctx) => Promise<Ctx> | Ctx
 }

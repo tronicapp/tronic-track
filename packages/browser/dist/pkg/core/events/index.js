@@ -29,6 +29,24 @@ var EventFactory = /** @class */ (function () {
     function EventFactory(user) {
         this.user = user;
     }
+    EventFactory.prototype.page = function (category, page, properties, options, pageCtx) {
+        var _a;
+        var event = {
+            type: 'track',
+            event: 'pageview',
+            properties: __assign({}, properties),
+            options: __assign({}, options),
+        };
+        if (category !== null) {
+            event.category = category;
+            event.properties = (_a = event.properties) !== null && _a !== void 0 ? _a : {};
+            event.properties.category = category;
+        }
+        if (page !== null) {
+            event.name = page;
+        }
+        return this.normalize(__assign(__assign({}, this.baseEvent()), event), pageCtx);
+    };
     EventFactory.prototype.track = function (eventName, 
     // channelId?: string,
     properties, options, pageCtx) {

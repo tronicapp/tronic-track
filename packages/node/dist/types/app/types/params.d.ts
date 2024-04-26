@@ -16,6 +16,18 @@ type IdentityOptions = {
     userId?: string;
     anonymousId: string;
 };
+export type PageParams = {
+    category?: string;
+    name?: string;
+    properties?: EventProperties;
+    timestamp?: Timestamp;
+    context?: ExtraContext;
+    /**
+     * Override the default messageId for the purposes of deduping events. Using a uuid library is strongly encouraged.
+     * @link https://segment.com/docs/partners/faqs/#does-segment-de-dupe-messages
+     */
+    messageId?: string;
+} & IdentityOptions;
 export type IdentifyParams = {
     /**
      * Traits are pieces of information you know about a group.

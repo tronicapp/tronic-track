@@ -22,6 +22,23 @@ type IdentityOptions =
   | { userId: string; anonymousId?: string }
   | { userId?: string; anonymousId: string }
 
+export type PageParams = {
+  /*  The category of the page. Useful for cases like ecommerce where many pages might live under a single category. */
+  category?: string
+  /* The name of the page.*/
+  name?: string
+  /* A dictionary of properties of the page. */
+  properties?: EventProperties
+  timestamp?: Timestamp
+  context?: ExtraContext
+  // integrations?: Integrations
+  /**
+   * Override the default messageId for the purposes of deduping events. Using a uuid library is strongly encouraged.
+   * @link https://segment.com/docs/partners/faqs/#does-segment-de-dupe-messages
+   */
+  messageId?: string
+} & IdentityOptions
+
 export type IdentifyParams = {
   /**
    * Traits are pieces of information you know about a group.
