@@ -297,18 +297,11 @@ options, preInitBuffer) {
                 case 3:
                     receiver.initialized = true;
                     receiver.emit('initialize', options);
-                    /*
-                  if (options.initialPageview) {
-                    receiver.page().catch(console.error)
-                  }
-                     */
+                    if (options.initialPageview) {
+                        receiver.page().catch(console.error);
+                    }
                     return [4 /*yield*/, flushFinalBuffer(receiver, preInitBuffer)];
                 case 4:
-                    /*
-                  if (options.initialPageview) {
-                    receiver.page().catch(console.error)
-                  }
-                     */
                     _d.sent();
                     return [2 /*return*/, [receiver, ctx]];
             }

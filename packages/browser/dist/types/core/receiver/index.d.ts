@@ -1,4 +1,4 @@
-import { DispatchedEvent, EventParams, IdentifyParams } from '../arguments-resolver';
+import { DispatchedEvent, EventParams, IdentifyParams, PageParams } from '../arguments-resolver';
 import type { FormArgs, LinkArgs } from '../auto-track';
 import { Context } from '../context';
 import { Emitter } from '@tronic/receiver-core';
@@ -54,6 +54,7 @@ export declare class Receiver extends Emitter implements ReceiverCore {
     user: () => User;
     private createStore;
     get storage(): UniversalStorage;
+    page(...args: PageParams): Promise<DispatchedEvent>;
     track(...args: EventParams): Promise<DispatchedEvent>;
     identify(...args: IdentifyParams): Promise<DispatchedEvent>;
     trackClick(...args: LinkArgs): Promise<Receiver>;
@@ -71,6 +72,7 @@ export declare class Receiver extends Emitter implements ReceiverCore {
     setAnonymousId(id?: string): ID;
     queryString(query: string): Promise<Context[]>;
     ready(callback?: Function): Promise<unknown>;
+    pageview(url: string): Promise<Receiver>;
     get VERSION(): string;
     push(args: any[]): void;
 }

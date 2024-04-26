@@ -260,11 +260,9 @@ if (options.updateCDNOptions) {
   receiver.initialized = true
   receiver.emit('initialize', options)
 
-  /*
-if (options.initialPageview) {
-  receiver.page().catch(console.error)
-}
-   */
+  if (options.initialPageview) {
+    receiver.page().catch(console.error)
+  }
 
   await flushFinalBuffer(receiver, preInitBuffer)
 

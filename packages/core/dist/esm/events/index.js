@@ -31,6 +31,24 @@ var EventFactory = /** @class */ (function () {
         this.user = settings.user;
         this.createMessageId = settings.createMessageId;
     }
+    EventFactory.prototype.page = function (category, page, properties, options) {
+        var _a;
+        var event = {
+            type: 'track',
+            event: 'pageview',
+            properties: __assign({}, properties),
+            options: __assign({}, options),
+        };
+        if (category !== null) {
+            event.category = category;
+            event.properties = (_a = event.properties) !== null && _a !== void 0 ? _a : {};
+            event.properties.category = category;
+        }
+        if (page !== null) {
+            event.name = page;
+        }
+        return this.normalize(__assign(__assign({}, this.baseEvent()), event));
+    };
     EventFactory.prototype.track = function (
     // channelId: string,
     event, properties, options) {

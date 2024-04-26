@@ -5,6 +5,7 @@ export * from './interfaces';
 export declare class EventFactory {
     user: User;
     constructor(user: User);
+    page(category: string | null, page: string | null, properties?: EventProperties, options?: Options, pageCtx?: PageContext): TronicEvent;
     track(eventName: string, properties?: EventProperties, options?: Options, pageCtx?: PageContext): TronicEvent;
     identify(userId: ID, traits?: Traits, options?: Options, pageCtx?: PageContext): TronicEvent;
     private baseEvent;

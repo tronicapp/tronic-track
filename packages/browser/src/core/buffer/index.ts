@@ -24,7 +24,8 @@ export type PreInitMethodName =
   //  | 'trackClick'
   //  | 'trackLink'
   //  | 'trackForm'
-  //  | 'pageview'
+  | 'page'
+  | 'pageview'
   | 'identify'
   | 'reset'
   //  | 'group'
@@ -32,7 +33,6 @@ export type PreInitMethodName =
   | 'ready'
   //  | 'alias'
   | 'debug'
-  //  | 'page'
   | 'once'
   | 'off'
   | 'on'
@@ -313,9 +313,10 @@ export class ReceiverBuffered
   }
 
   // trackSubmit = this._createMethod('trackSubmit')
-    // trackClick = this._createMethod('trackClick')
+  // trackClick = this._createMethod('trackClick')
   // trackLink = this._createMethod('trackLink')
-  // pageView = this._createMethod('pageview')
+  page = this._createMethod('page')
+  pageView = this._createMethod('pageview')
   identify = this._createMethod('identify')
   reset = this._createMethod('reset')
   // group = this._createMethod('group') as ReceiverBrowserCore['group']
@@ -323,7 +324,6 @@ export class ReceiverBuffered
   ready = this._createMethod('ready')
   // alias = this._createMethod('alias')
   debug = this._createChainableMethod('debug')
-  // page = this._createMethod('page')
   once = this._createChainableMethod('once')
   off = this._createChainableMethod('off')
   on = this._createChainableMethod('on')

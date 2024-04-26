@@ -31,6 +31,35 @@ export class EventFactory {
     this.createMessageId = settings.createMessageId
   }
 
+  page(
+    category: string | null,
+    page: string | null,
+    properties?: EventProperties,
+    options?: CoreOptions,
+  ) {
+    const event: CoreEvent = {
+      type: 'track',
+      event: 'pageview',
+      properties: { ...properties },
+      options: { ...options },
+    }
+
+    if (category !== null) {
+      event.category = category
+      event.properties = event.properties ?? {}
+      event.properties.category = category
+    }
+
+    if (page !== null) {
+      event.name = page
+    }
+
+    return this.normalize({
+      ...this.baseEvent(),
+      ...event,
+    })
+  }
+
   track(
     // channelId: string,
     event: string,

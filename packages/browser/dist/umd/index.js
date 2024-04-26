@@ -3307,6 +3307,37 @@ var resolveUserArguments = function (user) {
         // return args;
     };
 };
+function resolvePageArguments(category, name, properties, options, callback) {
+    var _a, _b;
+    var resolvedCategory = null;
+    var resolvedName = null;
+    var args = [category, name, properties, options, callback];
+    var strings = args.filter(helpers/* isString */.HD);
+    if (strings[0] !== undefined && strings[1] !== undefined) {
+        resolvedCategory = strings[0];
+        resolvedName = strings[1];
+    }
+    if (strings.length === 1) {
+        resolvedCategory = null;
+        resolvedName = strings[0];
+    }
+    var resolvedCallback = args.find(helpers/* isFunction */.mf);
+    var objects = args.filter(function (obj) {
+        if (resolvedName === null) {
+            return (0,helpers/* isPlainObject */.PO)(obj);
+        }
+        return (0,helpers/* isPlainObject */.PO)(obj) || obj === null;
+    });
+    var resolvedProperties = ((_a = objects[0]) !== null && _a !== void 0 ? _a : {});
+    var resolvedOptions = ((_b = objects[1]) !== null && _b !== void 0 ? _b : {});
+    return [
+        resolvedCategory,
+        resolvedName,
+        resolvedProperties,
+        resolvedOptions,
+        resolvedCallback,
+    ];
+}
 
 ;// CONCATENATED MODULE: ./src/core/environment/index.ts
 function isBrowser() {
@@ -3754,6 +3785,30 @@ var dset_dist = __webpack_require__(380);
 // EXTERNAL MODULE: ../../node_modules/spark-md5/spark-md5.js
 var spark_md5 = __webpack_require__(791);
 var spark_md5_default = /*#__PURE__*/__webpack_require__.n(spark_md5);
+;// CONCATENATED MODULE: ./src/lib/pick.ts
+var __spreadArray = (undefined && undefined.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
+/**
+ * @example
+ * pick({ 'a': 1, 'b': '2', 'c': 3 }, ['a', 'c'])
+ * => { 'a': 1, 'c': 3 }
+ */
+function pick(object, keys) {
+    return Object.assign.apply(Object, __spreadArray([{}], keys.map(function (key) {
+        var _a;
+        if (object && Object.prototype.hasOwnProperty.call(object, key)) {
+            return _a = {}, _a[key] = object[key], _a;
+        }
+    }), false));
+}
+
 ;// CONCATENATED MODULE: ./src/core/page/get-page-context.ts
 
 var BufferedPageContextDiscriminant = 'bpc';
@@ -3851,6 +3906,7 @@ var add_page_context_assign = (undefined && undefined.__assign) || function () {
     return add_page_context_assign.apply(this, arguments);
 };
 
+
 /**
  * Augments a Tronic event with information about the current page.
  * Page information like URL changes frequently, so this is meant to be captured as close to the event call as possible.
@@ -3861,18 +3917,11 @@ var addPageContext = function (event, pageCtx) {
     if (pageCtx === void 0) { pageCtx = getDefaultPageContext(); }
     var evtCtx = event.context; // Context should be set earlier in the flow
     var pageContextFromEventProps;
-    /*
-    if (event.type === 'page') {
-      pageContextFromEventProps =
-        event.properties && pick(event.properties, Object.keys(pageCtx))
-  
-      event.properties = {
-        ...pageCtx,
-        ...event.properties,
-        ...(event.name ? { name: event.name } : {}),
-      }
+    if (event.type === 'track' && event.event === 'pageview') {
+        pageContextFromEventProps =
+            event.properties && pick(event.properties, Object.keys(pageCtx));
+        event.properties = add_page_context_assign(add_page_context_assign(add_page_context_assign({}, pageCtx), event.properties), (event.name ? { name: event.name } : {}));
     }
-     */
     evtCtx.page = add_page_context_assign(add_page_context_assign(add_page_context_assign({}, pageCtx), pageContextFromEventProps), evtCtx.page);
 };
 
@@ -3908,6 +3957,24 @@ var EventFactory = /** @class */ (function () {
     function EventFactory(user) {
         this.user = user;
     }
+    EventFactory.prototype.page = function (category, page, properties, options, pageCtx) {
+        var _a;
+        var event = {
+            type: 'track',
+            event: 'pageview',
+            properties: events_assign({}, properties),
+            options: events_assign({}, options),
+        };
+        if (category !== null) {
+            event.category = category;
+            event.properties = (_a = event.properties) !== null && _a !== void 0 ? _a : {};
+            event.properties.category = category;
+        }
+        if (page !== null) {
+            event.name = page;
+        }
+        return this.normalize(events_assign(events_assign({}, this.baseEvent()), event), pageCtx);
+    };
     EventFactory.prototype.track = function (eventName, 
     // channelId?: string,
     properties, options, pageCtx) {
@@ -4120,7 +4187,7 @@ var persisted_assign = (undefined && undefined.__assign) || function () {
     };
     return persisted_assign.apply(this, arguments);
 };
-var __spreadArray = (undefined && undefined.__spreadArray) || function (to, from, pack) {
+var persisted_spreadArray = (undefined && undefined.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
             if (!ar) ar = Array.prototype.slice.call(from, 0, i);
@@ -4149,7 +4216,7 @@ function persisted(key) {
 }
 function persistItems(key, items) {
     var existing = persisted(key);
-    var all = __spreadArray(__spreadArray([], items, true), existing, true);
+    var all = persisted_spreadArray(persisted_spreadArray([], items, true), existing, true);
     var merged = all.reduce(function (acc, item) {
         var _a;
         return persisted_assign(persisted_assign({}, acc), (_a = {}, _a[item.id] = item, _a));
@@ -4205,7 +4272,7 @@ var PersistedPriorityQueue = /** @class */ (function (_super) {
                 lastSeen = seen(seenKey);
                 remove(itemsKey);
                 remove(seenKey);
-                _this.queue = __spreadArray(__spreadArray([], saved, true), _this.queue, true);
+                _this.queue = persisted_spreadArray(persisted_spreadArray([], saved, true), _this.queue, true);
                 _this.seen = persisted_assign(persisted_assign({}, lastSeen), _this.seen);
             }
             catch (err) {
@@ -4215,7 +4282,7 @@ var PersistedPriorityQueue = /** @class */ (function (_super) {
         window.addEventListener('pagehide', function () {
             // we deliberately want to use the less powerful 'pagehide' API to only persist on events where the receiver instance gets destroyed, and not on tab away.
             if (_this.todo > 0) {
-                var items_1 = __spreadArray(__spreadArray([], _this.queue, true), _this.future, true);
+                var items_1 = persisted_spreadArray(persisted_spreadArray([], _this.queue, true), _this.future, true);
                 try {
                     mutex(key, function () {
                         persistItems(itemsKey, items_1);
@@ -5838,7 +5905,8 @@ var ReceiverBuffered = /** @class */ (function () {
         // trackSubmit = this._createMethod('trackSubmit')
         // trackClick = this._createMethod('trackClick')
         // trackLink = this._createMethod('trackLink')
-        // pageView = this._createMethod('pageview')
+        this.page = this._createMethod('page');
+        this.pageView = this._createMethod('pageview');
         this.identify = this._createMethod('identify');
         this.reset = this._createMethod('reset');
         // group = this._createMethod('group') as ReceiverBrowserCore['group']
@@ -5846,7 +5914,6 @@ var ReceiverBuffered = /** @class */ (function () {
         this.ready = this._createMethod('ready');
         // alias = this._createMethod('alias')
         this.debug = this._createChainableMethod('debug');
-        // page = this._createMethod('page')
         this.once = this._createChainableMethod('once');
         this.off = this._createChainableMethod('off');
         this.on = this._createChainableMethod('on');
@@ -6100,6 +6167,25 @@ var Receiver = /** @class */ (function (_super) {
         enumerable: false,
         configurable: true
     });
+    Receiver.prototype.page = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return receiver_awaiter(this, void 0, Promise, function () {
+            var pageCtx, _a, category, page, properties, options, callback, segmentEvent;
+            var _this = this;
+            return receiver_generator(this, function (_b) {
+                pageCtx = popPageContext(args);
+                _a = resolvePageArguments.apply(void 0, args), category = _a[0], page = _a[1], properties = _a[2], options = _a[3], callback = _a[4];
+                segmentEvent = this.eventFactory.page(category, page, properties, options, pageCtx);
+                return [2 /*return*/, this._dispatch(segmentEvent, callback).then(function (ctx) {
+                        _this.emit('page', category, page, ctx.event.properties, ctx.event.options);
+                        return ctx;
+                    })];
+            });
+        });
+    };
     Receiver.prototype.track = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -6376,6 +6462,21 @@ var Receiver = /** @class */ (function (_super) {
                         callback(res);
                         return res;
                     })];
+            });
+        });
+    };
+    Receiver.prototype.pageview = function (url) {
+        return receiver_awaiter(this, void 0, Promise, function () {
+            return receiver_generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: 
+                    // console.warn(deprecationWarning)
+                    return [4 /*yield*/, this.page({ path: url })];
+                    case 1:
+                        // console.warn(deprecationWarning)
+                        _a.sent();
+                        return [2 /*return*/, this];
+                }
             });
         });
     };
@@ -7977,18 +8078,11 @@ options, preInitBuffer) {
                 case 3:
                     receiver.initialized = true;
                     receiver.emit('initialize', options);
-                    /*
-                  if (options.initialPageview) {
-                    receiver.page().catch(console.error)
-                  }
-                     */
+                    if (options.initialPageview) {
+                        receiver.page().catch(console.error);
+                    }
                     return [4 /*yield*/, flushFinalBuffer(receiver, preInitBuffer)];
                 case 4:
-                    /*
-                  if (options.initialPageview) {
-                    receiver.page().catch(console.error)
-                  }
-                     */
                     _d.sent();
                     return [2 /*return*/, [receiver, ctx]];
             }

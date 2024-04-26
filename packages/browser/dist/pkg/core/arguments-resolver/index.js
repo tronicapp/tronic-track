@@ -108,4 +108,35 @@ export var resolveUserArguments = function (user) {
         // return args;
     };
 };
+export function resolvePageArguments(category, name, properties, options, callback) {
+    var _a, _b;
+    var resolvedCategory = null;
+    var resolvedName = null;
+    var args = [category, name, properties, options, callback];
+    var strings = args.filter(isString);
+    if (strings[0] !== undefined && strings[1] !== undefined) {
+        resolvedCategory = strings[0];
+        resolvedName = strings[1];
+    }
+    if (strings.length === 1) {
+        resolvedCategory = null;
+        resolvedName = strings[0];
+    }
+    var resolvedCallback = args.find(isFunction);
+    var objects = args.filter(function (obj) {
+        if (resolvedName === null) {
+            return isPlainObject(obj);
+        }
+        return isPlainObject(obj) || obj === null;
+    });
+    var resolvedProperties = ((_a = objects[0]) !== null && _a !== void 0 ? _a : {});
+    var resolvedOptions = ((_b = objects[1]) !== null && _b !== void 0 ? _b : {});
+    return [
+        resolvedCategory,
+        resolvedName,
+        resolvedProperties,
+        resolvedOptions,
+        resolvedCallback,
+    ];
+}
 //# sourceMappingURL=index.js.map

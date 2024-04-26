@@ -2,7 +2,7 @@ import { CoreContext } from '../context';
 import { ID } from '../user';
 import { DeepNullable } from '../utils/ts-helpers';
 export type Callback<Ctx extends CoreContext = CoreContext> = (ctx: Ctx) => Promise<unknown> | unknown;
-export type EventType = 'track' | 'identify';
+export type EventType = 'page' | 'track' | 'identify';
 export type JSONPrimitive = string | number | boolean | null;
 export type JSONValue = JSONPrimitive | JSONObject | JSONArray;
 export type JSONObject = {

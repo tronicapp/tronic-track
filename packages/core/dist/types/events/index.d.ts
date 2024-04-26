@@ -9,6 +9,7 @@ export declare class EventFactory {
     createMessageId: EventFactorySettings['createMessageId'];
     user?: User;
     constructor(settings: EventFactorySettings);
+    page(category: string | null, page: string | null, properties?: EventProperties, options?: CoreOptions): CoreEvent;
     track(event: string, properties?: EventProperties, options?: CoreOptions): CoreEvent;
     identify(userId: ID, traits?: UserTraits, options?: CoreOptions): CoreEvent;
     private baseEvent;

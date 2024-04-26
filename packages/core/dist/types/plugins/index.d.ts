@@ -14,6 +14,7 @@ export interface CorePlugin<Ctx extends CoreContext = CoreContext, Receiver exte
     load: (ctx: Ctx, instance: Receiver, config?: CorePluginConfig) => Promise<unknown>;
     unload?: (ctx: Ctx, instance: Receiver) => Promise<unknown> | unknown;
     ready?: () => Promise<unknown>;
+    page?: (ctx: Ctx) => Promise<Ctx> | Ctx;
     identify?: (ctx: Ctx) => Promise<Ctx> | Ctx;
     track?: (ctx: Ctx) => Promise<Ctx> | Ctx;
 }

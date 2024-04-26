@@ -10,6 +10,7 @@ import {
   TrackParams,
   Plugin,
   TronicEvent,
+  PageParams,
 } from './types'
 import { Context } from './context'
 import { NodeEventQueue } from './event-queue'
@@ -115,6 +116,28 @@ export class Receiver extends NodeEmitter implements CoreReceiver {
           this.emit('drained')
         }
       })
+  }
+
+  page(
+    {
+      userId,
+      anonymousId,
+      category,
+      name,
+      properties,
+      context,
+      timestamp,
+      messageId,
+    }: PageParams,
+    callback?: Callback
+  ): void {
+    const tronicEvent = this._eventFactory.page(
+      category ?? null,
+      name ?? null,
+      properties,
+      { context, anonymousId, userId, timestamp, messageId }
+    )
+    this._dispatch(tronicEvent, callback)
   }
 
   // Includes a unique userId and (maybe anonymousId) and any optional traits you know about them.
