@@ -3411,7 +3411,7 @@ var fetch = function () {
 var version = '0.0.1';
 
 ;// CONCATENATED MODULE: ./src/core/constants/index.ts
-var TRONIC_API_HOST = 'prod-api.tronic.app';
+var TRONIC_API_HOST = 'api.tronic.app';
 
 ;// CONCATENATED MODULE: ./src/core/stats/remote-metrics.ts
 var __assign = (undefined && undefined.__assign) || function () {
