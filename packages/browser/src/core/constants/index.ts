@@ -1,1 +1,1 @@
-export const TRONIC_API_HOST = 'prod-api.tronic.app'
+export const TRONIC_API_HOST = 'api.tronic.app'
