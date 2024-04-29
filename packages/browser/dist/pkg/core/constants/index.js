@@ -1,2 +1,2 @@
-export var TRONIC_API_HOST = 'prod-api.tronic.app';
+export var TRONIC_API_HOST = 'api.tronic.app';
 //# sourceMappingURL=index.js.map
