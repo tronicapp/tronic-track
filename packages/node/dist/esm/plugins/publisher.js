@@ -1,7 +1,7 @@
-import { backoff } from "@tronic/receiver-core";
-import { tryCreateFormattedUrl } from "../lib/create-url";
-import { extractPromiseParts } from "../lib/extract-promise-parts";
-import { ContextBatch } from "./context-batch";
+import { backoff } from '@tronic/receiver-core';
+import { tryCreateFormattedUrl } from '../lib/create-url';
+import { extractPromiseParts } from '../lib/extract-promise-parts';
+import { ContextBatch } from './context-batch';
 function sleep(timeoutInMs) {
     return new Promise((resolve) => setTimeout(resolve, timeoutInMs));
 }
@@ -14,11 +14,7 @@ export class Publisher {
         this._maxEventsInBatch = Math.max(maxEventsInBatch, 1);
         this._flushInterval = flushInterval;
         this._auth = writeKey; // b64encode(`${writeKey}:`)
-<<<<<<< Updated upstream
         this._url = tryCreateFormattedUrl(host ?? 'http://localhost:3000', path ?? '/');
-=======
-        this._url = tryCreateFormattedUrl(host ?? "http://localhost:3000", path ?? "/external");
->>>>>>> Stashed changes
         this._httpRequestTimeout = httpRequestTimeout ?? 10000;
         this._disable = Boolean(disable);
         this._httpClient = httpClient;
@@ -123,27 +119,25 @@ export class Publisher {
                     return batch.resolveEvents();
                 }
                 const event = { ...events[0] };
-                const data = {
-                    ...event,
-                    write_key: `${this._auth}`,
-                };
+                const data = { ...event };
                 // console.log('publisher::data::0', data);
-                delete data["type"];
-                delete data["options"];
-                delete data["_metadata"];
+                delete data['type'];
+                delete data['options'];
+                delete data['_metadata'];
                 // console.log('publisher::data::1', data);
                 // console.log('publisher::url', this._url + `/${event.type}`, data, this._auth);
                 const request = {
                     url: this._url + `/${event.type}`,
-                    method: "POST",
+                    method: 'POST',
                     headers: {
-                        "Content-Type": "application/json",
-                        "User-Agent": "receiver-node/latest",
+                        'Content-Type': 'application/json',
+                        'x-api-key': `${this._auth}`,
+                        'User-Agent': 'receiver-node/latest',
                     },
                     data,
                     httpRequestTimeout: this._httpRequestTimeout,
                 };
-                this._emitter.emit("http_request", {
+                this._emitter.emit('http_request', {
                     body: request.data,
                     method: request.method,
                     url: request.url,
