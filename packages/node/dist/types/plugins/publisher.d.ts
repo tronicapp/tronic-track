@@ -1,6 +1,6 @@
-import type { Context } from '../app/context';
-import { NodeEmitter } from '../app/emitter';
-import { HTTPClient } from '../lib/http-client';
+import type { Context } from "../app/context";
+import { NodeEmitter } from "../app/emitter";
+import { HTTPClient } from "../lib/http-client";
 export interface PublisherProps {
     host?: string;
     path?: string;
