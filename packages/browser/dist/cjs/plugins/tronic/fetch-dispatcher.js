@@ -21,7 +21,7 @@ function default_1(writeKey, config) {
                 "Content-Type": "application/json",
             },
             method: "post",
-            body: JSON.stringify(__assign(__assign({}, body), { write_key: writeKey })),
+            body: JSON.stringify(__assign(__assign({}, body), { writeKey: writeKey })),
         });
     }
     return {

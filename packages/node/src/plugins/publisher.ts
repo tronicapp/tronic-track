@@ -195,7 +195,7 @@ export class Publisher {
 
         const data: any = {
           ...event,
-          write_key: `${this._auth}`,
+          writeKey: `${this._auth}`,
         };
 
         // console.log('publisher::data::0', data);

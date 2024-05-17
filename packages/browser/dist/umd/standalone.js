@@ -7343,7 +7343,7 @@ var fetch_dispatcher_assign = (undefined && undefined.__assign) || function () {
                 "Content-Type": "application/json",
             },
             method: "post",
-            body: JSON.stringify(fetch_dispatcher_assign(fetch_dispatcher_assign({}, body), { write_key: writeKey })),
+            body: JSON.stringify(fetch_dispatcher_assign(fetch_dispatcher_assign({}, body), { writeKey: writeKey })),
         });
     }
     return {

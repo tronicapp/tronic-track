@@ -124,7 +124,7 @@ class Publisher {
                 const event = { ...events[0] };
                 const data = {
                     ...event,
-                    write_key: `${this._auth}`,
+                    writeKey: `${this._auth}`,
                 };
                 // console.log('publisher::data::0', data);
                 delete data["type"];
