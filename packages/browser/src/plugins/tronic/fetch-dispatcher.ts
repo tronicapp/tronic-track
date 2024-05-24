@@ -20,7 +20,7 @@ export default function (
         "Content-Type": "application/json",
       },
       method: "post",
-      body: JSON.stringify({ ...body, writeKey: writeKey }),
+      body: JSON.stringify(body),
     });
   }
 
