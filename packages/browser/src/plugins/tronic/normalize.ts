@@ -11,7 +11,7 @@ export function normalize(
 
   delete json.options
 
-  // json.writeKey = settings?.apiKey
+  json.writeKey = settings?.apiKey
 
   json.userId = json.userId || user.id()
   if (json.userId) {

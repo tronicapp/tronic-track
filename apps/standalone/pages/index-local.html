@@ -83,10 +83,13 @@
               pluginSettings: {
                 'Tronic': {
                   apiKey: writeKey,
-                  apiHost: 'dev-api.tronic.app',
+                  // apiHost: 'dev-api.tronic.app',
+                  apiHost: 'localhost:3000',
+                  protocol: 'http',
                 },
               },
             })
+            receiver.debug()
             receiver.page()
           }
       })()
@@ -139,6 +142,7 @@
 
       document.querySelector('#track').addEventListener('click', async function (e) {
 
+        debugger
         e.preventDefault()
 
         var contents = document.querySelector('#trackEvent').value

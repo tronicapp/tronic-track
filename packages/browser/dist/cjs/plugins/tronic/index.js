@@ -99,7 +99,6 @@ function tronic(receiver, settings) {
                 delete json.messageId;
                 if (ctx.event.type === 'track') {
                     delete json.traits;
-                    delete json.writeKey;
                     delete json.sentAt;
                 }
                 /*

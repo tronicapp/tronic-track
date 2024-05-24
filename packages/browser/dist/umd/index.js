@@ -6131,7 +6131,6 @@ var Receiver = /** @class */ (function (_super) {
         _this._group =
             group !== null && group !== void 0 ? group : new Group(receiver_assign({ persist: !disablePersistance, storage: options === null || options === void 0 ? void 0 : options.storage }, options === null || options === void 0 ? void 0 : options.group), cookieOptions).load();
         _this.eventFactory = new EventFactory(_this._user);
-        // this.integrations = options?.integrations ?? {}
         _this.options = options; // ?? {}
         bindAll(_this);
         return _this;
@@ -6173,13 +6172,13 @@ var Receiver = /** @class */ (function (_super) {
             args[_i] = arguments[_i];
         }
         return receiver_awaiter(this, void 0, Promise, function () {
-            var pageCtx, _a, category, page, properties, options, callback, segmentEvent;
+            var pageCtx, _a, category, page, properties, options, callback, tronicEvent;
             var _this = this;
             return receiver_generator(this, function (_b) {
                 pageCtx = popPageContext(args);
                 _a = resolvePageArguments.apply(void 0, args), category = _a[0], page = _a[1], properties = _a[2], options = _a[3], callback = _a[4];
-                segmentEvent = this.eventFactory.page(category, page, properties, options, pageCtx);
-                return [2 /*return*/, this._dispatch(segmentEvent, callback).then(function (ctx) {
+                tronicEvent = this.eventFactory.page(category, page, properties, options, pageCtx);
+                return [2 /*return*/, this._dispatch(tronicEvent, callback).then(function (ctx) {
                         _this.emit('page', category, page, ctx.event.properties, ctx.event.options);
                         return ctx;
                     })];
@@ -6197,9 +6196,7 @@ var Receiver = /** @class */ (function (_super) {
             return receiver_generator(this, function (_b) {
                 pageCtx = popPageContext(args);
                 _a = resolveArguments.apply(void 0, args), name = _a[0], data = _a[1], opts = _a[2], cb = _a[3];
-                tronicEvent = this.eventFactory.track(name, 
-                // channelId,
-                data, opts, pageCtx);
+                tronicEvent = this.eventFactory.track(name, data, opts, pageCtx);
                 return [2 /*return*/, this._dispatch(tronicEvent, cb).then(function (ctx) {
                         _this.emit('track', name, ctx.event.properties, ctx.event.options);
                         return ctx;
@@ -6219,9 +6216,7 @@ var Receiver = /** @class */ (function (_super) {
                 pageCtx = popPageContext(args);
                 _a = resolveUserArguments(this._user).apply(void 0, args), id = _a[0], _traits = _a[1], options = _a[2], callback = _a[3];
                 this._user.identify(id, _traits);
-                tronicEvent = this.eventFactory.identify(this._user.id(), 
-                // channelId,
-                this._user.traits(), options, pageCtx);
+                tronicEvent = this.eventFactory.identify(this._user.id(), this._user.traits(), options, pageCtx);
                 return [2 /*return*/, this._dispatch(tronicEvent, callback).then(function (ctx) {
                         _this.emit('identify', ctx.event.userId, ctx.event.traits, ctx.event.options);
                         return ctx;
@@ -7351,7 +7346,7 @@ var fetch_dispatcher_assign = (undefined && undefined.__assign) || function () {
 function normalize(receiver, json, settings) {
     var user = receiver.user();
     delete json.options;
-    // json.writeKey = settings?.apiKey
+    json.writeKey = settings === null || settings === void 0 ? void 0 : settings.apiKey;
     json.userId = json.userId || user.id();
     if (json.userId) {
         delete json.anonymousId;
@@ -7628,7 +7623,6 @@ function tronic(receiver, settings) {
                 delete json.messageId;
                 if (ctx.event.type === 'track') {
                     delete json.traits;
-                    delete json.writeKey;
                     delete json.sentAt;
                 }
                 /*

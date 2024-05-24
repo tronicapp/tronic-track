@@ -14,7 +14,6 @@ import { dispatch, Emitter } from '@tronic/receiver-core'
 import {
   Callback,
   EventFactory,
-  // Integrations,
   Plan,
   EventProperties,
   TronicEvent,
@@ -211,7 +210,6 @@ export class Receiver
         cookieOptions
       ).load()
     this.eventFactory = new EventFactory(this._user)
-    // this.integrations = options?.integrations ?? {}
     this.options = options; // ?? {}
     autoBind(this)
   }
@@ -263,7 +261,7 @@ export class Receiver
     const [category, page, properties, options, callback] =
       resolvePageArguments(...args)
 
-    const segmentEvent = this.eventFactory.page(
+    const tronicEvent = this.eventFactory.page(
       category,
       page,
       properties,
@@ -271,7 +269,7 @@ export class Receiver
       pageCtx
     )
 
-    return this._dispatch(segmentEvent, callback).then((ctx) => {
+    return this._dispatch(tronicEvent, callback).then((ctx) => {
       this.emit('page', category, page, ctx.event.properties, ctx.event.options)
       return ctx
     })
@@ -279,11 +277,10 @@ export class Receiver
 
   async track(...args: EventParams): Promise<DispatchedEvent> {
     const pageCtx = popPageContext(args)
-    const [name, /* channelId, */ data, opts, cb] = resolveArguments(...args)
+    const [name, data, opts, cb] = resolveArguments(...args)
 
     const tronicEvent: any = this.eventFactory.track(
       name,
-      // channelId,
       data as EventProperties,
       opts,
       pageCtx
@@ -297,7 +294,7 @@ export class Receiver
 
   async identify(...args: IdentifyParams): Promise<DispatchedEvent> {
     const pageCtx = popPageContext(args)
-    const [/* channelId, */ id, _traits, options, callback] = resolveUserArguments(this._user)(
+    const [id, _traits, options, callback] = resolveUserArguments(this._user)(
       ...args
     )
 
@@ -305,7 +302,6 @@ export class Receiver
 
     const tronicEvent = this.eventFactory.identify(
       this._user.id(),
-      // channelId,
       this._user.traits(),
       options,
       pageCtx

@@ -4,7 +4,7 @@ exports.normalize = void 0;
 function normalize(receiver, json, settings) {
     var user = receiver.user();
     delete json.options;
-    // json.writeKey = settings?.apiKey
+    json.writeKey = settings === null || settings === void 0 ? void 0 : settings.apiKey;
     json.userId = json.userId || user.id();
     if (json.userId) {
         delete json.anonymousId;
