@@ -7313,17 +7313,6 @@ function batch(apiHost, config) {
 }
 
 ;// CONCATENATED MODULE: ./src/plugins/tronic/fetch-dispatcher.ts
-var fetch_dispatcher_assign = (undefined && undefined.__assign) || function () {
-    fetch_dispatcher_assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return fetch_dispatcher_assign.apply(this, arguments);
-};
 
 /* harmony default export */ function fetch_dispatcher(writeKey, config) {
     function dispatch(url, body) {
@@ -7334,7 +7323,7 @@ var fetch_dispatcher_assign = (undefined && undefined.__assign) || function () {
                 "Content-Type": "application/json",
             },
             method: "post",
-            body: JSON.stringify(fetch_dispatcher_assign(fetch_dispatcher_assign({}, body), { writeKey: writeKey })),
+            body: JSON.stringify(body),
         });
     }
     return {
