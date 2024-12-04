@@ -54,7 +54,7 @@ export function tronic(
     inflightEvents.clear()
   })
 
-  const writeKey = settings?.apiKey ?? ''
+  const writeKey = settings?.apiKey ?? receiver.options.writeKey ?? ''
 
   const buffer = receiver.options.disableClientPersistence
     ? new PriorityQueue<Context>(receiver.queue.queue.maxAttempts, [])

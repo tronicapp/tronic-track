@@ -1,0 +1,133 @@
+<html>
+  <head>
+    <script>
+      var writeKey = '64685cd7-7065-40e6-8716-f0429608675a';
+
+      !function() {
+          var i = "xreceiver", receiver = window[i] = window[i] || [];
+
+          if (!receiver.initialize) {
+
+              if (receiver.invoked) {
+                  window.console && console.error && console.error("Tronic snippet included twice.");
+              } else {
+                  receiver.invoked = !0;
+                  receiver.methods = [
+                      "pageview",
+                      "identify",
+                      "reset",
+                      "track",
+                      "ready",
+                      "debug",
+                      "page",
+                      "screen",
+                      "once",
+                      "off",
+                      "on",
+                  ];
+                  receiver.factory = function(e) {
+                      return function(){
+                          if (window[i].initialized) {
+                              return window[i][e].apply(window[i],arguments);
+                          }
+                          var n = Array.prototype.slice.call(arguments);
+                          if (["track","screen","alias","group","page","identify"].indexOf(e) > -1){
+                              var c = document.querySelector("link[rel='canonical']");
+                              n.push({
+                                  __t: "bpc",
+                                  c: c && c.getAttribute("href") || void 0,
+                                  p: location.pathname,
+                                  u: location.href,
+                                  s: location.search,
+                                  t: document.title,
+                                  r: document.referrer,
+                              })
+                          }
+                          n.unshift(e);
+                          receiver.push(n);
+                          return receiver
+                      }
+                  };
+                  for (var n = 0; n < receiver.methods.length; n++) {
+                      var key = receiver.methods[n];
+                      receiver[key] = receiver.factory(key)
+                  }
+                  receiver.load = function(key,n) {
+                      var t = document.createElement("script");
+                      t.type = "text/javascript";
+                      t.async = !0;
+                      t.setAttribute("data-global-tronic-receiver-key",i);
+                      t.src = "/node_modules/@tronic/receiver-browser/dist/umd/standalone.js";
+                      var r = document.getElementsByTagName("script")[0];
+                      r.parentNode.insertBefore(t,r);
+                      receiver._loadOptions = n;
+                  };
+                  receiver._writeKey = writeKey,
+                  receiver.SNIPPET_VERSION = "0.0.1";
+                  receiver.load(writeKey, {
+                      pluginSettings: {
+                          'Tronic': {
+                              apiHost: 'dev-api.tronic.app'
+                          }
+                      }
+                  });
+                  receiver.page();
+              }
+          }
+      }();
+    </script>
+  </head>
+
+  <body>
+
+    Ready Logs
+    <pre id="ready-logs"></pre>
+    Logs
+    <pre id="logs"></pre>
+
+    <script type="text/javascript">
+
+      function writeToLog(str) {
+          document.querySelector('#logs').textContent = str;
+      }
+
+      window.xreceiver.ready(function onReady() {
+          document.querySelector('#ready-logs').textContent = 'ready!'
+      })
+
+      try {
+
+          var trackEvent = {
+              "name": "event0",
+              "properties": { "test": "yes" },
+              "options": { }
+          }
+
+          window.xreceiver.track(
+              trackEvent.name,
+              trackEvent.properties || {},
+          )
+
+          var identifyEvent = {
+              "userId": "2WffqQkUnMk5qM5y90fGlzcPDAv",
+              "traits": {
+                  "email": "hello@example.com"
+              }
+          };
+
+          window.xreceiver.identify(
+              identifyEvent.userId || '',
+              identifyEvent.traits || {},
+              identifyEvent.options || {},
+          )
+
+      } catch (err) {
+          debugger
+          writeToLog(err);
+
+      }
+
+    </script>
+  </body>
+
+</html>

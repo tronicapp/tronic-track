@@ -1,7 +1,7 @@
 // import type { Receiver, ReceiverSettings, InitOptions } from '.'
 import type { Plugin } from '../plugin'
 import type {
-  EventParams,
+  TrackParams,
   DispatchedEvent,
   IdentifyParams,
   // GroupParams,
@@ -74,7 +74,7 @@ export interface ReceiverClassic extends ReceiverClassicStubs {
 
 // Interface implemented by concrete Receiver class (commonly accessible if you use "await" on ReceiverBrowser.load())
 export interface ReceiverCore extends CoreReceiver {
-  track(...args: EventParams): Promise<DispatchedEvent>
+  track(...args: TrackParams): Promise<DispatchedEvent>
   identify(...args: IdentifyParams): Promise<DispatchedEvent>
   // group(): Promise<Group>
   // group(...args: GroupParams): Promise<DispatchedEvent>

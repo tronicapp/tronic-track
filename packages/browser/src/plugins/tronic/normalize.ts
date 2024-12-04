@@ -11,7 +11,7 @@ export function normalize(
 
   delete json.options
 
-  json.writeKey = settings?.apiKey
+  json.writeKey = settings?.apiKey ?? receiver.options.writeKey ?? ''
 
   json.userId = json.userId || user.id()
   if (json.userId) {
@@ -21,11 +21,12 @@ export function normalize(
 
   // json.sentAt = new Date()
 
-    /*
+  /*
   const failed = receiver.queue.failedInitializations || []
   if (failed.length > 0) {
     json._metadata = { failedInitializations: failed }
   }
-     */
+   */
+
   return json
 }

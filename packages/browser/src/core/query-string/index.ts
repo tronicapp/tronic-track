@@ -48,17 +48,11 @@ export function queryString(
     if (uidPattern.test(uid)) {
       const traits = pickPrefix('rjs_trait_', params)
 
-      // requires channelId
-      // calls.push(receiver.identify(uid, traits))
+      calls.push(receiver.identify(uid, traits))
     }
   }
 
   if (rjs_event) {
-    /*
-    const channelId = Array.isArray(params.rjs_channel_id)
-      ? params.rjs_channel_id[0]
-      : params.rjs_channel_id
-     */
     const userId = Array.isArray(params.rjs_user_id)
       ? params.rjs_user_id[0]
       : params.rjs_user_id
@@ -66,7 +60,7 @@ export function queryString(
       ? params.rjs_event[0]
       : params.rjs_event
     const props = pickPrefix('rjs_prop_', params)
-    calls.push(receiver.track(/* channelId ,*/ userId, event, props))
+    calls.push(receiver.track(userId, event, props))
   }
 
   return Promise.all(calls)

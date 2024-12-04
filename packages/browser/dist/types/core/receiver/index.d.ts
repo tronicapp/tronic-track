@@ -1,4 +1,4 @@
-import { DispatchedEvent, EventParams, IdentifyParams, PageParams } from '../arguments-resolver';
+import { DispatchedEvent, TrackParams, PageParams, IdentifyParams } from '../arguments-resolver';
 import type { FormArgs, LinkArgs } from '../auto-track';
 import { Context } from '../context';
 import { Emitter } from '@tronic/receiver-core';
@@ -55,7 +55,7 @@ export declare class Receiver extends Emitter implements ReceiverCore {
     private createStore;
     get storage(): UniversalStorage;
     page(...args: PageParams): Promise<DispatchedEvent>;
-    track(...args: EventParams): Promise<DispatchedEvent>;
+    track(...args: TrackParams): Promise<DispatchedEvent>;
     identify(...args: IdentifyParams): Promise<DispatchedEvent>;
     trackClick(...args: LinkArgs): Promise<Receiver>;
     trackLink(...args: LinkArgs): Promise<Receiver>;

@@ -56,21 +56,21 @@ function onAlias(receiver: Receiver, json: JSON): JSON {
 }
   */
 export function tronic(receiver, settings) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     // Attach `pagehide` before buffer is created so that inflight events are added
     // to the buffer before the buffer persists events in its own `pagehide` handler.
     window.addEventListener('pagehide', function () {
         buffer.push.apply(buffer, Array.from(inflightEvents));
         inflightEvents.clear();
     });
-    var writeKey = (_a = settings === null || settings === void 0 ? void 0 : settings.apiKey) !== null && _a !== void 0 ? _a : '';
+    var writeKey = (_b = (_a = settings === null || settings === void 0 ? void 0 : settings.apiKey) !== null && _a !== void 0 ? _a : receiver.options.writeKey) !== null && _b !== void 0 ? _b : '';
     var buffer = receiver.options.disableClientPersistence
         ? new PriorityQueue(receiver.queue.queue.maxAttempts, [])
         : new PersistedPriorityQueue(receiver.queue.queue.maxAttempts, "".concat(writeKey, ":dest-tronic"));
     var inflightEvents = new Set();
     var flushing = false;
-    var apiHost = (_b = settings === null || settings === void 0 ? void 0 : settings.apiHost) !== null && _b !== void 0 ? _b : TRONIC_API_HOST;
-    var protocol = (_c = settings === null || settings === void 0 ? void 0 : settings.protocol) !== null && _c !== void 0 ? _c : 'https';
+    var apiHost = (_c = settings === null || settings === void 0 ? void 0 : settings.apiHost) !== null && _c !== void 0 ? _c : TRONIC_API_HOST;
+    var protocol = (_d = settings === null || settings === void 0 ? void 0 : settings.protocol) !== null && _d !== void 0 ? _d : 'https';
     var remote = "".concat(protocol, "://").concat(apiHost);
     var deliveryStrategy = settings === null || settings === void 0 ? void 0 : settings.deliveryStrategy;
     var client = (deliveryStrategy === null || deliveryStrategy === void 0 ? void 0 : deliveryStrategy.strategy) === 'batching'
@@ -102,7 +102,10 @@ export function tronic(receiver, settings) {
                  */
                 return [2 /*return*/, client
                         .dispatch("".concat(remote, "/").concat(path), normalize(receiver, json, settings))
-                        .then(function () { return ctx; })
+                        .then(function (x) {
+                        console.log('xxx', { x: x, ctx: ctx });
+                        return ctx;
+                    })
                         .catch(function () {
                         buffer.pushWithBackoff(ctx);
                         // eslint-disable-next-line @typescript-eslint/no-use-before-define
