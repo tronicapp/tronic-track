@@ -3066,7 +3066,7 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 
 ;// CONCATENATED MODULE: ./src/lib/global-receiver-helper.ts
-var _globalReceiverKey = 'xanalytics';
+var _globalReceiverKey = 'receiver';
 function getGlobalReceiver() {
     return window[_globalReceiverKey];
 }
@@ -7565,10 +7565,7 @@ function tronic(receiver, settings) {
                  */
                 return [2 /*return*/, client
                         .dispatch("".concat(remote, "/").concat(path), normalize(receiver, json, settings))
-                        .then(function (x) {
-                        console.log('xxx', { x: x, ctx: ctx });
-                        return ctx;
-                    })
+                        .then(function () { return ctx; })
                         .catch(function () {
                         buffer.pushWithBackoff(ctx);
                         // eslint-disable-next-line @typescript-eslint/no-use-before-define

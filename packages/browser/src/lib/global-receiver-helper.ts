@@ -1,6 +1,6 @@
 import { ReceiverSnippet } from '../browser/standalone-interface'
 
-let _globalReceiverKey = 'xanalytics'
+let _globalReceiverKey = 'receiver'
 
 export function getGlobalReceiver(): ReceiverSnippet | undefined {
   return (window as any)[_globalReceiverKey]

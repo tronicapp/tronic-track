@@ -1,4 +1,4 @@
-var _globalReceiverKey = 'xanalytics';
+var _globalReceiverKey = 'receiver';
 export function getGlobalReceiver() {
     return window[_globalReceiverKey];
 }

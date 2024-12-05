@@ -108,10 +108,7 @@ function tronic(receiver, settings) {
                  */
                 return [2 /*return*/, client
                         .dispatch("".concat(remote, "/").concat(path), (0, normalize_1.normalize)(receiver, json, settings))
-                        .then(function (x) {
-                        console.log('xxx', { x: x, ctx: ctx });
-                        return ctx;
-                    })
+                        .then(function () { return ctx; })
                         .catch(function () {
                         buffer.pushWithBackoff(ctx);
                         // eslint-disable-next-line @typescript-eslint/no-use-before-define

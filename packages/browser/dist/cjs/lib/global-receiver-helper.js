@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.setGlobalReceiver = exports.setGlobalReceiverKey = exports.getGlobalReceiver = void 0;
-var _globalReceiverKey = 'xanalytics';
+var _globalReceiverKey = 'receiver';
 function getGlobalReceiver() {
     return window[_globalReceiverKey];
 }
