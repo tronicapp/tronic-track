@@ -16,10 +16,7 @@ import {
 } from '../events'
 import { ID, User } from '../user'
 
-/**
- * Helper for the track method
- */
-export function resolveArguments(
+export function resolveTrackArguments(
   eventOrEventName: string | TronicEvent,
   // channelId?: string,
   properties?: EventProperties | Callback,
@@ -52,87 +49,62 @@ export function resolveArguments(
   return [name, /* channelId, */ data, opts, cb]
 }
 
-// Helper for group, identify methods
 export const resolveUserArguments = <T extends Traits, U extends User>(
   user: U
 ): ResolveUser<T> => {
   return (...args): ReturnType<ResolveUser<T>> => {
 
-    /*
     const values: {
       id?: ID
       traits?: T | null
       options?: Options
       callback?: Callback
-      } = {}
-     */
+    } = {}
 
-    const x = args[1]
+    // It's a stack so it's reversed so that we go through each of the expected arguments
+    const orderStack: Array<keyof typeof values> = [
+      'callback',
+      'options',
+      'traits',
+      'id',
+    ]
+
+    // Read each argument and eval the possible values here
+    for (const arg of args) {
+      let current = orderStack.pop()
+      if (current === 'id') {
+        if (isString(arg) || isNumber(arg)) {
+          values.id = arg.toString()
+          continue
+        }
+        if (arg === null || arg === undefined) {
+          continue
+        }
+        // First argument should always be the id, if it is not a valid value we can skip it
+        current = orderStack.pop()
+      }
+
+      // Traits and Options
+      if (
+        (current === 'traits' || current === 'options') &&
+        (arg === null || arg === undefined || isPlainObject(arg))
+      ) {
+        values[current] = arg as T
+      }
+
+      // Callback
+      if (isFunction(arg)) {
+        values.callback = arg as Callback
+        break // This is always the last argument
+      }
+    }
 
     return [
-      // args[0],
-      (args[0] ?? user.id()) as ID,
-      (args[1] ?? {}) as T ,
-      args[2] ?? {},
-      args[3],
-    ];
-
-    /*
-        const values: {
-          channelId?: string
-          id?: ID
-          traits?: T | null
-          options?: Options
-          callback?: Callback
-        } = {}
-        // It's a stack so it's reversed so that we go through each of the expected arguments
-        const orderStack: Array<keyof typeof values> = [
-          'callback',
-          'options',
-          'traits',
-          'id',
-          'channelId',
-        ]
-
-        // Read each argument and eval the possible values here
-        for (const arg of args) {
-          let current = orderStack.pop()
-          if (current === 'id') {
-            if (isString(arg) || isNumber(arg)) {
-              values.id = arg.toString()
-              continue
-            }
-            if (arg === null || arg === undefined) {
-              continue
-            }
-            // First argument should always be the id, if it is not a valid value we can skip it
-            current = orderStack.pop()
-          }
-
-          // Traits and Options
-          if (
-            (current === 'traits' || current === 'options') &&
-            (arg === null || arg === undefined || isPlainObject(arg))
-          ) {
-            values[current] = arg as T
-          }
-
-          // Callback
-          if (isFunction(arg)) {
-            values.callback = arg as Callback
-            break // This is always the last argument
-          }
-        }
-
-        return [
-          values.channelId,
-          values.id ?? user.id(),
-          (values.traits ?? {}) as T,
-          values.options ?? {},
-          values.callback,
-        ]
-          */
-    // return args;
+      values.id ?? user.id(),
+      (values.traits ?? {}) as T,
+      values.options ?? {},
+      values.callback,
+    ]
   }
 }
 
@@ -143,12 +115,12 @@ export function resolvePageArguments(
   options?: Options | Callback,
   callback?: Callback
 ): [
-  string | null,
-  string | null,
-  EventProperties,
-  Options,
-  Callback | undefined
-] {
+    string | null,
+    string | null,
+    EventProperties,
+    Options,
+    Callback | undefined
+  ] {
   let resolvedCategory: string | undefined | null = null
   let resolvedName: string | undefined | null = null
   const args = [category, name, properties, options, callback]
@@ -194,7 +166,7 @@ type ResolveUser<T extends Record<string, string>> = (
 ) => [/* string, */ ID, T, Options | undefined, Callback | undefined]
 
 export type IdentifyParams = Parameters<ResolveUser<UserTraits>>
-export type EventParams = Parameters<typeof resolveArguments>
+export type TrackParams = Parameters<typeof resolveTrackArguments>
 export type PageParams = Parameters<typeof resolvePageArguments>
 
 export type DispatchedEvent = Context

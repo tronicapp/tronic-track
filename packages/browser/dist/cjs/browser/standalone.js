@@ -44,10 +44,12 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 /* eslint-disable @typescript-eslint/no-floating-promises */
 var parse_cdn_1 = require("../lib/parse-cdn");
 var version_type_1 = require("../lib/version-type");
+var global_receiver_helper_1 = require("../lib/global-receiver-helper");
 if (process.env.ASSET_PATH) {
     if (process.env.ASSET_PATH === '/dist/umd/') {
         // @ts-ignore
@@ -93,9 +95,7 @@ document.addEventListener('securitypolicyviolation', function (e) {
     sendErrorMetrics(['type:csp']);
     (0, csp_detection_1.loadAjsClassicFallback)().catch(console.error);
 });
-/**
- * Attempts to run a promise and catch both sync and async errors.
- **/
+// Attempts to run a promise and catch both sync and async errors.
 function attempt(promise) {
     return __awaiter(this, void 0, void 0, function () {
         var result, err_1;
@@ -115,6 +115,10 @@ function attempt(promise) {
             }
         });
     });
+}
+var globalReceiverKey = (_a = document.querySelector('script[data-global-tronic-receiver-key]')) === null || _a === void 0 ? void 0 : _a.dataset.globalTronicReceiverKey;
+if (globalReceiverKey) {
+    (0, global_receiver_helper_1.setGlobalReceiverKey)(globalReceiverKey);
 }
 if ((0, browser_polyfill_1.shouldPolyfill)()) {
     // load polyfills in order to get AJS to work with old browsers

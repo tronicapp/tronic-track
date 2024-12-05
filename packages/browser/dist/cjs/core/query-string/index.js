@@ -32,16 +32,10 @@ function queryString(receiver, query) {
             : params.rjs_uid;
         if (uidPattern.test(uid)) {
             var traits = (0, pickPrefix_1.pickPrefix)('rjs_trait_', params);
-            // requires channelId
-            // calls.push(receiver.identify(uid, traits))
+            calls.push(receiver.identify(uid, traits));
         }
     }
     if (rjs_event) {
-        /*
-        const channelId = Array.isArray(params.rjs_channel_id)
-          ? params.rjs_channel_id[0]
-          : params.rjs_channel_id
-         */
         var userId = Array.isArray(params.rjs_user_id)
             ? params.rjs_user_id[0]
             : params.rjs_user_id;
@@ -49,7 +43,7 @@ function queryString(receiver, query) {
             ? params.rjs_event[0]
             : params.rjs_event;
         var props = (0, pickPrefix_1.pickPrefix)('rjs_prop_', params);
-        calls.push(receiver.track(/* channelId ,*/ userId, event_1, props));
+        calls.push(receiver.track(userId, event_1, props));
     }
     return Promise.all(calls);
 }

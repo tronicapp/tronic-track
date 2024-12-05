@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { getCDN, setGlobalCDNUrl } from '../lib/parse-cdn'
 import { setVersionType } from '../lib/version-type'
+import { setGlobalReceiverKey } from '../lib/global-receiver-helper'
 
 if (process.env.ASSET_PATH) {
   if (process.env.ASSET_PATH === '/dist/umd/') {
@@ -59,9 +60,7 @@ document.addEventListener('securitypolicyviolation', (e) => {
   loadAjsClassicFallback().catch(console.error)
 })
 
-/**
- * Attempts to run a promise and catch both sync and async errors.
- **/
+// Attempts to run a promise and catch both sync and async errors.
 async function attempt<T>(promise: () => Promise<T>) {
   try {
     const result = await promise()
@@ -69,6 +68,16 @@ async function attempt<T>(promise: () => Promise<T>) {
   } catch (err) {
     onError(err)
   }
+}
+
+const globalReceiverKey = (
+  document.querySelector(
+    'script[data-global-tronic-receiver-key]'
+  ) as HTMLScriptElement
+)?.dataset.globalTronicReceiverKey
+
+if (globalReceiverKey) {
+  setGlobalReceiverKey(globalReceiverKey)
 }
 
 if (shouldPolyfill()) {

@@ -1,10 +1,10 @@
 import type { Plugin } from '../plugin';
-import type { EventParams, DispatchedEvent, IdentifyParams } from '../arguments-resolver';
+import type { TrackParams, DispatchedEvent, IdentifyParams } from '../arguments-resolver';
 import type { Context } from '../context';
 import type { User } from '../user';
 import { CoreReceiver } from '@tronic/receiver-core';
 export interface ReceiverCore extends CoreReceiver {
-    track(...args: EventParams): Promise<DispatchedEvent>;
+    track(...args: TrackParams): Promise<DispatchedEvent>;
     identify(...args: IdentifyParams): Promise<DispatchedEvent>;
     user(): User;
     register(...plugins: Plugin[]): Promise<Context>;

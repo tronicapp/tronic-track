@@ -109,15 +109,10 @@ var bind_all_1 = __importDefault(require("../../lib/bind-all"));
 var persisted_1 = require("../../lib/priority-queue/persisted");
 var version_1 = require("../../generated/version");
 var priority_queue_1 = require("../../lib/priority-queue");
-var get_global_1 = require("../../lib/get-global");
 // import type { ExternalSettings } from '../../browser'
 var storage_1 = require("../storage");
 // import { setGlobalReceiver } from '../../lib/global-receiver-helper'
 var buffer_1 = require("../buffer");
-var deprecationWarning = 'This is being deprecated and will be not be available in future releases of Receiver JS';
-// reference any pre-existing "receiver" object so a user can restore the reference
-var global = (0, get_global_1.getGlobal)();
-var _receiver = global === null || global === void 0 ? void 0 : global.receiver;
 function createDefaultQueue(name, retryQueue, disablePersistance) {
     if (retryQueue === void 0) { retryQueue = false; }
     if (disablePersistance === void 0) { disablePersistance = false; }
@@ -132,7 +127,7 @@ var Receiver = /** @class */ (function (_super) {
     function Receiver(
     // settings: ReceiverSettings,
     options, queue, user, group) {
-        var _a;
+        var _a, _b;
         var _this = _super.call(this) || this;
         _this._debug = false;
         _this.initialized = false;
@@ -141,8 +136,8 @@ var Receiver = /** @class */ (function (_super) {
         };
         var cookieOptions = options === null || options === void 0 ? void 0 : options.cookie;
         var disablePersistance = (_a = options === null || options === void 0 ? void 0 : options.disableClientPersistence) !== null && _a !== void 0 ? _a : false;
-        // this.settings = settings
-        // this.settings.timeout = this.settings.timeout ?? 300
+        _this.options = options !== null && options !== void 0 ? options : {};
+        _this.options.timeout = (_b = _this.options.timeout) !== null && _b !== void 0 ? _b : 300;
         _this.queue =
             queue !== null && queue !== void 0 ? queue : createDefaultQueue("".concat(options.writeKey, ":event-queue"), options === null || options === void 0 ? void 0 : options.retryQueue, disablePersistance);
         var storageSetting = options === null || options === void 0 ? void 0 : options.storage;
@@ -152,7 +147,6 @@ var Receiver = /** @class */ (function (_super) {
         _this._group =
             group !== null && group !== void 0 ? group : new user_1.Group(__assign({ persist: !disablePersistance, storage: options === null || options === void 0 ? void 0 : options.storage }, options === null || options === void 0 ? void 0 : options.group), cookieOptions).load();
         _this.eventFactory = new events_1.EventFactory(_this._user);
-        _this.options = options; // ?? {}
         (0, bind_all_1.default)(_this);
         return _this;
     }
@@ -212,13 +206,13 @@ var Receiver = /** @class */ (function (_super) {
             args[_i] = arguments[_i];
         }
         return __awaiter(this, void 0, void 0, function () {
-            var pageCtx, _a, name, data, opts, cb, tronicEvent;
+            var pageCtx, _a, name, data, options, callback, tronicEvent;
             var _this = this;
             return __generator(this, function (_b) {
                 pageCtx = (0, buffer_1.popPageContext)(args);
-                _a = arguments_resolver_1.resolveArguments.apply(void 0, args), name = _a[0], data = _a[1], opts = _a[2], cb = _a[3];
-                tronicEvent = this.eventFactory.track(name, data, opts, pageCtx);
-                return [2 /*return*/, this._dispatch(tronicEvent, cb).then(function (ctx) {
+                _a = arguments_resolver_1.resolveTrackArguments.apply(void 0, args), name = _a[0], data = _a[1], options = _a[2], callback = _a[3];
+                tronicEvent = this.eventFactory.track(name, data, options, pageCtx);
+                return [2 /*return*/, this._dispatch(tronicEvent, callback).then(function (ctx) {
                         _this.emit('track', name, ctx.event.properties, ctx.event.options);
                         return ctx;
                     })];
@@ -482,11 +476,8 @@ var Receiver = /** @class */ (function (_super) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: 
-                    // console.warn(deprecationWarning)
-                    return [4 /*yield*/, this.page({ path: url })];
+                    case 0: return [4 /*yield*/, this.page({ path: url })];
                     case 1:
-                        // console.warn(deprecationWarning)
                         _a.sent();
                         return [2 /*return*/, this];
                 }

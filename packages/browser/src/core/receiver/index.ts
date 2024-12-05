@@ -1,11 +1,11 @@
 import {
   DispatchedEvent,
-  EventParams,
-  resolveArguments,
-  resolveUserArguments,
+  TrackParams,
+  PageParams,
   IdentifyParams,
   resolvePageArguments,
-  PageParams,
+  resolveTrackArguments,
+  resolveUserArguments,
 } from '../arguments-resolver'
 import type { FormArgs, LinkArgs } from '../auto-track'
 import { isOffline } from '../connection'
@@ -49,13 +49,6 @@ import { popPageContext } from '../buffer'
 import { MetricsOptions } from 'core/stats/remote-metrics'
 
 type LegacyDestination = any;
-
-const deprecationWarning =
-  'This is being deprecated and will be not be available in future releases of Receiver JS'
-
-// reference any pre-existing "receiver" object so a user can restore the reference
-const global: any = getGlobal()
-const _receiver = global?.receiver
 
 function createDefaultQueue(
   name: string,
@@ -149,7 +142,6 @@ export interface InitOptions {
 export class Receiver
   extends Emitter
   implements ReceiverCore {
-  // protected settings: ReceiverSettings
   private _user: User
   private _group: Group
   private eventFactory: EventFactory
@@ -170,8 +162,10 @@ export class Receiver
     super()
     const cookieOptions = options?.cookie
     const disablePersistance = options?.disableClientPersistence ?? false
-    // this.settings = settings
-    // this.settings.timeout = this.settings.timeout ?? 300
+
+    this.options = options ?? {}
+    this.options.timeout = this.options.timeout ?? 300
+
     this.queue =
       queue ??
       createDefaultQueue(
@@ -198,6 +192,7 @@ export class Receiver
         },
         cookieOptions
       ).load()
+
     this._group =
       group ??
       new Group(
@@ -209,8 +204,9 @@ export class Receiver
         },
         cookieOptions
       ).load()
+
     this.eventFactory = new EventFactory(this._user)
-    this.options = options; // ?? {}
+
     autoBind(this)
   }
 
@@ -275,18 +271,18 @@ export class Receiver
     })
   }
 
-  async track(...args: EventParams): Promise<DispatchedEvent> {
+  async track(...args: TrackParams): Promise<DispatchedEvent> {
     const pageCtx = popPageContext(args)
-    const [name, data, opts, cb] = resolveArguments(...args)
+    const [name, data, options, callback] = resolveTrackArguments(...args)
 
     const tronicEvent: any = this.eventFactory.track(
       name,
       data as EventProperties,
-      opts,
+      options,
       pageCtx
     )
 
-    return this._dispatch(tronicEvent, cb).then((ctx) => {
+    return this._dispatch(tronicEvent, callback).then((ctx) => {
       this.emit('track', name, ctx.event.properties, ctx.event.options)
       return ctx
     })
@@ -471,7 +467,6 @@ export class Receiver
   }
 
   async pageview(url: string): Promise<Receiver> {
-    // console.warn(deprecationWarning)
     await this.page({ path: url })
     return this
   }

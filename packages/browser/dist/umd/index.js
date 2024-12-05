@@ -2755,9 +2755,9 @@ var NullStats = /** @class */ (function (_super) {
 /* harmony export */   Gg: function() { return /* binding */ exists; },
 /* harmony export */   HD: function() { return /* binding */ isString; },
 /* harmony export */   PO: function() { return /* binding */ isPlainObject; },
+/* harmony export */   hj: function() { return /* binding */ isNumber; },
 /* harmony export */   mf: function() { return /* binding */ isFunction; }
 /* harmony export */ });
-/* unused harmony export isNumber */
 function isString(obj) {
     return typeof obj === 'string';
 }
@@ -2904,7 +2904,7 @@ function dset(obj, keys, val) {
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = function(chunkId) {
 /******/ 			// return url for filenames based on template
-/******/ 			return "" + {"96":"queryString","119":"auto-track"}[chunkId] + ".bundle." + {"96":"b5427e64df95e24342e1","119":"26cb9f24f62c78e9f94a"}[chunkId] + ".js";
+/******/ 			return "" + {"96":"queryString","119":"auto-track"}[chunkId] + ".bundle." + {"96":"5955823f4b167ff23f4e","119":"26cb9f24f62c78e9f94a"}[chunkId] + ".js";
 /******/ 		};
 /******/ 	}();
 /******/ 	
@@ -3081,29 +3081,13 @@ __webpack_require__.d(__webpack_exports__, {
 });
 
 ;// CONCATENATED MODULE: ./src/lib/global-receiver-helper.ts
-/**
- * Stores the global window receiver key
- */
 var _globalReceiverKey = 'receiver';
-/**
- * Gets the global receiver/buffer
- * @param key name of the window property where the buffer is stored (default: receiver)
- * @returns ReceiverSnippet
- */
 function global_receiver_helper_getGlobalReceiver() {
     return window[_globalReceiverKey];
 }
-/**
- * Replaces the global window key for the receiver/buffer object
- * @param key key name
- */
 function setGlobalReceiverKey(key) {
     _globalReceiverKey = key;
 }
-/**
- * Sets the global receiver object
- * @param receiver receiver snippet
- */
 function setGlobalReceiver(receiver) {
     ;
     window[_globalReceiverKey] = receiver;
@@ -3198,10 +3182,7 @@ function getVersionType() {
 var helpers = __webpack_require__(595);
 ;// CONCATENATED MODULE: ./src/core/arguments-resolver/index.ts
 
-/**
- * Helper for the track method
- */
-function resolveArguments(eventOrEventName, 
+function resolveTrackArguments(eventOrEventName, 
 // channelId?: string,
 properties, options, callback) {
     var _a;
@@ -3225,86 +3206,53 @@ properties, options, callback) {
     var cb = args.find(helpers/* isFunction */.mf);
     return [name, /* channelId, */ data, opts, cb];
 }
-// Helper for group, identify methods
 var resolveUserArguments = function (user) {
     return function () {
-        /*
-        const values: {
-          id?: ID
-          traits?: T | null
-          options?: Options
-          callback?: Callback
-          } = {}
-         */
         var _a, _b, _c;
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        var x = args[1];
-        return [
-            // args[0],
-            ((_a = args[0]) !== null && _a !== void 0 ? _a : user.id()),
-            ((_b = args[1]) !== null && _b !== void 0 ? _b : {}),
-            (_c = args[2]) !== null && _c !== void 0 ? _c : {},
-            args[3],
+        var values = {};
+        // It's a stack so it's reversed so that we go through each of the expected arguments
+        var orderStack = [
+            'callback',
+            'options',
+            'traits',
+            'id',
         ];
-        /*
-            const values: {
-              channelId?: string
-              id?: ID
-              traits?: T | null
-              options?: Options
-              callback?: Callback
-            } = {}
-            // It's a stack so it's reversed so that we go through each of the expected arguments
-            const orderStack: Array<keyof typeof values> = [
-              'callback',
-              'options',
-              'traits',
-              'id',
-              'channelId',
-            ]
-    
-            // Read each argument and eval the possible values here
-            for (const arg of args) {
-              let current = orderStack.pop()
-              if (current === 'id') {
-                if (isString(arg) || isNumber(arg)) {
-                  values.id = arg.toString()
-                  continue
+        // Read each argument and eval the possible values here
+        for (var _d = 0, args_1 = args; _d < args_1.length; _d++) {
+            var arg = args_1[_d];
+            var current = orderStack.pop();
+            if (current === 'id') {
+                if ((0,helpers/* isString */.HD)(arg) || (0,helpers/* isNumber */.hj)(arg)) {
+                    values.id = arg.toString();
+                    continue;
                 }
                 if (arg === null || arg === undefined) {
-                  continue
+                    continue;
                 }
                 // First argument should always be the id, if it is not a valid value we can skip it
-                current = orderStack.pop()
-              }
-    
-              // Traits and Options
-              if (
-                (current === 'traits' || current === 'options') &&
-                (arg === null || arg === undefined || isPlainObject(arg))
-              ) {
-                values[current] = arg as T
-              }
-    
-              // Callback
-              if (isFunction(arg)) {
-                values.callback = arg as Callback
-                break // This is always the last argument
-              }
+                current = orderStack.pop();
             }
-    
-            return [
-              values.channelId,
-              values.id ?? user.id(),
-              (values.traits ?? {}) as T,
-              values.options ?? {},
-              values.callback,
-            ]
-              */
-        // return args;
+            // Traits and Options
+            if ((current === 'traits' || current === 'options') &&
+                (arg === null || arg === undefined || (0,helpers/* isPlainObject */.PO)(arg))) {
+                values[current] = arg;
+            }
+            // Callback
+            if ((0,helpers/* isFunction */.mf)(arg)) {
+                values.callback = arg;
+                break; // This is always the last argument
+            }
+        }
+        return [
+            (_a = values.id) !== null && _a !== void 0 ? _a : user.id(),
+            ((_b = values.traits) !== null && _b !== void 0 ? _b : {}),
+            (_c = values.options) !== null && _c !== void 0 ? _c : {},
+            values.callback,
+        ];
     };
 };
 function resolvePageArguments(category, name, properties, options, callback) {
@@ -6088,15 +6036,10 @@ var receiver_spreadArray = (undefined && undefined.__spreadArray) || function (t
 
 
 
-
 // import type { ExternalSettings } from '../../browser'
 
 // import { setGlobalReceiver } from '../../lib/global-receiver-helper'
 
-var deprecationWarning = 'This is being deprecated and will be not be available in future releases of Receiver JS';
-// reference any pre-existing "receiver" object so a user can restore the reference
-var receiver_global = getGlobal();
-var _receiver = receiver_global === null || receiver_global === void 0 ? void 0 : receiver_global.receiver;
 function createDefaultQueue(name, retryQueue, disablePersistance) {
     if (retryQueue === void 0) { retryQueue = false; }
     if (disablePersistance === void 0) { disablePersistance = false; }
@@ -6111,7 +6054,7 @@ var Receiver = /** @class */ (function (_super) {
     function Receiver(
     // settings: ReceiverSettings,
     options, queue, user, group) {
-        var _a;
+        var _a, _b;
         var _this = _super.call(this) || this;
         _this._debug = false;
         _this.initialized = false;
@@ -6120,8 +6063,8 @@ var Receiver = /** @class */ (function (_super) {
         };
         var cookieOptions = options === null || options === void 0 ? void 0 : options.cookie;
         var disablePersistance = (_a = options === null || options === void 0 ? void 0 : options.disableClientPersistence) !== null && _a !== void 0 ? _a : false;
-        // this.settings = settings
-        // this.settings.timeout = this.settings.timeout ?? 300
+        _this.options = options !== null && options !== void 0 ? options : {};
+        _this.options.timeout = (_b = _this.options.timeout) !== null && _b !== void 0 ? _b : 300;
         _this.queue =
             queue !== null && queue !== void 0 ? queue : createDefaultQueue("".concat(options.writeKey, ":event-queue"), options === null || options === void 0 ? void 0 : options.retryQueue, disablePersistance);
         var storageSetting = options === null || options === void 0 ? void 0 : options.storage;
@@ -6131,7 +6074,6 @@ var Receiver = /** @class */ (function (_super) {
         _this._group =
             group !== null && group !== void 0 ? group : new Group(receiver_assign({ persist: !disablePersistance, storage: options === null || options === void 0 ? void 0 : options.storage }, options === null || options === void 0 ? void 0 : options.group), cookieOptions).load();
         _this.eventFactory = new EventFactory(_this._user);
-        _this.options = options; // ?? {}
         bindAll(_this);
         return _this;
     }
@@ -6191,13 +6133,13 @@ var Receiver = /** @class */ (function (_super) {
             args[_i] = arguments[_i];
         }
         return receiver_awaiter(this, void 0, Promise, function () {
-            var pageCtx, _a, name, data, opts, cb, tronicEvent;
+            var pageCtx, _a, name, data, options, callback, tronicEvent;
             var _this = this;
             return receiver_generator(this, function (_b) {
                 pageCtx = popPageContext(args);
-                _a = resolveArguments.apply(void 0, args), name = _a[0], data = _a[1], opts = _a[2], cb = _a[3];
-                tronicEvent = this.eventFactory.track(name, data, opts, pageCtx);
-                return [2 /*return*/, this._dispatch(tronicEvent, cb).then(function (ctx) {
+                _a = resolveTrackArguments.apply(void 0, args), name = _a[0], data = _a[1], options = _a[2], callback = _a[3];
+                tronicEvent = this.eventFactory.track(name, data, options, pageCtx);
+                return [2 /*return*/, this._dispatch(tronicEvent, callback).then(function (ctx) {
                         _this.emit('track', name, ctx.event.properties, ctx.event.options);
                         return ctx;
                     })];
@@ -6464,11 +6406,8 @@ var Receiver = /** @class */ (function (_super) {
         return receiver_awaiter(this, void 0, Promise, function () {
             return receiver_generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: 
-                    // console.warn(deprecationWarning)
-                    return [4 /*yield*/, this.page({ path: url })];
+                    case 0: return [4 /*yield*/, this.page({ path: url })];
                     case 1:
-                        // console.warn(deprecationWarning)
                         _a.sent();
                         return [2 /*return*/, this];
                 }
@@ -7333,9 +7272,10 @@ function batch(apiHost, config) {
 
 ;// CONCATENATED MODULE: ./src/plugins/tronic/normalize.ts
 function normalize(receiver, json, settings) {
+    var _a, _b;
     var user = receiver.user();
     delete json.options;
-    json.writeKey = settings === null || settings === void 0 ? void 0 : settings.apiKey;
+    json.writeKey = (_b = (_a = settings === null || settings === void 0 ? void 0 : settings.apiKey) !== null && _a !== void 0 ? _a : receiver.options.writeKey) !== null && _b !== void 0 ? _b : '';
     json.userId = json.userId || user.id();
     if (json.userId) {
         delete json.anonymousId;
@@ -7343,10 +7283,10 @@ function normalize(receiver, json, settings) {
     }
     // json.sentAt = new Date()
     /*
-  const failed = receiver.queue.failedInitializations || []
-  if (failed.length > 0) {
-    json._metadata = { failedInitializations: failed }
-  }
+    const failed = receiver.queue.failedInitializations || []
+    if (failed.length > 0) {
+      json._metadata = { failedInitializations: failed }
+    }
      */
     return json;
 }
@@ -7575,21 +7515,21 @@ function onAlias(receiver: Receiver, json: JSON): JSON {
 }
   */
 function tronic(receiver, settings) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     // Attach `pagehide` before buffer is created so that inflight events are added
     // to the buffer before the buffer persists events in its own `pagehide` handler.
     window.addEventListener('pagehide', function () {
         buffer.push.apply(buffer, Array.from(inflightEvents));
         inflightEvents.clear();
     });
-    var writeKey = (_a = settings === null || settings === void 0 ? void 0 : settings.apiKey) !== null && _a !== void 0 ? _a : '';
+    var writeKey = (_b = (_a = settings === null || settings === void 0 ? void 0 : settings.apiKey) !== null && _a !== void 0 ? _a : receiver.options.writeKey) !== null && _b !== void 0 ? _b : '';
     var buffer = receiver.options.disableClientPersistence
         ? new PriorityQueue(receiver.queue.queue.maxAttempts, [])
         : new PersistedPriorityQueue(receiver.queue.queue.maxAttempts, "".concat(writeKey, ":dest-tronic"));
     var inflightEvents = new Set();
     var flushing = false;
-    var apiHost = (_b = settings === null || settings === void 0 ? void 0 : settings.apiHost) !== null && _b !== void 0 ? _b : TRONIC_API_HOST;
-    var protocol = (_c = settings === null || settings === void 0 ? void 0 : settings.protocol) !== null && _c !== void 0 ? _c : 'https';
+    var apiHost = (_c = settings === null || settings === void 0 ? void 0 : settings.apiHost) !== null && _c !== void 0 ? _c : TRONIC_API_HOST;
+    var protocol = (_d = settings === null || settings === void 0 ? void 0 : settings.protocol) !== null && _d !== void 0 ? _d : 'https';
     var remote = "".concat(protocol, "://").concat(apiHost);
     var deliveryStrategy = settings === null || settings === void 0 ? void 0 : settings.deliveryStrategy;
     var client = (deliveryStrategy === null || deliveryStrategy === void 0 ? void 0 : deliveryStrategy.strategy) === 'batching'
